@@ -118,8 +118,10 @@ lhsKind, labelSet, and isAsync. The value of lhsKind is either assignment, varBi
 
 ### Yield Delegation
 
-    YieldExpression :
-        yield * AssignmentExpression
+```
+YieldExpression :
+    yield * AssignmentExpression
+```
 
 - Let exprRef be the result of evaluating AssignmentExpression.
 - Let value be GetValue(exprRef).
@@ -253,8 +255,10 @@ When a WrappedAsyncIteratorMethod function F is called with argument value the f
 
 ### Await Expressions
 
-    UnaryExpression :
-        await UnaryExpression
+```
+UnaryExpression :
+    await UnaryExpression
+```
 
 - Let exprRef be the result of evaluating UnaryExpression.
 - Let value be GetValue(exprRef).
@@ -264,22 +268,28 @@ When a WrappedAsyncIteratorMethod function F is called with argument value the f
 
 ### Async ForOf Statements
 
-    IterationStatement :
-        for async ( LeftHandSideExpression of AssignmentExpression ) Statement
+```
+IterationStatement :
+    for async ( LeftHandSideExpression of AssignmentExpression ) Statement
+```
 
 - Let keyResult be the result of performing ForIn/OfExpressionEvaluation( ( ), AssignmentExpression, iterate, labelSet, true).
 - ReturnIfAbrupt(keyResult).
 - Return ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, assignment, labelSet, true).
 
-    IterationStatement :
-        for async ( var ForBinding of AssignmentExpression ) Statement
+```
+IterationStatement :
+    for async ( var ForBinding of AssignmentExpression ) Statement
+```
 
 - Let keyResult be the result of performing ForIn/OfExpressionEvaluation( ( ), AssignmentExpression, iterate, labelSet, true).
 - ReturnIfAbrupt(keyResult).
 - Return ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, varBinding, labelSet, true).
 
-    IterationStatement :
-        for async ( ForDeclaration of AssignmentExpression ) Statement
+```
+IterationStatement :
+    for async ( ForDeclaration of AssignmentExpression ) Statement
+```
 
 - Let keyResult be the result of performing ForIn/OfExpressionEvaluation( BoundNames of ForDeclaration, AssignmentExpression, iterate, labelSet, true).
 - ReturnIfAbrupt(keyResult).

@@ -112,8 +112,10 @@ lhsKind, and labelSet. The value of lhsKind is either assignment, varBinding or 
 
 ### Yield Delegation
 
-    YieldExpression :
-        yield * AssignmentExpression
+```
+YieldExpression :
+    yield * AssignmentExpression
+```
 
 - Let exprRef be the result of evaluating AssignmentExpression.
 - Let value be GetValue(exprRef).
