@@ -1,4 +1,4 @@
-## IteratorNext(iterator, value, isAsync) ##
+### IteratorNext(iterator, value, isAsync)
 
 - If value was not passed,
     - Let result be Invoke(iterator, "next", ( )).
@@ -12,7 +12,7 @@
 - Return result.
 
 
-## IteratorStep(iterator, isAsync) ##
+### IteratorStep(iterator, isAsync)
 
 - Let result be IteratorNext(iterator, isAsync).
 - ReturnIfAbrupt(result).
@@ -22,7 +22,7 @@
 - Return result.
 
 
-## IteratorClose(iterator, completion, isAsync) ##
+### IteratorClose(iterator, completion, isAsync)
 
 - Assert: Type(iterator) is Object.
 - Assert: completion is a Completion Record.
@@ -37,7 +37,7 @@
 - Return completion.
 
 
-## ForIn/OfExpressionEvaluation ##
+### ForIn/OfExpressionEvaluation
 
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - If TDZnames is not an empty List, then
@@ -70,17 +70,13 @@
 - Return keys.
 
 
-## ForIn/OfBodyEvaluation ##
+### ForIn/OfBodyEvaluation
 
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - Let V = undefined.
 - Repeat
-    - Let nextResult be IteratorStep(iterator).
+    - Let nextResult be IteratorStep(iterator, isAsync).
     - ReturnIfAbrupt(nextResult).
-    - If context is async, then
-        - Let nextResult be GeneratorYield(CreateIterAwaitResultObject(nextResult)).
-        - ReturnIfAbrupt(nextResult).
-        - If Type(nextResult) is not Object, then throw a TypeError exception.
     - If nextResult is false, then return NormalCompletion(V).
     - Let nextValue be IteratorValue(nextResult).
     - ReturnIfAbrupt(nextValue).
@@ -114,7 +110,10 @@
         - Return IteratorClose(iterator, status, isAsync).
 
 
-## yield * ##
+### Yield Delegation
+
+    YieldExpression :
+        yield * AssignmentExpression
 
 - Let exprRef be the result of evaluating AssignmentExpression.
 - Let value be GetValue(exprRef).
@@ -158,14 +157,14 @@
         - Return Completion{[[type]]: return , [[value]]: returnValue , [[target]]:empty}.
 
 
-## IsIterAwaitResultObject(x) ##
+### IsIterAwaitResultObject(x)
 
 - If Type(x) is not Object, return false.
 - If x does not have a [[AwaitResultBrand]] internal slot, return false.
 - Return true.
 
 
-## CreateIterAwaitResultObject(value) ##
+### CreateIterAwaitResultObject(value)
 
 - Let obj be ObjectCreate(%ObjectPrototype%, ([[AwaitResultBrand]])).
 - Perform CreateDataProperty(obj, "value", value).
@@ -173,13 +172,13 @@
 - Return obj.
 
 
-## CheckAsyncIterable(obj) ##
+### CheckAsyncIterable(obj)
 
 - If Type(obj) is not Object, then return undefined.
 - Return Get(obj, @@asyncIterator).
 
 
-## GetAsyncIterator(obj, method) ##
+### GetAsyncIterator(obj, method)
 
 - ReturnIfAbrupt(obj).
 - If method was not passed, then
@@ -195,7 +194,7 @@
 - Return iterator.
 
 
-## WrappedAsyncIteratorMethod Functions ##
+### WrappedAsyncIteratorMethod Functions
 
 A WrappedAsyncIteratorMethod function is an anonymous built-in function with [[Inner]] and [[Method]]
 internal slots.
@@ -210,7 +209,7 @@ When a WrappedAsyncIteratorMethod function F is called with argument value the f
 - return Invoke(Promise, "resolve", resultValue.[[value]]).
 
 
-## CreateWrappedAsyncIteratorMethod(inner, name) ##
+### CreateWrappedAsyncIteratorMethod(inner, name)
 
 - Let method be Get(inner, name).
 - ReturnIfAbrupt(method).
@@ -221,7 +220,7 @@ When a WrappedAsyncIteratorMethod function F is called with argument value the f
 - return asyncMethod.
 
 
-## CreateWrappedAsyncIterator(inner) ##
+### CreateWrappedAsyncIterator(inner)
 
 - Let iterator be ObjectCreate(%AsyncIteratorPrototype%, [[InnerIterator]]).
 - Let method be CreateWrappedAsyncIteratorMethod(inner, "next").
@@ -238,15 +237,15 @@ When a WrappedAsyncIteratorMethod function F is called with argument value the f
     - Let status be the result of CreateDataProperty(iterator, "return", method).
 
 
-## The %AsyncIteratorPrototype% Object ##
+### The %AsyncIteratorPrototype% Object
 
 
-## %AsyncIteratorPrototype% [@@asyncIterator] () ##
+### %AsyncIteratorPrototype% \[@@asyncIterator\] ()
 
 - Return the this value.
 
 
-## Await Expressions ##
+### Await Expressions
 
     UnaryExpression :
         await UnaryExpression

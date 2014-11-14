@@ -1,4 +1,4 @@
-## IteratorNext(iterator, value) ##
+### IteratorNext(iterator, value)
 
 - If value was not passed,
     - Let result be Invoke(iterator, "next", ( )).
@@ -9,7 +9,7 @@
 - Return result.
 
 
-## IteratorStep(iterator) ##
+### IteratorStep(iterator)
 
 - Let result be IteratorNext(iterator).
 - ReturnIfAbrupt(result).
@@ -19,7 +19,7 @@
 - Return result.
 
 
-## IteratorClose(iterator, completion) ##
+### IteratorClose(iterator, completion)
 
 - Assert: Type(iterator) is Object.
 - Assert: completion is a Completion Record.
@@ -32,7 +32,7 @@
 - Return completion.
 
 
-## ForIn/OfExpressionEvaluation ##
+### ForIn/OfExpressionEvaluation
 
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - If TDZnames is not an empty List, then
@@ -64,7 +64,7 @@
 - Return keys.
 
 
-## ForIn/OfBodyEvaluation ##
+### ForIn/OfBodyEvaluation
 
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - Let V = undefined.
@@ -104,7 +104,10 @@
         - Return IteratorClose(iterator, status).
 
 
-## yield * ##
+### Yield Delegation
+
+    YieldExpression :
+        yield * AssignmentExpression
 
 - Let exprRef be the result of evaluating AssignmentExpression.
 - Let value be GetValue(exprRef).
