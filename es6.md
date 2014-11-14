@@ -34,6 +34,9 @@
 
 ### ForIn/OfExpressionEvaluation
 
+The abstract operation ForIn/OfExpressionEvaluation is called with arguments TDZnames, expr,
+iterationKind, and labelSet. The value of iterationKind is either enumerate or iterate.
+
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - If TDZnames is not an empty List, then
     - Assert: TDZnames has no duplicate entries.
@@ -65,6 +68,9 @@
 
 
 ### ForIn/OfBodyEvaluation
+
+The abstract operation ForIn/OfBodyEvaluation is called with arguments lhs, stmt, iterator,
+lhsKind, and labelSet. The value of lhsKind is either assignment, varBinding or lexicalBinding.
 
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - Let V = undefined.

@@ -39,6 +39,9 @@
 
 ### ForIn/OfExpressionEvaluation
 
+The abstract operation ForIn/OfExpressionEvaluation is called with arguments TDZnames, expr,
+iterationKind, labelSet, and isAsync. The value of iterationKind is either enumerate or iterate.
+
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - If TDZnames is not an empty List, then
     - Assert: TDZnames has no duplicate entries.
@@ -71,6 +74,9 @@
 
 
 ### ForIn/OfBodyEvaluation
+
+The abstract operation ForIn/OfBodyEvaluation is called with arguments lhs, stmt, iterator,
+lhsKind, labelSet, and isAsync. The value of lhsKind is either assignment, varBinding or lexicalBinding.
 
 - Let oldEnv be the running execution context’s LexicalEnvironment.
 - Let V = undefined.
@@ -254,3 +260,28 @@ When a WrappedAsyncIteratorMethod function F is called with argument value the f
 - Let value be GetValue(exprRef).
 - ReturnIfAbrupt(value).
 - Return GeneratorYield(CreateIterAwaitResultObject(value)).
+
+
+### Async ForOf Statements
+
+    IterationStatement :
+        for async ( LeftHandSideExpression of AssignmentExpression ) Statement
+
+- Let keyResult be the result of performing ForIn/OfExpressionEvaluation( ( ), AssignmentExpression, iterate, labelSet, true).
+- ReturnIfAbrupt(keyResult).
+- Return ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, assignment, labelSet, true).
+
+    IterationStatement :
+        for async ( var ForBinding of AssignmentExpression ) Statement
+
+- Let keyResult be the result of performing ForIn/OfExpressionEvaluation( ( ), AssignmentExpression, iterate, labelSet, true).
+- ReturnIfAbrupt(keyResult).
+- Return ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, varBinding, labelSet, true).
+
+    IterationStatement :
+        for async ( ForDeclaration of AssignmentExpression ) Statement
+
+- Let keyResult be the result of performing ForIn/OfExpressionEvaluation( BoundNames of ForDeclaration, AssignmentExpression, iterate, labelSet, true).
+- ReturnIfAbrupt(keyResult).
+- Return ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, lexicalBinding, labelSet, true).
+
