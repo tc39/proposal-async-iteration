@@ -1,5 +1,43 @@
 /*
 
+async function <Name>? <ArgumentList> <Body>
+
+=>
+
+function <Name>? <ArgumentList> {
+
+    return asyncStart(function*() <Body>.apply(this, arguments));
+}
+
+*/
+
+function asyncStart(generator) {
+
+    return new Promise((resolve, reject) => {
+
+        resume("next", void 0);
+
+        function resume(type, value) {
+
+            try {
+
+                var result = generator[type](value);
+
+                value = Promise.resolve(result.value);
+
+                if (result.done) value.then(resolve, reject);
+                else value.then(x => resume("next", x), x => resume("throw", x));
+
+            } catch (x) {
+
+                reject(x);
+            }
+        }
+    });
+}
+
+/*
+
 async function * <Name>? <ArgumentList> <Body>
 
 =>
@@ -13,7 +51,7 @@ function <Name>? <ArgumentList> {
 
 function asyncGeneratorStart(generator) {
 
-    let state = "paused",
+    let current = null,
         queue = [];
 
     return {
@@ -30,7 +68,7 @@ function asyncGeneratorStart(generator) {
 
             queue.push({ type, value, resolve, reject });
 
-            if (state === "paused")
+            if (!current)
                 next();
         });
     }
@@ -39,13 +77,12 @@ function asyncGeneratorStart(generator) {
 
         if (queue.length > 0) {
 
-            state = "running";
-            let first = queue[0];
-            resume(first.type, first.value);
+            current = queue.shift();
+            resume(current.type, current.value);
 
         } else {
 
-            state = "paused";
+            current = null;
         }
     }
 
@@ -59,7 +96,7 @@ function asyncGeneratorStart(generator) {
 
         } catch (x) {
 
-            queue.shift().reject(x);
+            current.reject(x);
             next();
             return;
         }
@@ -72,7 +109,7 @@ function asyncGeneratorStart(generator) {
 
         } else {
 
-            queue.shift().resolve(result);
+            current.resolve(result);
             next();
         }
     }
