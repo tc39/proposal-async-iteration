@@ -23,10 +23,16 @@ function asyncStart(generator) {
 
                 var result = generator[type](value);
 
-                value = Promise.resolve(result.value);
+                if (result.done) {
 
-                if (result.done) value.then(resolve, reject);
-                else value.then(x => resume("next", x), x => resume("throw", x));
+                    resolve(result.value);
+
+                } else {
+
+                    Promise.resolve(result.value).then(
+                        x => resume("next", x),
+                        x => resume("throw", x));
+                }
 
             } catch (x) {
 
@@ -94,23 +100,24 @@ function asyncGeneratorStart(generator) {
 
             result = generator[type](value);
 
+            if (IsIterAwaitResultObject(result)) {
+
+                Promise.resolve(result.value).then(
+                    x => resume("next", x),
+                    x => resume("throw", x));
+
+                return;
+
+            } else {
+
+                current.resolve(result);
+            }
+
         } catch (x) {
 
             current.reject(x);
-            next();
-            return;
         }
 
-        if (IsIterAwaitResultObject(result)) {
-
-            Promise.resolve(result.value).then(
-                x => resume("next", x),
-                x => resume("throw", x));
-
-        } else {
-
-            current.resolve(result);
-            next();
-        }
+        next();
     }
 }
