@@ -4,9 +4,9 @@ async function <Name>? <ArgumentList> <Body>
 
 =>
 
-function <Name>? <ArgumentList> {
+function <Name>? () {
 
-    return asyncStart(function*() <Body>.apply(this, arguments));
+    return asyncStart(function* <ArgumentList> <Body>.apply(this, arguments));
 }
 
 */
@@ -48,9 +48,9 @@ async function * <Name>? <ArgumentList> <Body>
 
 =>
 
-function <Name>? <ArgumentList> {
+function <Name>? () {
 
-    return asyncGeneratorStart(function*() <Body>.apply(this, arguments));
+    return asyncGeneratorStart(function* <ArgumentList> <Body>.apply(this, arguments));
 }
 
 */
