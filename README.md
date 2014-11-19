@@ -35,6 +35,10 @@ In order to provide a generic data access protocol for asynchronous data sources
 introduce the **AsyncIterator** interface, an asynchronous iteration statement, and
 async generator functions.
 
+A prototype of this proposal is available in the [esdown online REPL](http://esparse.org/esdown/repl/).
+
+[ES Specification Changes](es7.md)
+
 
 ### The AsyncIterator Interface
 
