@@ -35,8 +35,6 @@ async generator functions.
 
 A prototype of this proposal is available in the [esdown online REPL](http://esparse.org/esdown/repl/).
 
-[ES Specification Changes](es7.md)
-
 
 ### The AsyncIterator Interface
 
@@ -228,3 +226,5 @@ function asyncGeneratorStart(generator) {
     }
 }
 ```
+
+[Detailed ES Specification Changes](es7.md)
