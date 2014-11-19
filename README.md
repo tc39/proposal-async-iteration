@@ -10,14 +10,12 @@ convenient way to write iterator-based data sources using resumable functions.
 
 ```
 interface Iterator {
-
     IteratorResult next(value);
     [optional] IteratorResult throw(value);
     [optional] IteratorResult return(value);
 }
 
 interface IteratorResult {
-
     any value;
     bool done;
 }
@@ -51,7 +49,6 @@ method returns.*
 
 ```
 interface AsyncIterator {
-
     Promise<IteratorResult> next(value);
     [optional] Promise<IteratorResult> throw(value);
     [optional] Promise<IteratorResult> return(value);
