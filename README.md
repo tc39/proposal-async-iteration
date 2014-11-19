@@ -5,15 +5,15 @@
 
 The iterator interface (introduced in ECMAScript version 6) is a sequential data access
 protocol which enables the development of generic and composable data consumers and
-transformers.  Generator functions (also introduced in ECMAScript version 6) provide a
+transformers.  Generator functions (also introduced in ECMAScript 6) provide a
 convenient way to write iterator-based data sources using resumable functions.
 
 ```
 interface Iterator {
 
     IteratorResult next(value);
-    optional IteratorResult throw(value);
-    optional IteratorResult return(value);
+    [optional] IteratorResult throw(value);
+    [optional] IteratorResult return(value);
 }
 
 interface IteratorResult {
@@ -48,9 +48,9 @@ method returns.*
 ```
 interface AsyncIterator {
 
-    next(value) : Promise<IteratorResult>
-    optional throw(value) : Promise<IteratorResult>
-    optional return(value) : Promise<IteratorResult>
+    Promise<IteratorResult> next(value);
+    [optional] Promise<IteratorResult> throw(value);
+    [optional] Promise<IteratorResult> return(value);
 }
 ```
 
