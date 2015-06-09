@@ -109,7 +109,6 @@ then converted to an async iterator.
 Each time we access the next value in the sequence, we implicitly **await** the promise
 returned from the iterator method.
 
-
 ### Async Generator Functions
 
 Async generator functions are similar to generator functions, with the following
@@ -118,6 +117,7 @@ differences:
 - When called, async generator functions return an object implementing the
   **AsyncIterator** interface.
 - Await expressions and async for-of statements are allowed.
+- Yielded promises are implicitly unwrapped before they are packed into an IterationResult.
 - The behavior of `yield *` is modified to support delegation to async iterators.
 
 For example:
@@ -130,7 +130,7 @@ async function *readLines(path) {
     try {
 
         while (!file.EOF)
-            yield await file.readLine();
+            yield file.readLine();
 
     } finally {
 
