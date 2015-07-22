@@ -139,12 +139,6 @@ async function *readLines(path) {
 }
 ```
 
-To implement `await` within async generator functions, we introduce the
-**IterAwaitResult** object. An **IterAwaitResult** is an iterator result object which is
-branded to indicate that it is the result of an await expression and not a yield
-expression.  The async generator "runner" uses this brand to tell whether it should
-resolve the result value and continue or return the result value to the generator client.
-
 ### Async Generator Function Rewrite
 
 ```
@@ -157,6 +151,14 @@ function <Name>? <ArgumentList> {
     return asyncGeneratorStart(function*() <Body>.apply(this, arguments));
 }
 ```
+
+To desugar `await` within async generator functions, we introduce the **IterAwaitResult**
+object. An **IterAwaitResult** is an iterator result object which is branded to indicate
+that it is the result of an await expression and not a yield expression.  The async
+generator "runner" uses this brand to tell whether it should resolve the result value and
+continue or return the result value to the generator client.
+
+Such an object would not be necessary in the actual specification.
 
 ```js
 function asyncGeneratorStart(generator) {
@@ -204,6 +206,8 @@ function asyncGeneratorStart(generator) {
 
             result = generator[type](value);
 
+            // For this desugaring, await results are packed into an await result
+            // object.  Such an wrapper would not exist in the actual specification.
             if (IsIterAwaitResultObject(result)) {
 
                 Promise.resolve(result.value).then(
@@ -227,4 +231,3 @@ function asyncGeneratorStart(generator) {
 }
 ```
 
-[Detailed ES Specification Changes](es7.md)
