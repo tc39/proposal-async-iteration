@@ -102,9 +102,7 @@ Async for-of statements are only allowed within async functions and async genera
 functions.
 
 During execution, an async iterator is created from the data source using the
-**Symbol.asyncIterator** method.  If the data source object does not have such a method,
-but does have a **Symbol.iterator** method, then a synchronous iterator is created and
-then converted to an async iterator.
+**Symbol.asyncIterator** method.
 
 Each time we access the next value in the sequence, we implicitly **await** the promise
 returned from the iterator method.
