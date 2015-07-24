@@ -81,19 +81,19 @@ We introduce a variation of the `for-of` iteration statement which iterates over
 
 ```
 IterationStatement :
-    for async ( LeftHandSideExpression of AssignmentExpression ) Statement
+    for await ( LeftHandSideExpression of AssignmentExpression ) Statement
 
 IterationStatement :
-    for async ( var ForBinding of AssignmentExpression ) Statement
+    for await ( var ForBinding of AssignmentExpression ) Statement
 
 IterationStatement :
-    for async ( ForDeclaration of AssignmentExpression ) Statement
+    for await ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
 For example:
 
 ```js
-for async (let line of readLines(filePath)) {
+for await (let line of readLines(filePath)) {
     print(line);
 }
 ```
