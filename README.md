@@ -8,16 +8,16 @@ protocol which enables the development of generic and composable data consumers 
 transformers.  Generator functions (also introduced in ECMAScript 6) provide a
 convenient way to write iterator-based data sources using resumable functions.
 
-```
+```js
 interface Iterator {
-    IteratorResult next(value);
-    [optional] IteratorResult throw(value);
-    [optional] IteratorResult return(value);
+    next(value) : IteratorResult;
+    [optional] throw(value) : IteratorResult;
+    [optional] return(value) : IteratorResult;
 }
 
 interface IteratorResult {
-    any value;
-    bool done;
+    value : any;
+    done : bool;
 }
 ```
 
@@ -45,11 +45,11 @@ each of the iterator methods returns a promise for an iterator result pair.
 and the "done" state of the iterator are potentially unknown at the time the iterator
 method returns.*
 
-```
+```js
 interface AsyncIterator {
-    Promise<IteratorResult> next(value);
-    [optional] Promise<IteratorResult> throw(value);
-    [optional] Promise<IteratorResult> return(value);
+    next(value) : Promise<IteratorResult>;
+    [optional] throw(value) : Promise<IteratorResult>;
+    [optional] return(value) : Promise<IteratorResult>;
 }
 ```
 
@@ -62,7 +62,7 @@ asyncIterator.next().then(value => console.log(value));
 Furthermore, we introduce a new symbol used for obtaining an async iterator from a given
 object.
 
-```
+```js
 interface AsyncIterable {
     [Symbol.asyncIterator]() : AsyncIterator
 }
