@@ -1,49 +1,5 @@
 /*
 
-async function <Name>? <ArgumentList> <Body>
-
-=>
-
-function <Name>? <ArgumentList> {
-
-    return asyncStart(function*() <Body>.apply(this, arguments));
-}
-
-*/
-
-function asyncStart(generator) {
-
-    return new Promise((resolve, reject) => {
-
-        resume("next", void 0);
-
-        function resume(type, value) {
-
-            try {
-
-                var result = generator[type](value);
-
-                if (result.done) {
-
-                    resolve(result.value);
-
-                } else {
-
-                    Promise.resolve(result.value).then(
-                        x => resume("next", x),
-                        x => resume("throw", x));
-                }
-
-            } catch (x) {
-
-                reject(x);
-            }
-        }
-    });
-}
-
-/*
-
 async function * <Name>? <ArgumentList> <Body>
 
 =>
@@ -73,23 +29,40 @@ function asyncGeneratorStart(generator) {
         return new Promise((resolve, reject) => {
 
             queue.push({ type, value, resolve, reject });
-
-            if (!current)
-                next();
+            next();
         });
     }
 
     function next() {
 
-        if (queue.length > 0) {
+        if (current || queue.length === 0)
+            return;
 
-            current = queue.shift();
-            resume(current.type, current.value);
+        current = queue.shift();
+        resume(current.type, current.value);
+    }
 
-        } else {
+    function settle(type, value) {
 
-            current = null;
+        let capability = current;
+        current = null;
+
+        switch (type) {
+
+             case "throw":
+                capability.reject(value);
+                break;
+
+            case "return":
+                capability.resolve({ value, done: true });
+                break;
+
+            default:
+                capability.resolve({ value, done: false });
+                break;
         }
+
+        next();
     }
 
     function resume(type, value) {
@@ -106,18 +79,16 @@ function asyncGeneratorStart(generator) {
                     x => resume("next", x),
                     x => resume("throw", x));
 
-                return;
-
             } else {
 
-                current.resolve(result);
+                Promise.resolve(result.value).then(
+                    x => settle(result.done ? "return" : "normal", x),
+                    x => settle("throw", x));
             }
 
         } catch (x) {
 
-            current.reject(x);
+            settle("throw", x);
         }
-
-        next();
     }
 }
