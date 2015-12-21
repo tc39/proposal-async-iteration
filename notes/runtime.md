@@ -9,7 +9,7 @@ With parameters _functionObject_ and List _argumentsList_.
 1. Perform ! AsyncGeneratorStart(_generator_, _FunctionBody_).
 1. Return Completion{[[type]]: ~return~, [[value]]: _generator_, [[target]]: ~empty~}.
 
-### GetGeneratorContextKind
+#### GetGeneratorContextKind
 
 1. Let _genContext_ be the running execution context.
 1. Let _generator_ be the Generator component of _genContext_.
