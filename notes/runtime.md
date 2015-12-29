@@ -14,23 +14,17 @@ With parameters _functionObject_ and List _argumentsList_.
 1. Let _genContext_ be the running execution context.
 1. Let _generator_ be the Generator component of _genContext_.
 1. If _generator_ has an [[AsyncGeneratorState]] internal slot, return ~async~.
-1. Return ~normal~.
+1. Else, return ~normal~.
 
 #### GetAsyncIterator ( _obj_ )
 
 The abstract operation GetAsyncIterator with argument _obj_ performs the following steps:
 
-1. ReturnIfAbrupt(_obj_).
 1. Let _method_ be ? GetMethod(_obj_, @@asyncIterator).
-1. If _method_ is *undefined*, let *method* be ? ToAsyncIterator(_obj_).
+1. If _method_ is *undefined*, let *method* be ? GetMethod(_obj_, @@iterator).
 1. Let _iterator_ be ? Call(_method_, _obj_).
 1. If Type(_iterator_) is not Object, throw a *TypeError* exception.
 1. Return _iterator_.
-
-#### ToAsyncIterator ( _obj_ )
-
-TODO.  How should we convert sync iterators into async iterators?  We should wrap the iterator
-in such a way that throws and returns are forwarded through.
 
 #### IteratorClose( _iterator_, _completion_, _iteratorKind_ )
 
@@ -172,6 +166,17 @@ The abstract operation AsyncGeneratorYield with argument _iterationResult_ perfo
 1. Return *undefined*.
 1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.
 
+#### AsyncGeneratorAwaitResult ( _asyncResult_ )
+
+1. Let _result_ be ? AsyncFunctionAwait(_asyncResult_).
+1. Let _value_ be ? IteratorValue(_result_).
+1. If Type(_value_) is Object, then
+    1. If ? IsCallable(? Get(_value_, `"then"`)) is *true*, then
+        1. Let _done_ be ? IteratorComplete(_result_).
+        1. Let _value_ be ? AsyncFunctionAwait(_value_).
+        1. Let _result_ be CreateIterResultObject(_value_, _done_).
+1. Return _result_.
+
 ```
 YieldExpression : yield
 ```
@@ -200,14 +205,14 @@ yield * AssignmentExpression
 1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
 1. Let _value_ be ? GetValue(_exprRef_).
 1. Let _iteratorKind_ be ! GetGeneratorContextKind().
-1. If _iteratorKind_ is ~async~, let _iterator_ be ? GetAsyncIterator(_iterable_).
-1. Else, let _iterator_ be ? GetIterator(_iterable_).
+1. If _iteratorKind_ is ~async~, let _iterator_ be ? GetAsyncIterator(_value_).
+1. Else, let _iterator_ be ? GetIterator(_value_).
 1. Let _received_ be NormalCompletion(*undefined*).
 1. Repeat
     1. If _received_.[[type]] is ~normal~, then
         1. Let _innerResult_ be ? IteratorNext(_iterator_, _received_.[[value]]).
         1. If _iteratorKind_ is ~async~, then
-            1. Let _innerResult_ be ? AsyncFunctionAwait(_innerResult_).
+            1. Let _innerResult_ be ? AsyncGeneratorAwaitResult(_innerResult_).
         1. Let _done_ be ? IteratorComplete(_innerResult_).
         1. If _done_ is *true*, then
             1. Return IteratorValue(_innerResult_).
@@ -218,7 +223,7 @@ yield * AssignmentExpression
         1. If _throw_ is not *undefined*, then
             1. Let _innerResult_ be ? Call(_throw_, _iterator_, « _received_.[[value]] »).
             1. If _iteratorKind_ is ~async~, then
-                1. Let _innerResult_ be ? AsyncFunctionAwait(_innerResult_).
+                1. Let _innerResult_ be ? AsyncGeneratorAwaitResult(_innerResult_).
             1. NOTE: Exceptions from the inner iterator `throw` method are propagated. Normal completions from an inner `throw` method are processed similarly to an inner `next`.
             1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
             1. Let _done_ be ? IteratorComplete(_innerResult_).
@@ -238,7 +243,7 @@ yield * AssignmentExpression
         1. If _return_ is *undefined*, return Completion(_received_).
         1. Let _innerReturnResult_ be ? Call(_return_, _iterator_, « _received_.[[value]] »).
         1. If _iteratorKind_ is ~async~, then
-            1. Let _innerResult_ be ? AsyncFunctionAwait(_innerResult_).
+            1. Let _innerResult_ be ? AsyncGeneratorAwaitResult(_innerResult_).
         1. If Type(_innerReturnResult_) is not Object, throw a *TypeError* exception.
         1. Let _done_ be ? IteratorComplete(_innerReturnResult_).
         1. If _done_ is *true*, then
@@ -313,11 +318,11 @@ IterationStatement :
 ```
 
 1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(BoundNames of |ForDeclaration|, |AssignmentExpression|, ~async-iterate~).
-1. Return ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_, *true*).
+1. Return ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_, ~async~).
 
 #### Runtime Semantics: ForIn/OfHeadEvaluation ( _TDZnames_, _expr_, _iterationKind_ ) #
 
-The abstract operation ForIn/OfHeadEvaluation is called with arguments _TDZnames_, _expr_, _iteratorKind_, and _async_. The value of _iterationKind_ is ~enumerate~, ~iterate~, or ~async-iterate~.
+The abstract operation ForIn/OfHeadEvaluation is called with arguments _TDZnames_, _expr_, _iterationKind_, and _async_. The value of _iterationKind_ is ~enumerate~, ~iterate~, or ~async-iterate~.
 
 1. Let _oldEnv_ be the running execution context's LexicalEnvironment.
 1. If _TDZnames_ is not an empty List, then
@@ -339,7 +344,7 @@ The abstract operation ForIn/OfHeadEvaluation is called with arguments _TDZnames
 1. Else, if _iterationKind_ is ~async-iterate~, then
     1. Return ? GetAsyncIterator(_exprValue_).
 1. Else,
-    1. Assert: _iteratorKind_ is ~iterate~.
+    1. Assert: _iterationKind_ is ~iterate~.
     1. Return ? GetIterator(_exprValue_).
 
 #### Runtime Semantics: ForIn/OfBodyEvaluation ( _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_, _iteratorKind_ )
@@ -356,7 +361,7 @@ The abstract operation ForIn/OfBodyEvaluation is called with arguments _lhs_, _s
 1. Repeat
     1. Let _nextResult_ be ? IteratorNext(_iterator_).
     1. If _iteratorKind_ is ~async~, then
-        1. Let _nextResult_ be ? AsyncFunctionAwait(_nextResult_).
+        1. Let _nextResult_ be ? AsyncGeneratorAwaitResult(_nextResult_).
     1. Let _done_ be ? IteratorComplete(_iterator_).
     1. If _done_ is *true*, return NormalCompletion(_V_).
     1. Let _nextValue_ be ? IteratorValue(_nextResult_).
