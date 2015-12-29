@@ -57,7 +57,7 @@
       1. If _received_.[[type]] is ~normal~, then
         1. Let _innerResult_ be ? IteratorNext(_iterator_, _received_.[[value]]).
         1. If _iteratorKind_ is ~async~, then
-          1. Let _innerResult_ be ? AsyncGeneratorAwaitResult(_innerResult_).
+          1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
         1. Let _done_ be ? IteratorComplete(_innerResult_).
         1. If _done_ is *true*, then
           1. Return IteratorValue(_innerResult_).
@@ -68,7 +68,7 @@
         1. If _throw_ is not *undefined*, then
           1. Let _innerResult_ be ? Call(_throw_, _iterator_, « _received_.[[value]] »).
           1. If _iteratorKind_ is ~async~, then
-            1. Let _innerResult_ be ? AsyncGeneratorAwaitResult(_innerResult_).
+            1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
           1. NOTE: Exceptions from the inner iterator `throw` method are propagated. Normal completions from an inner `throw` method are processed similarly to an inner `next`.
           1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
           1. Let _done_ be ? IteratorComplete(_innerResult_).
@@ -88,7 +88,7 @@
         1. If _return_ is *undefined*, return Completion(_received_).
         1. Let _innerReturnResult_ be ? Call(_return_, _iterator_, « _received_.[[value]] »).
         1. If _iteratorKind_ is ~async~, then
-          1. Let _innerResult_ be ? AsyncGeneratorAwaitResult(_innerResult_).
+          1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
         1. If Type(_innerReturnResult_) is not Object, throw a *TypeError* exception.
         1. Let _done_ be ? IteratorComplete(_innerReturnResult_).
         1. If _done_ is *true*, then
@@ -153,7 +153,7 @@
     1. Repeat
       1. Let _nextResult_ be ? IteratorNext(_iterator_).
       1. If _iteratorKind_ is ~async~, then
-        1. Let _nextResult_ be ? AsyncGeneratorAwaitResult(_nextResult_).
+        1. Let _nextResult_ be ? AwaitIterResultObject(_nextResult_).
       1. Let _done_ be ? IteratorComplete(_iterator_).
       1. If _done_ is *true*, return NormalCompletion(_V_).
       1. Let _nextValue_ be ? IteratorValue(_nextResult_).

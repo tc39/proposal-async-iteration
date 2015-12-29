@@ -6,37 +6,19 @@
     <table>
       <tbody>
       <tr>
-        <th>
-          Field Name
-        </th>
-        <th>
-          Value
-        </th>
-        <th>
-          Meaning
-        </th>
+        <th>Field Name</th>
+        <th>Value</th>
+        <th>Meaning</th>
       </tr>
       <tr>
-        <td>
-          [[Completion]]
-        </td>
-        <td>
-          A Completion record
-        </td>
-        <td>
-          The completion which should be used to resume the async generator.
-        </td>
+        <td>[[Completion]]</td>
+        <td>A Completion record</td>
+        <td>The completion which should be used to resume the async generator.</td>
       </tr>
       <tr>
-        <td>
-          [[Capability]]
-        </td>
-        <td>
-          A PromiseCapability record
-        </td>
-        <td>
-          The capabilities of the promise for which this record provides a reaction handler.
-        </td>
+        <td>[[Capability]]</td>
+        <td>A PromiseCapability record</td>
+        <td>The promise capabilities associated with this request.</td>
       </tr>
       </tbody>
     </table>
@@ -47,6 +29,7 @@
   <h1>GetGeneratorContextKind</h1>
   <emu-alg>
     1. Let _genContext_ be the running execution context.
+    1. Assert: _genContext_ has a Generator component.
     1. Let _generator_ be the Generator component of _genContext_.
     1. If _generator_ has an [[AsyncGeneratorState]] internal slot, return ~async~.
     1. Else, return ~normal~.
@@ -54,40 +37,7 @@
 </emu-clause>
 
 <emu-clause>
-  <h1>GetAsyncIterator ( _obj_ )</h1>
-  <p>The abstract operation GetAsyncIterator with argument _obj_ performs the following steps:</p>
-  <emu-alg>
-    1. Let _method_ be ? GetMethod(_obj_, @@asyncIterator).
-    1. If _method_ is *undefined*, let *method* be ? GetMethod(_obj_, @@iterator).
-    1. Let _iterator_ be ? Call(_method_, _obj_).
-    1. If Type(_iterator_) is not Object, throw a *TypeError* exception.
-    1. Return _iterator_.
-  </emu-alg>
-</emu-clause>
-
-<emu-clause>
-  <h1>IteratorClose( _iterator_, _completion_, _iteratorKind_ )</h1>
-  <p>The abstract operation IteratorClose with arguments _iterator_ and _completion_ and optional argument _iteratorKind_ is used to notify an iterator that it should perform any actions it would normally perform when it has reached its completed state.  The value of _iteratorKind_ is either ~normal~ or ~async~.</p>
-  <emu-alg>
-    1. Assert: Type(_iterator_) is Object.
-    1. Assert: _completion_ is a Completion Record.
-    1. If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.
-    1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
-    1. If _return_ is *undefined*, then
-      1. Return Completion(_completion_).
-    1. Let _innerResult_ be Call(_return_, _iterator_, « »).
-    1. If _innerResult_ is not an abrupt completion and _iteratorKind_ is ~async~, then
-      1. Let _innerResult_ be AsyncFunctionAwait(_innerResult_).
-    1. If _completion_.[[type]] is ~throw~, return Completion(_completion_).
-    1. If _innerResult_.[[type]] is ~throw~, return Completion(_innerResult_).
-    1. If Type(_innerResult_.[[value]]) is not Object, throw a *TypeError* exception.
-    1. Return Completion(_completion_).
-  </emu-alg>
-</emu-clause>
-
-<emu-clause>
   <h1>AsyncGeneratorStart ( _generator_, _generatorBody_ )</h1>
-  <p>The abstract operation GeneratorStart with arguments _generator_ and _generatorBody_ performs the following steps:</p>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
     1. Assert: The value of the [[AsyncGeneratorState]] internal slot of _generator_ is *undefined*.
@@ -182,8 +132,9 @@
 <emu-clause>
   <h1>AsyncGeneratorEnqueue ( _generator_, _completion_ )</h1>
   <emu-alg>
-    1. Assert: _generator_ is an AsyncGenerator instance.
     1. Assert: _completion_ is a Completion Record.
+    1. If Type(_generator_) is not Object, throw a *TypeError* exception.
+    1. If _generator_ does not have an [[AsyncGeneratorState]] internal slot, throw a *TypeError* exception.
     1. Let _queue_ be the value of _generator_'s [[AsyncGeneratorQueue]] internal slot.
     1. Let _capability_ be ! NewPromiseCapability(%Promise%).
     1. Let _request_ be AsyncGeneratorRequest{[[Completion]]: _completion_, [[Capability]]: _capability_}.
@@ -210,19 +161,5 @@
     1. Perform ! AsyncGeneratorFulfill(_generator_, _iterationResult_).
     1. Return *undefined*.
     1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.
-  </emu-alg>
-</emu-clause>
-
-<emu-clause>
-  <h1>AsyncGeneratorAwaitResult ( _asyncResult_ )</h1>
-  <emu-alg>
-    1. Let _result_ be ? AsyncFunctionAwait(_asyncResult_).
-    1. Let _value_ be ? IteratorValue(_result_).
-    1. If Type(_value_) is Object, then
-      1. If ? IsCallable(? Get(_value_, `"then"`)) is *true*, then
-        1. Let _done_ be ? IteratorComplete(_result_).
-        1. Let _value_ be ? AsyncFunctionAwait(_value_).
-        1. Let _result_ be CreateIterResultObject(_value_, _done_).
-    1. Return _result_.
   </emu-alg>
 </emu-clause>

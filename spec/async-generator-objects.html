@@ -57,38 +57,27 @@
     <table>
       <tbody>
       <tr>
-        <th>
-          Internal Slot
-        </th>
-        <th>
-          Description
-        </th>
+        <th>Internal Slot</th>
+        <th>Description</th>
       </tr>
       <tr>
-        <td>
-          [[AsyncGeneratorState]]
-        </td>
-        <td>
-          The current execution state of the async generator. The possible values are: *undefined*, `"suspendedStart"`, `"suspendedYield"`, `"executing"`, and `"completed"`.
-        </td>
+        <td>[[AsyncGeneratorState]]</td>
+        <td>The current execution state of the async generator. The possible values are: *undefined*, `"suspendedStart"`, `"suspendedYield"`, `"executing"`, and `"completed"`.</td>
       </tr>
       <tr>
-        <td>
-          [[AsyncGeneratorContext]]
-        </td>
-        <td>
-          The execution context that is used when executing the code of this async generator.
-        </td>
+        <td>[[AsyncGeneratorContext]]</td>
+        <td>The execution context that is used when executing the code of this async generator.</td>
       </tr>
       <tr>
-        <td>
-          [[AsyncGeneratorQueue]]
-        </td>
-        <td>
-          A List of AsyncGeneratorRequest records which represent requests to resume the async generator.
-        </td>
+        <td>[[AsyncGeneratorQueue]]</td>
+        <td>A List of AsyncGeneratorRequest records which represent requests to resume the async generator.</td>
       </tr>
       </tbody>
     </table>
   </emu-table>
+</emu-clause>
+
+<emu-clause>
+  <h1>AsyncGenerator Abstract Operations</h1>
+  <emu-import href="./abstract-operations.html"></emu-import>
 </emu-clause>
