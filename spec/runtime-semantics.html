@@ -44,7 +44,7 @@
 <emu-clause>
   <h1>Runtime Semantics: Evaluation</h1>
   <emu-grammar>
-    `yield` `*` AssignmentExpression
+    YieldExpression : `yield` `*` AssignmentExpression
   </emu-grammar>
   <emu-alg>
     1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
@@ -102,7 +102,7 @@
 <emu-clause>
   <h1>Runtime Semantics: LabelledEvaluation</h1>
   <emu-grammar>
-    `for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+    IterationStatement : `for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement
   </emu-grammar>
   <emu-alg>
     1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(BoundNames of |ForDeclaration|, |AssignmentExpression|, ~async-iterate~).
