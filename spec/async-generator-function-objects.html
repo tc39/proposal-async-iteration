@@ -1,11 +1,11 @@
 <p>AsyncGenerator Function objects are functions that are usually created by evaluating |AsyncGeneratorDeclaration|, |AsyncGeneratorExpression|, and |AsyncGeneratorMethod| syntactic productions. They may also be created by calling the %AsyncGeneratorFunction% intrinsic.</p>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorfunction-constructor">
   <h1>The AsyncGeneratorFunction Constructor</h1>
   <p>The `AsyncGeneratorFunction` constructor is the %AsyncGeneratorFunction% intrinsic. When `AsyncGeneratorFunction` is called as a function rather than as a constructor, it creates and initializes a new AsyncGeneratorFunction object. Thus the function call `AsyncGeneratorFunction (...)` is equivalent to the object creation expression `new AsyncGeneratorFunction (...)` with the same arguments.</p>
   <p>`AsyncGeneratorFunction` is designed to be subclassable. It may be used as the value of an `extends` clause of a class definition. Subclass constructors that intend to inherit the specified `AsyncGeneratorFunction` behaviour must include a `super` call to the `AsyncGeneratorFunction` constructor to create and initialize subclass instances with the internal slots necessary for built-in AsyncGeneratorFunction behaviour. All ECMAScript syntactic forms for defining async generator function objects create direct instances of `AsyncGeneratorFunction`. There is no syntactic means to create instances of `AsyncGeneratorFunction` subclasses.</p>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction">
     <h1>AsyncGeneratorFunction ( _p1_, _p2_, ..., _pn_, _body_ )</h1>
     <p>The last argument specifies the body (executable code) of an async generator function; any preceding arguments specify formal parameters.</p>
     <p>When the `AsyncGeneratorFunction` function is called with some arguments _p1_, _p2_, &hellip; , _pn_, _body_ (where _n_ might be 0, that is, there are no "_p_" arguments, and where _body_ might also not be provided), the following steps are taken:</p>
@@ -20,66 +20,66 @@
   </emu-clause>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-properties-of-asyncgeneratorfunction">
   <h1>Properties of the AsyncGeneratorFunction Constructor</h1>
   <p>The `AsyncGeneratorFunction` constructor is a standard built-in function object that inherits from the `Function` constructor. The value of the [[Prototype]] internal slot of the `AsyncGeneratorFunction` constructor is the intrinsic object %Function%.</p>
   <p>The value of the [[Extensible]] internal slot of the AsyncGeneratorFunction constructor is *true*.</p>
   <p>The value of the `name` property of the AsyncGeneratorFunction is `"AsyncGeneratorFunction"`.</p>
   <p>The `AsyncGeneratorFunction` constructor has the following properties:</p>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-length">
     <h1>AsyncGeneratorFunction.length</h1>
     <p>This is a data property with a value of 1. This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-prototype">
     <h1>AsyncGeneratorFunction.prototype</h1>
     <p>The initial value of `AsyncGeneratorFunction.prototype` is the intrinsic object %AsyncGenerator%.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *false* }.</p>
   </emu-clause>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-properties-of-asyncgeneratorfunction-prototype">
   <h1>Properties of the AsyncGeneratorFunction Prototype Object</h1>
   <p>The AsyncGeneratorFunction prototype object is an ordinary object. It is not a function object and does not have an [[ECMAScriptCode]] internal slot or any other of the internal slots listed in (TODO: table-27 link) or (TODO: table link to AsyncGenerator internal slots). In addition to being the value of the prototype property of the %AsyncGeneratorFunction% intrinsic, it is the %AsyncGenerator% intrinsic.</p>
   <p>The value of the [[Prototype]] internal slot of the AsyncGeneratorFunction prototype object is the %FunctionPrototype% intrinsic object. The initial value of the [[Extensible]] internal slot of the AsyncGeneratorFunction prototype object is *true*.</p>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-prototype-constructor">
     <h1>AsyncGeneratorFunction.prototype.constructor</h1>
     <p>The initial value of `AsyncGeneratorFunction.prototype.constructor` is the intrinsic object %AsyncGeneratorFunction%.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-prototype-prototype">
     <h1>AsyncGeneratorFunction.prototype.prototype</h1>
     <p>The value of `AsyncGeneratorFunction.prototype.prototype` is the %AsyncGeneratorPrototype% intrinsic object.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-prototype-tostringtag">
     <h1>AsyncGeneratorFunction.prototype [ @@toStringTag ]</h1>
     <p>The initial value of the @@toStringTag property is the String value `"AsyncGeneratorFunction"`.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
   </emu-clause>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorfunction-instances">
   <h1>AsyncGeneratorFunction Instances</h1>
   <p>Every AsyncGeneratorFunction instance is an ECMAScript function object and has the internal slots listed in (TODO: table-27 link). The value of the [[FunctionKind]] internal slot for all such instances is `"generator"`.</p>
   <p>Each AsyncGeneratorFunction instance has the following own properties:</p>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-instance-length">
     <h1>length</h1>
     <p>The value of the `length` property is an integer that indicates the typical number of arguments expected by the AsyncGeneratorFunction. However, the language permits the function to be invoked with some other number of arguments. The behaviour of an AsyncGeneratorFunction when invoked on a number of arguments other than the number specified by its `length` property depends on the function.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-instance-name">
     <h1>name</h1>
     <p>The specification for the `name` property of Function instances given in <emu-xref href="#sec-function-instances-name"></emu-xref> also applies to AsyncGeneratorFunction instances.</p>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgeneratorfunction-instance-prototype">
     <h1>prototype</h1>
     <p>Whenever an AsyncGeneratorFunction instance is created another ordinary object is also created and is the initial value of the async generator function's `prototype` property. The value of the prototype property is used to initialize the [[Prototype]] internal slot of a newly created AsyncGenerator object when the generator function object is invoked using [[Call]].</p>
     <p>This property has the attributes { [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false* }.</p>

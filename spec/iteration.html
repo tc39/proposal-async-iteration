@@ -1,7 +1,7 @@
-<emu-clause>
+<emu-clause id="sec-common-iteration-interfaces">
   <h1>Common Iteration Interfaces</h1>
 
-  <emu-clause>
+  <emu-clause id="sec-asynciterable-interface">
     <h1>The <i>AsyncIterable</i> Interface</h1>
     <p>The <i>AsyncIterable</i> interface includes the properties described in <emu-xref href="#table-async-iterable"></emu-xref>:</p>
     <emu-table id="table-async-iterable" caption="<i>AsyncIterable</i> Interface Required Properties">
@@ -22,7 +22,7 @@
     </emu-table>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asynciterator-interface">
     <h1>The <i>AsyncIterator</i> Interface</h1>
     <p>An object that implements the <i>AsyncIterator</i> interface must include the properties in <emu-xref href="#table-async-iterator-required"></emu-xref>. Such objects may also implement the properties in <emu-xref href="#table-async-iterator-optional"></emu-xref>.</p>
     <emu-table id="table-async-iterator-required" caption="<i>AsyncIterator</i> Interface Required Properties">
@@ -75,14 +75,14 @@
 
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asynciteratorprototype">
   <h1>The %AsyncIteratorPrototype% Object</h1>
   <p>The value of the [[Prototype]] internal slot of the %AsyncIteratorPrototype% object is the intrinsic object %ObjectPrototype% (<emu-xref href="#sec-properties-of-the-object-prototype-object"></emu-xref>). The %AsyncIteratorPrototype% object is an ordinary object. The initial value of the [[Extensible]] internal slot of the %AsyncIteratorPrototype% object is *true*.</p>
   <emu-note>
     <p>All objects defined in this specification that implement the AsyncIterator interface also inherit from %AsyncIteratorPrototype%. ECMAScript code may also define objects that inherit from %AsyncIteratorPrototype%.The %AsyncIteratorPrototype% object provides a place where additional methods that are applicable to all async iterator objects may be added.</p>
   </emu-note>
 
-  <emu-clause>
+  <emu-clause id="sec-asynciteratorprototype-asynciterator">
     <h1>%AsyncIteratorPrototype% [ @@asyncIterator ] ( )</h1>
     <p>The following steps are taken:</p>
     <emu-alg>

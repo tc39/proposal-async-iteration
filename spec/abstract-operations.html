@@ -1,4 +1,4 @@
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorfunctioncreate" aoid="AsyncGeneratorFunctionCreate">
   <h1>AsyncGeneratorFunctionCreate (_kind_, _ParameterList_, _Body_, _Scope_, _Strict_)</h1>
   <p>The abstract operation AsyncGeneratorFunctionCreate requires the arguments: _kind_ which is one of (~Normal~, ~Method~), a parameter list production specified by _ParameterList_, a body production specified by _Body_, a Lexical Environment specified by _Scope_, and a Boolean flag _Strict_. AsyncGeneratorFunctionCreate performs the following steps:</p>
   <emu-alg>
@@ -11,7 +11,7 @@
   </emu-note>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec=asyncgeneratorrequest-records">
   <h1>AsyncGeneratorRequest Records</h1>
   <p>The AsyncGeneratorRequest is a Record value used to store information about how an async generator should be resumed and contains capabilities for fulfilling or rejecting the corresponding promise.</p>
   <p>They have the following fields:</p>
@@ -38,7 +38,7 @@
   </emu-table>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-getgeneratorcontextkind" aoid="GetGeneratorContextKind">
   <h1>GetGeneratorContextKind</h1>
   <emu-alg>
     1. Let _genContext_ be the running execution context.
@@ -49,7 +49,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorstart" aoid="AsyncGeneratorStart">
   <h1>AsyncGeneratorStart ( _generator_, _generatorBody_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
@@ -79,7 +79,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorfulfill" aoid="AsyncGeneratorFulfill">
   <h1>AsyncGeneratorFulfill ( _generator_, _iterationResult_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
@@ -93,7 +93,7 @@
   </emu-clause>
 </emu-alg>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorreject" aoid="AsyncGeneratorReject">
   <h1>AsyncGeneratorReject ( _generator_, _exception_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
@@ -106,7 +106,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorresumenext" aoid="AsyncGeneratorResumeNext">
   <h1>AsyncGeneratorResumeNext ( _generator_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
@@ -142,7 +142,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratorenqueue" aoid="AsyncGeneratorEnqueue">
   <h1>AsyncGeneratorEnqueue ( _generator_, _completion_ )</h1>
   <emu-alg>
     1. Assert: _completion_ is a Completion Record.
@@ -159,7 +159,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgeneratoryield" aoid="AsyncGeneratorYield">
   <h1>AsyncGeneratorYield ( _iterationResult_ )</h1>
   <emu-alg>
     1. Assert: _iterationResult_ is an Object that implements the IteratorResult interface.

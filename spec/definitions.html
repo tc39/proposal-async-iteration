@@ -17,10 +17,10 @@
   <p>|YieldExpression| and |AwaitExpression| cannot be used within the |FormalParameters| of an async generator function because any expressions that are part of |FormalParameters| are evaluated before the resulting async generator object is in a resumable state.</p>
 </emu-note>
 <emu-note>
-  <p>Abstract operations relating to async generator objects are defined in <emu-xref href="#sec-async-generator-abstract-operations"></emu-xref>.</p>
+  <p>Abstract operations relating to async generator objects are defined in <emu-xref href="#sec-asyncgenerator-abstract-operations"></emu-xref>.</p>
 </emu-note>
 
-<emu-clause>
+<emu-clause id="sec-asyncgenerator-definitions-evaluatebody">
   <h1>Runtime Semantics: EvaluateBody</h1>
   <p>With parameters _functionObject_ and List _argumentsList_.</p>
   <emu-grammar>
@@ -34,7 +34,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgenerator-definitions-instantiatefunctionobject">
   <h1>Runtime Semantics: InstantiateFunctionObject</h1>
   <p>With parameter _scope_.</p>
   <emu-grammar>
@@ -66,7 +66,7 @@
   </emu-note>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgenerator-definitions-propertydefinitionevaluation">
   <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
   <p>With parameter _object_ and _enumerable_.</p>
   <emu-grammar>
@@ -87,7 +87,7 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-asyncgenerator-definitions-evaluation">
   <h1>Runtime Semantics: Evaluation</h1>
 
   <emu-grammar>

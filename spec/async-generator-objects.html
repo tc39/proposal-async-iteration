@@ -2,20 +2,20 @@
 
 <p>AsyncGenerator instances directly inherit properties from the object that is the value of the `prototype` property of the AsyncGenerator function that created the instance. AsyncGenerator instances indirectly inherit properties from the AsyncGenerator Prototype intrinsic, %AsyncGeneratorPrototype%.</p>
 
-<emu-clause>
+<emu-clause id="sec-properties-of-asyncgenerator-prototype">
   <h1>Properties of AsyncGenerator Prototype</h1>
   <p>The AsyncGenerator prototype object is the %AsyncGeneratorPrototype% intrinsic. It is also the initial value of the `prototype` property of the %AsyncGenerator% intrinsic (the AsyncGeneratorFunction.prototype).</p>
   <p>The AsyncGenerator prototype is an ordinary object. It is not an AsyncGenerator instance and does not have an [[AsyncGeneratorState]] internal slot.</p>
   <p>The value of the [[Prototype]] internal slot of the AsyncGenerator prototype object is the intrinsic object %AsyncIteratorPrototype%. The initial value of the [[Extensible]] internal slot of the AsyncGenerator prototype object is *true*.</p>
   <p>All AsyncGenerator instances indirectly inherit properties of the AsyncGenerator prototype object.</p>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgenerator-prototype-constructor">
     <h1>AsyncGenerator.prototype.constructor</h1>
     <p>The initial value of `AsyncGenerator.prototype.constructor` is the intrinsic object %AsyncGenerator%.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgenerator-prototype-next">
     <h1>AsyncGenerator.prototype.next ( _value_ )</h1>
     <emu-alg>
       1. Let _generator_ be the `this` value.
@@ -24,7 +24,7 @@
     </emu-alg>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgenerator-prototype-return">
     <h1>AsyncGenerator.prototype.return ( _value_ )</h1>
     <emu-alg>
       1. Let _generator_ be the `this` value.
@@ -33,7 +33,7 @@
     </emu-alg>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgenerator-prototype-throw">
     <h1>AsyncGenerator.prototype.throw ( _exception_ )</h1>
     <emu-alg>
       1. Let _generator_ be the `this` value.
@@ -42,7 +42,7 @@
     </emu-alg>
   </emu-clause>
 
-  <emu-clause>
+  <emu-clause id="sec-asyncgenerator-prototype-tostringtag">
     <h1>AsyncGenerator.prototype [ @@toStringTag ]</h1>
     <p>The initial value of the @@toStringTag property is the String value `"AsyncGenerator"`.</p>
     <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
@@ -50,7 +50,7 @@
 
 </emu-clause>
 
-<emu-clause>
+<emu-clause id="sec-properties-of-asyncgenerator-intances">
   <h1>Properties of AsyncGenerator Instances</h1>
   <p>AsyncGenerator instances are initially created with the internal slots described below:</p>
   <emu-table caption="Internal Slots of AsyncGenerator Instances">
@@ -77,7 +77,7 @@
   </emu-table>
 </emu-clause>
 
-<emu-clause id="sec-async-generator-abstract-operations">
+<emu-clause id="sec-asyncgenerator-abstract-operations">
   <h1>AsyncGenerator Abstract Operations</h1>
   <emu-import href="./abstract-operations.html"></emu-import>
 </emu-clause>
