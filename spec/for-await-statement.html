@@ -1,112 +1,33 @@
-<emu-clause>
-  <h1>Runtime Semantics: EvaluateBody</h1>
-  <p>With parameters _functionObject_ and List _argumentsList_.</p>
-  <emu-grammar>
-    GeneratorBody : FunctionBody
-  </emu-grammar>
-  <emu-alg>
-    1. Perform ? FunctionDeclarationInstantiation(_functionObject_, _argumentsList_).
-    1. Let _generator_ be ? OrdinaryCreateFromConstructor(_functionObject_, `"%AsyncGeneratorPrototype%"`, « [[AsyncGeneratorState]], [[AsyncGeneratorContext]], [[AsyncGeneratorQueue]] »).
-    1. Perform ! AsyncGeneratorStart(_generator_, _FunctionBody_).
-    1. Return Completion{[[type]]: ~return~, [[value]]: _generator_, [[target]]: ~empty~}.
-  </emu-alg>
-</emu-clause>
-
-<emu-clause>
-  <h1>Runtime Semantics: Evaluation</h1>
-  <emu-grammar>
-    YieldExpression : `yield`
-  </emu-grammar>
-  <emu-alg>
-    1. Let _resultObject_ be CreateIterResultObject(*undefined*, *false*).
-    1. If ! GetGeneratorContextKind() is ~async~, then
-      1. TODO: For consistency, should we await here?  Kinda silly, but...
-      1. Return AsyncGeneratorYield(_resultObject_).
-    1. Return GeneratorYield(_resultObject_).
-  </emu-alg>
-</emu-clause>
-
-<emu-clause>
-  <h1>Runtime Semantics: Evaluation</h1>
-  <emu-grammar>
-    YieldExpression : `yield` AssignmentExpression
-  </emu-grammar>
-  <emu-alg>
-    1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
-    1. Let _value_ be ? GetValue(_exprRef_).
-    1. If ! GetGeneratorContextKind() is ~async~, then
-      1. Let _value_ be ? AsyncFunctionAwait(_value_).
-      1. Return AsyncGeneratorYield(CreateIterResultObject(_value_, *false*)).
-    1. Return GeneratorYield(CreateIterResultObject(_value_, *false*)).
-  </emu-alg>
-</emu-clause>
-
-<emu-clause>
-  <h1>Runtime Semantics: Evaluation</h1>
-  <emu-grammar>
-    YieldExpression : `yield` `*` AssignmentExpression
-  </emu-grammar>
-  <emu-alg>
-    1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
-    1. Let _value_ be ? GetValue(_exprRef_).
-    1. Let _iteratorKind_ be ! GetGeneratorContextKind().
-    1. If _iteratorKind_ is ~async~, let _iterator_ be ? GetAsyncIterator(_value_).
-    1. Else, let _iterator_ be ? GetIterator(_value_).
-    1. Let _received_ be NormalCompletion(*undefined*).
-    1. Repeat
-      1. If _received_.[[type]] is ~normal~, then
-        1. Let _innerResult_ be ? IteratorNext(_iterator_, _received_.[[value]]).
-        1. If _iteratorKind_ is ~async~, then
-          1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
-        1. Let _done_ be ? IteratorComplete(_innerResult_).
-        1. If _done_ is *true*, then
-          1. Return IteratorValue(_innerResult_).
-        1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
-        1. Else, let _received_ be GeneratorYield(_innerResult_).
-      1. Else if _received_.[[type]] is ~throw~, then
-        1. Let _throw_ be ? GetMethod(_iterator_, `"throw"`).
-        1. If _throw_ is not *undefined*, then
-          1. Let _innerResult_ be ? Call(_throw_, _iterator_, « _received_.[[value]] »).
-          1. If _iteratorKind_ is ~async~, then
-            1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
-          1. NOTE: Exceptions from the inner iterator `throw` method are propagated. Normal completions from an inner `throw` method are processed similarly to an inner `next`.
-          1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
-          1. Let _done_ be ? IteratorComplete(_innerResult_).
-          1. If _done_ is *true*, then
-            1. Let _value_ be ? IteratorValue(_innerResult_).
-            1. Return Completion{[[type]]: ~return~, [[value]]: _value_, [[target]]: ~empty~}.
-          1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
-          1. Else, let _received_ be GeneratorYield(_innerResult_).
-        1. Else,
-          1. NOTE: If _iterator_ does not have a `throw` method, this throw is going to terminate the `yield*` loop. But first we need to give _iterator_ a chance to clean up.
-          1. Let _closeResult_ be ? IteratorClose(_iterator_, Completion{[[type]]: ~normal~, [[value]]: ~empty~, [[target]]: ~empty~}, _iteratorKind_).
-          1. NOTE: The next step throws a *TypeError* to indicate that there was a `yield*` protocol violation: _iterator_ does not have a `throw` method.
-          1. Throw a *TypeError* exception.
-      1. Else,
-        1. Assert: _received_.[[type]] is ~return~.
-        1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
-        1. If _return_ is *undefined*, return Completion(_received_).
-        1. Let _innerReturnResult_ be ? Call(_return_, _iterator_, « _received_.[[value]] »).
-        1. If _iteratorKind_ is ~async~, then
-          1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
-        1. If Type(_innerReturnResult_) is not Object, throw a *TypeError* exception.
-        1. Let _done_ be ? IteratorComplete(_innerReturnResult_).
-        1. If _done_ is *true*, then
-          1. Let _value_ be ? IteratorValue(_innerReturnResult_).
-          1. Return Completion{[[type]]: ~return~, [[value]]: _value_, [[target]]: ~empty~}.
-        1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
-        1. Else, let _received_ be GeneratorYield(_innerResult_).
-  </emu-alg>
-</emu-clause>
+<h2>Syntax</h2>
+<emu-grammar>
+  IterationStatement[Yield, Return] :
+    `for` `await` `(` [lookahead != `let` ] LeftHandSideExpression[?Yield, Await] `of` AssignmentExpression[In, ?Yield, Await] `)` Statement[?Yield, ?Return, Await]
+    `for` `await` `(` `var` ForBinding[?Yield, Await] `of` AssignmentExpression[In, ?Yield, Await] `)` Statement[?Yield, ?Return, Await]
+    `for` `await` `(` ForDeclaration[?Yield, Await] `of` AssignmentExpression[In, ?Yield, Await] `)` Statement[?Yield, ?Return, Await]
+</emu-grammar>
 
 <emu-clause>
   <h1>Runtime Semantics: LabelledEvaluation</h1>
+  <emu-grammar>
+    IterationStatement : `for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+  </emu-grammar>
+  <emu-alg>
+    1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(« », |AssignmentExpression|, ~async-iterate~).
+    1. Return ? ForIn/OfBodyEvaluation(|LeftHandSideExpression|, |Statement|, _keyResult_, ~assignment~, _labelSet_, ~async~).
+  </emu-alg>
+  <emu-grammar>
+    IterationStatement : `for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+  </emu-grammar>
+  <emu-alg>
+    1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(« », |AssignmentExpression|, ~async-iterate~).
+    1. Return ? ForIn/OfBodyEvaluation(|ForBinding|, |Statement|, _keyResult_, ~varBinding~, _labelSet_, ~async~).
+  </emu-alg>
   <emu-grammar>
     IterationStatement : `for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement
   </emu-grammar>
   <emu-alg>
     1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(BoundNames of |ForDeclaration|, |AssignmentExpression|, ~async-iterate~).
-    1. Return ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_, ~async~).
+    1. Return ? ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_, ~async~).
   </emu-alg>
 </emu-clause>
 

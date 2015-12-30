@@ -65,10 +65,9 @@
 
 <emu-clause>
   <h1>AsyncGeneratorFunction Instances</h1>
-  <p>Every AsyncGeneratorFunction instance is an ECMAScript function object and has the internal slots listed in (TODO: table-27 link). The value of the [[FunctionKind]] internal slot for all such instances is `"async-generator"`.</p>
+  <p>Every AsyncGeneratorFunction instance is an ECMAScript function object and has the internal slots listed in (TODO: table-27 link). The value of the [[FunctionKind]] internal slot for all such instances is `"generator"`.</p>
   <p>Each AsyncGeneratorFunction instance has the following own properties:</p>
 
-  <!-- es6num="25.2.4.1" -->
   <emu-clause>
     <h1>length</h1>
     <p>The value of the `length` property is an integer that indicates the typical number of arguments expected by the AsyncGeneratorFunction. However, the language permits the function to be invoked with some other number of arguments. The behaviour of an AsyncGeneratorFunction when invoked on a number of arguments other than the number specified by its `length` property depends on the function.</p>

@@ -1,0 +1,122 @@
+<h2>Syntax</h2>
+<emu-grammar>
+  AsyncGeneratorMethod[Yield, Await] :
+    `async` [no LineTerminator here] '*' PropertyName[?Yield, ?Await] `(` StrictFormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+
+  AsyncGeneratorDeclaration[Yield, Await, Default] :
+    `async` [no LineTerminator here] `function` `*` BindingIdentifier[?Yield, ?Await] `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+    [+Default] `async` [no LineTerminator here] `function` `*` `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+
+  AsyncGeneratorExpression :
+    `async` [no LineTerminator here] `function` `*` BindingIdentifier[Yield, Await]? `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+
+  AsyncGeneratorBody :
+    FunctionBody[Yield, Await]
+</emu-grammar>
+<emu-note>
+  <p>|YieldExpression| and |AwaitExpression| cannot be used within the |FormalParameters| of an async generator function because any expressions that are part of |FormalParameters| are evaluated before the resulting async generator object is in a resumable state.</p>
+</emu-note>
+<emu-note>
+  <p>Abstract operations relating to async generator objects are defined in <emu-xref href="#sec-async-generator-abstract-operations"></emu-xref>.</p>
+</emu-note>
+
+<emu-clause>
+  <h1>Runtime Semantics: EvaluateBody</h1>
+  <p>With parameters _functionObject_ and List _argumentsList_.</p>
+  <emu-grammar>
+    AsyncGeneratorBody : FunctionBody
+  </emu-grammar>
+  <emu-alg>
+    1. Perform ? FunctionDeclarationInstantiation(_functionObject_, _argumentsList_).
+    1. Let _generator_ be ? OrdinaryCreateFromConstructor(_functionObject_, `"%AsyncGeneratorPrototype%"`, « [[AsyncGeneratorState]], [[AsyncGeneratorContext]], [[AsyncGeneratorQueue]] »).
+    1. Perform ! AsyncGeneratorStart(_generator_, _FunctionBody_).
+    1. Return Completion{[[type]]: ~return~, [[value]]: _generator_, [[target]]: ~empty~}.
+  </emu-alg>
+</emu-clause>
+
+<emu-clause>
+  <h1>Runtime Semantics: Evaluation</h1>
+  <emu-grammar>
+    YieldExpression : `yield`
+  </emu-grammar>
+  <emu-alg>
+    1. Let _resultObject_ be CreateIterResultObject(*undefined*, *false*).
+    1. If ! GetGeneratorContextKind() is ~async~, then
+      1. TODO: For consistency, should we await here?  Kinda silly, but...
+      1. Return AsyncGeneratorYield(_resultObject_).
+    1. Return GeneratorYield(_resultObject_).
+  </emu-alg>
+</emu-clause>
+
+<emu-clause>
+  <h1>Runtime Semantics: Evaluation</h1>
+  <emu-grammar>
+    YieldExpression : `yield` AssignmentExpression
+  </emu-grammar>
+  <emu-alg>
+    1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
+    1. Let _value_ be ? GetValue(_exprRef_).
+    1. If ! GetGeneratorContextKind() is ~async~, then
+      1. Let _value_ be ? AsyncFunctionAwait(_value_).
+      1. Return AsyncGeneratorYield(CreateIterResultObject(_value_, *false*)).
+    1. Return GeneratorYield(CreateIterResultObject(_value_, *false*)).
+  </emu-alg>
+</emu-clause>
+
+<emu-clause>
+  <h1>Runtime Semantics: Evaluation</h1>
+  <emu-grammar>
+    YieldExpression : `yield` `*` AssignmentExpression
+  </emu-grammar>
+  <emu-alg>
+    1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
+    1. Let _value_ be ? GetValue(_exprRef_).
+    1. Let _iteratorKind_ be ! GetGeneratorContextKind().
+    1. If _iteratorKind_ is ~async~, let _iterator_ be ? GetAsyncIterator(_value_).
+    1. Else, let _iterator_ be ? GetIterator(_value_).
+    1. Let _received_ be NormalCompletion(*undefined*).
+    1. Repeat
+      1. If _received_.[[type]] is ~normal~, then
+        1. Let _innerResult_ be ? IteratorNext(_iterator_, _received_.[[value]]).
+        1. If _iteratorKind_ is ~async~, then
+          1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
+        1. Let _done_ be ? IteratorComplete(_innerResult_).
+        1. If _done_ is *true*, then
+          1. Return IteratorValue(_innerResult_).
+        1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
+        1. Else, let _received_ be GeneratorYield(_innerResult_).
+      1. Else if _received_.[[type]] is ~throw~, then
+        1. Let _throw_ be ? GetMethod(_iterator_, `"throw"`).
+        1. If _throw_ is not *undefined*, then
+          1. Let _innerResult_ be ? Call(_throw_, _iterator_, « _received_.[[value]] »).
+          1. If _iteratorKind_ is ~async~, then
+            1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
+          1. NOTE: Exceptions from the inner iterator `throw` method are propagated. Normal completions from an inner `throw` method are processed similarly to an inner `next`.
+          1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
+          1. Let _done_ be ? IteratorComplete(_innerResult_).
+          1. If _done_ is *true*, then
+            1. Let _value_ be ? IteratorValue(_innerResult_).
+            1. Return Completion{[[type]]: ~return~, [[value]]: _value_, [[target]]: ~empty~}.
+          1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
+          1. Else, let _received_ be GeneratorYield(_innerResult_).
+        1. Else,
+          1. NOTE: If _iterator_ does not have a `throw` method, this throw is going to terminate the `yield*` loop. But first we need to give _iterator_ a chance to clean up.
+          1. Let _closeResult_ be ? IteratorClose(_iterator_, Completion{[[type]]: ~normal~, [[value]]: ~empty~, [[target]]: ~empty~}, _iteratorKind_).
+          1. NOTE: The next step throws a *TypeError* to indicate that there was a `yield*` protocol violation: _iterator_ does not have a `throw` method.
+          1. Throw a *TypeError* exception.
+      1. Else,
+        1. Assert: _received_.[[type]] is ~return~.
+        1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
+        1. If _return_ is *undefined*, return Completion(_received_).
+        1. Let _innerReturnResult_ be ? Call(_return_, _iterator_, « _received_.[[value]] »).
+        1. If _iteratorKind_ is ~async~, then
+          1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
+        1. If Type(_innerReturnResult_) is not Object, throw a *TypeError* exception.
+        1. Let _done_ be ? IteratorComplete(_innerReturnResult_).
+        1. If _done_ is *true*, then
+          1. Let _value_ be ? IteratorValue(_innerReturnResult_).
+          1. Return Completion{[[type]]: ~return~, [[value]]: _value_, [[target]]: ~empty~}.
+        1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
+        1. Else, let _received_ be GeneratorYield(_innerResult_).
+  </emu-alg>
+</emu-clause>
