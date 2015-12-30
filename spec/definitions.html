@@ -1,7 +1,7 @@
 <h2>Syntax</h2>
 <emu-grammar>
   AsyncGeneratorMethod[Yield, Await] :
-    `async` [no LineTerminator here] '*' PropertyName[?Yield, ?Await] `(` StrictFormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+    `async` [no LineTerminator here] `*` PropertyName[?Yield, ?Await] `(` StrictFormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorDeclaration[Yield, Await, Default] :
     `async` [no LineTerminator here] `function` `*` BindingIdentifier[?Yield, ?Await] `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
@@ -35,7 +35,94 @@
 </emu-clause>
 
 <emu-clause>
+  <h1>Runtime Semantics: InstantiateFunctionObject</h1>
+  <p>With parameter _scope_.</p>
+  <emu-grammar>
+    AsyncGeneratorDeclaration : `async` [no LineTerminator here] `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. If the function code for |AsyncGeneratorDeclaration| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+    1. Let _name_ be StringValue of |BindingIdentifier|.
+    1. Let _F_ be AsyncGeneratorFunctionCreate(~Normal~, |FormalParameters|, |AsyncGeneratorBody|, _scope_, _strict_).
+    1. Let _prototype_ be ObjectCreate(%AsyncGeneratorPrototype%).
+    1. Perform DefinePropertyOrThrow(_F_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
+    1. Perform SetFunctionName(_F_, _name_).
+    1. Return _F_.
+  </emu-alg>
+
+  <emu-grammar>
+    AsyncGeneratorDeclaration : `async` [no LineTerminator here] `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. If the function code for |AsyncGeneratorDeclaration| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+    1. Let _F_ be AsyncGeneratorFunctionCreate(~Normal~, |FormalParameters|, |AsyncGeneratorBody|, _scope_, _strict_).
+    1. Let _prototype_ be ObjectCreate(%AsyncGeneratorPrototype%).
+    1. Perform DefinePropertyOrThrow(_F_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
+    1. Perform SetFunctionName(_F_, `"default"`).
+    1. Return _F_.
+  </emu-alg>
+  <emu-note>
+    <p>An anonymous |AsyncGeneratorDeclaration| can only occur as part of an `export default` declaration.</p>
+  </emu-note>
+</emu-clause>
+
+<emu-clause>
+  <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
+  <p>With parameter _object_ and _enumerable_.</p>
+  <emu-grammar>
+    AsyncGeneratorMethod : `async` [no LineTerminator here] `*` PropertyName `(` StrictFormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. Let _propKey_ be the result of evaluating |PropertyName|.
+    1. ReturnIfAbrupt(_propKey_).
+    1. If the function code for this |AsyncGeneratorMethod| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+    1. Let _scope_ be the running execution context's LexicalEnvironment.
+    1. Let _closure_ be AsyncGeneratorFunctionCreate(~Method~, |StrictFormalParameters|, |AsyncGeneratorBody|, _scope_, _strict_).
+    1. Perform MakeMethod(_closure_, _object_).
+    1. Let _prototype_ be ObjectCreate(%AsyncGeneratorPrototype%).
+    1. Perform DefinePropertyOrThrow(_closure_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
+    1. Perform SetFunctionName(_closure_, _propKey_).
+    1. Let _desc_ be the Property Descriptor{[[Value]]: _closure_, [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
+    1. Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).
+  </emu-alg>
+</emu-clause>
+
+<emu-clause>
   <h1>Runtime Semantics: Evaluation</h1>
+
+  <emu-grammar>
+    AsyncGeneratorExpression : `async` [no LineTerminator here] `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. If the function code for this |AsyncGeneratorExpression| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+    1. Let _scope_ be the LexicalEnvironment of the running execution context.
+    1. Let _closure_ be AsyncGeneratorFunctionCreate(~Normal~, |FormalParameters|, |AsyncGeneratorBody|, _scope_, _strict_).
+    1. Let _prototype_ be ObjectCreate(%AsyncGeneratorPrototype%).
+    1. Perform DefinePropertyOrThrow(_closure_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
+    1. Return _closure_.
+  </emu-alg>
+
+  <emu-grammar>
+    AsyncGeneratorExpression : `async` [no LineTerminator here] `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. If the function code for this |AsyncGeneratorExpression| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+    1. Let _scope_ be the running execution context's LexicalEnvironment.
+    1. Let _funcEnv_ be NewDeclarativeEnvironment(_scope_).
+    1. Let _envRec_ be _funcEnv_'s EnvironmentRecord.
+    1. Let _name_ be StringValue of |BindingIdentifier|.
+    1. Perform _envRec_.CreateImmutableBinding(_name_).
+    1. Let _closure_ be AsyncGeneratorFunctionCreate(~Normal~, |FormalParameters|, |AsyncGeneratorBody|, _funcEnv_, _strict_).
+    1. Let _prototype_ be ObjectCreate(%AsyncGeneratorPrototype%).
+    1. Perform DefinePropertyOrThrow(_closure_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
+    1. Perform SetFunctionName(_closure_, _name_).
+    1. Perform _envRec_.InitializeBinding(_name_, _closure_).
+    1. Return _closure_.
+  </emu-alg>
+  <emu-note>
+    <p>The |BindingIdentifier| in an |AsyncGeneratorExpression| can be referenced from inside the |AsyncGeneratorExpression|'s |AsyncGeneratorBody| to allow the generator code to call itself recursively. However, unlike in an |AsyncGeneratorDeclaration|, the |BindingIdentifier| in an |AsyncGeneratorExpression| cannot be referenced from and does not affect the scope enclosing the |AsyncGeneratorExpression|.</p>
+  </emu-note>
+
   <emu-grammar>
     YieldExpression : `yield`
   </emu-grammar>
@@ -46,10 +133,7 @@
       1. Return AsyncGeneratorYield(_resultObject_).
     1. Return GeneratorYield(_resultObject_).
   </emu-alg>
-</emu-clause>
 
-<emu-clause>
-  <h1>Runtime Semantics: Evaluation</h1>
   <emu-grammar>
     YieldExpression : `yield` AssignmentExpression
   </emu-grammar>
@@ -61,10 +145,7 @@
       1. Return AsyncGeneratorYield(CreateIterResultObject(_value_, *false*)).
     1. Return GeneratorYield(CreateIterResultObject(_value_, *false*)).
   </emu-alg>
-</emu-clause>
 
-<emu-clause>
-  <h1>Runtime Semantics: Evaluation</h1>
   <emu-grammar>
     YieldExpression : `yield` `*` AssignmentExpression
   </emu-grammar>
