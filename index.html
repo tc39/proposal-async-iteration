@@ -7,14 +7,18 @@
 
 <emu-clause id="sec-introduction">
   <h1><span class="secnum">1</span>Introduction<span class="utils"><span class="anchor"><a href="#sec-introduction">#</a></span></span></h1>
-  <emu-import href="./introduction.html"><p>This proposal adds syntactic support for asynchronous iteration using the  <i>AsyncIterable</i> and  <i>AsyncIterator</i> protocols.  It introduces a new  <i>IterationStatement</i>, <code>for-await</code>, and adds syntax for creating async generator functions and methods.</p>
+  <emu-import href="./introduction.html"><p>This proposal adds syntactic support for asynchronous iteration using the  <i>AsyncIterable</i> and  <i>AsyncIterator</i> protocols.  It introduces a new  <i>IterationStatement</i>, "for-await", and adds syntax for creating async generator functions and methods.</p>
 
 <p>See  <a href="https://github.com/zenparsing/async-iteration">the proposal repository</a> for background material and discussion.</p>
 
-<emu-note><span class="note">Note</span>
+<emu-note><span class="note">Note 1</span>
   <p>This proposal depends upon the async functions proposal.</p>
 </emu-note>
-</emu-import>
+
+<emu-note><span class="note">Note 2</span>
+  <p>This specification text does not include static semantics, which, for the most part, duplicate the existing static semantics for generator functions and for-of statements.
+
+</p></emu-note></emu-import>
 </emu-clause>
 
 <emu-clause id="sec-async-generator-function-definitions">
@@ -120,7 +124,11 @@
 
 <emu-clause id="sec-for-await-statement">
   <h1><span class="secnum">3</span>The <code>for-await</code> Statement<span class="utils"><span class="anchor"><a href="#sec-for-await-statement">#</a></span></span></h1>
-  <emu-import href="./for-await-statement.html"><h2>Syntax</h2>
+  <emu-import href="./for-await-statement.html"><emu-note><span class="note">Note</span>
+  <p>The following definitions are added to section 13.7 (IterationStatements).</p>
+</emu-note>
+
+<h2>Syntax</h2>
 <emu-grammar><emu-production name="IterationStatement" params="Yield, Return" id="prod-IterationStatement">
     <emu-nt params="Yield, Return"><a href="#prod-IterationStatement">IterationStatement</a><emu-mods><emu-params>[Yield, Return]</emu-params></emu-mods></emu-nt><emu-geq>:</emu-geq><emu-rhs a="628b3186"><emu-t>for</emu-t><emu-t>await</emu-t><emu-t>(</emu-t><emu-gann>[lookahead ≠ <emu-t>let</emu-t>]</emu-gann><emu-nt params="?Yield, Await"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#prod-LeftHandSideExpression">LeftHandSideExpression</a><emu-mods><emu-params>[?Yield, Await]</emu-params></emu-mods></emu-nt><emu-t>of</emu-t><emu-nt params="In, ?Yield, Await"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#prod-AssignmentExpression">AssignmentExpression</a><emu-mods><emu-params>[In, ?Yield, Await]</emu-params></emu-mods></emu-nt><emu-t>)</emu-t><emu-nt params="?Yield, ?Return, Await"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#prod-Statement">Statement</a><emu-mods><emu-params>[?Yield, ?Return, Await]</emu-params></emu-mods></emu-nt></emu-rhs>
     <emu-rhs a="cd71d697"><emu-t>for</emu-t><emu-t>await</emu-t><emu-t>(</emu-t><emu-t>var</emu-t><emu-nt params="?Yield, Await"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#prod-ForBinding">ForBinding</a><emu-mods><emu-params>[?Yield, Await]</emu-params></emu-mods></emu-nt><emu-t>of</emu-t><emu-nt params="In, ?Yield, Await"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#prod-AssignmentExpression">AssignmentExpression</a><emu-mods><emu-params>[In, ?Yield, Await]</emu-params></emu-mods></emu-nt><emu-t>)</emu-t><emu-nt params="?Yield, ?Return, Await"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#prod-Statement">Statement</a><emu-mods><emu-params>[?Yield, ?Return, Await]</emu-params></emu-mods></emu-nt></emu-rhs>
@@ -164,7 +172,11 @@
 
 <emu-clause id="sec-operations-on-iterator-objects">
   <h1><span class="secnum">4</span>Operations on Iterator Objects<span class="utils"><span class="anchor"><a href="#sec-operations-on-iterator-objects">#</a></span></span></h1>
-  <emu-import href="./iterator-operations.html"><emu-clause id="sec-getasynciterator" aoid="GetAsyncIterator">
+  <emu-import href="./iterator-operations.html"><emu-note><span class="note">Note</span>
+  <p>The following abstract operations are added to or replace the operations found in section 7.4 (Operations on Iterator Objects).</p>
+</emu-note>
+
+<emu-clause id="sec-getasynciterator" aoid="GetAsyncIterator">
   <h1><span class="secnum">4.1</span>GetAsyncIterator ( <var>obj</var> )<span class="utils"><span class="anchor"><a href="#sec-getasynciterator">#</a></span></span></h1>
   <p>The abstract operation GetAsyncIterator with argument <var>obj</var> performs the following steps:</p>
   <emu-alg><ol><li>Let <var>method</var> be ? <emu-xref aoid="GetMethod"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-getmethod">GetMethod</a></emu-xref>(<var>obj</var>, @@asyncIterator).</li><li>If <var>method</var> is <emu-val>undefined</emu-val>, let <emu-val>method</emu-val> be ? <emu-xref aoid="GetMethod"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-getmethod">GetMethod</a></emu-xref>(<var>obj</var>, @@iterator).</li><li>Let <var>iterator</var> be ? <emu-xref aoid="Call"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-call">Call</a></emu-xref>(<var>method</var>, <var>obj</var>).</li><li>If <emu-xref aoid="Type"><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-ecmascript-data-types-and-values">Type</a></emu-xref>(<var>iterator</var>) is not Object, throw a <emu-val>TypeError</emu-val> exception.</li><li>Return <var>iterator</var>.
@@ -188,7 +200,11 @@
 
 <emu-clause id="sec-iteration">
   <h1><span class="secnum">5</span>Iteration<span class="utils"><span class="anchor"><a href="#sec-iteration">#</a></span></span></h1>
-  <emu-import href="./iteration.html"><emu-clause id="sec-common-iteration-interfaces">
+  <emu-import href="./iteration.html"><emu-note><span class="note">Note</span>
+  <p>The following definitions are added to section 5 (Iteration).</p>
+</emu-note>
+
+<emu-clause id="sec-common-iteration-interfaces">
   <h1><span class="secnum">5.1</span>Common Iteration Interfaces<span class="utils"><span class="anchor"><a href="#sec-common-iteration-interfaces">#</a></span></span></h1>
 
   <emu-clause id="sec-asynciterable-interface">
