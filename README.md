@@ -33,8 +33,6 @@ In order to provide a generic data access protocol for asynchronous data sources
 introduce the **AsyncIterator** interface, an asynchronous iteration statement, and
 async generator functions.
 
-A prototype of this proposal is available in the [esdown online REPL](http://esparse.org/esdown/repl/).
-
 
 ### The AsyncIterator Interface
 
@@ -113,10 +111,10 @@ Async generator functions are similar to generator functions, with the following
 differences:
 
 - When called, async generator functions return an object implementing the
-  **AsyncIterator** interface.
-- Await expressions and async for-of statements are allowed.
-- Yielded promises are implicitly unwrapped before they are packed into an IterationResult.
-- The behavior of `yield *` is modified to support delegation to async iterators.
+  *AsyncIterator* interface.
+- Await expressions and for-await statements are allowed.
+- Yielded promises are implicitly unwrapped before they are packed into an *IteratorResult* object.
+- The behavior of `yield*` is modified to support delegation to async iterators.
 
 For example:
 

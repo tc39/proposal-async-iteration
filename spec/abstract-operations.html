@@ -80,14 +80,14 @@
 </emu-clause>
 
 <emu-clause id="sec-asyncgeneratorfulfill" aoid="AsyncGeneratorFulfill">
-  <h1>AsyncGeneratorFulfill ( _generator_, _iterationResult_ )</h1>
+  <h1>AsyncGeneratorFulfill ( _generator_, _iteratorResult_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
-    1. Assert: _iterationResult_ is an Object that implements the IteratorResult interface.
+    1. Assert: _iteratorResult_ is an Object that implements the IteratorResult interface.
     1. Let _queue_ be the value of the [[AsyncGeneratorQueue]] internal slot of _generator_.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
     1. Let _capability_ be _next_.[[Capability]].
-    1. Perform ! Call(_capability_.[[Resolve]], *undefined*, « _iterationResult_ »).
+    1. Perform ! Call(_capability_.[[Resolve]], *undefined*, « _iteratorResult_ »).
     1. Perform ! AsyncGeneratorResumeNext(_generator_).
     1. Return *undefined*.
   </emu-clause>
@@ -160,9 +160,9 @@
 </emu-clause>
 
 <emu-clause id="sec-asyncgeneratoryield" aoid="AsyncGeneratorYield">
-  <h1>AsyncGeneratorYield ( _iterationResult_ )</h1>
+  <h1>AsyncGeneratorYield ( _iteratorResult_ )</h1>
   <emu-alg>
-    1. Assert: _iterationResult_ is an Object that implements the IteratorResult interface.
+    1. Assert: _iteratorResult_ is an Object that implements the IteratorResult interface.
     1. Let _genContext_ be the running execution context.
     1. Assert: _genContext_ is the execution context of an async generator.
     1. Let _generator_ be the value of the Generator component of _genContext_.
@@ -171,7 +171,7 @@
     1. Set the code evaluation state of _genContext_ such that when evaluation is resumed with a Completion _resumptionValue_ the following steps will be performed:
       1. Return _resumptionValue_.
       1. NOTE: This returns to the evaluation of the YieldExpression production that originally called this abstract operation.
-    1. Perform ! AsyncGeneratorFulfill(_generator_, _iterationResult_).
+    1. Perform ! AsyncGeneratorFulfill(_generator_, _iteratorResult_).
     1. Return *undefined*.
     1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.
   </emu-alg>
