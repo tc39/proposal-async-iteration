@@ -59,7 +59,7 @@
         </tr>
         <tr>
           <td>`return`</td>
-          <td>A function that returns a Promise for an <i>AsyncIteratorResult</i> object.</td>
+          <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
           <td>The returned Promise, when fulfilled, must wrap an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller does not intend to make any more `next` method calls to the <i>AsyncIterator</i>. The returned Promise will wrap an <i>IteratorResult</i> object which will typically have a `done` property whose value is *true*, and a `value` property with the value passed as the argument of the `return` method. However, this requirement is not enforced.
           </td>
         </tr>
