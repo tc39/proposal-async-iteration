@@ -163,7 +163,7 @@
           1. Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).
         1. Let _done_ be ? IteratorComplete(_innerResult_).
         1. If _done_ is *true*, then
-          1. Return IteratorValue(_innerResult_).
+          1. Return ? IteratorValue(_innerResult_).
         1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
         1. Else, let _received_ be GeneratorYield(_innerResult_).
       1. Else if _received_.[[type]] is ~throw~, then
@@ -176,8 +176,7 @@
           1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
           1. Let _done_ be ? IteratorComplete(_innerResult_).
           1. If _done_ is *true*, then
-            1. Let _value_ be ? IteratorValue(_innerResult_).
-            1. Return Completion{[[type]]: ~return~, [[value]]: _value_, [[target]]: ~empty~}.
+            1. Return ? IteratorValue(_innerResult_).
           1. If _iteratorKind_ is ~async~, let _recieved_ be AsyncGeneratorYield(_innerResult_).
           1. Else, let _received_ be GeneratorYield(_innerResult_).
         1. Else,
