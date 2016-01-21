@@ -33,7 +33,6 @@ In order to provide a generic data access protocol for asynchronous data sources
 introduce the **AsyncIterator** interface, an asynchronous iteration statement, and
 async generator functions.
 
-
 ### The AsyncIterator Interface
 
 The **AsyncIterator** interface is identical to the **Iterator** interface, except that
@@ -239,3 +238,9 @@ function asyncGeneratorStart(generator) {
     }
 }
 ```
+
+### Implementation Status
+
+The [Regenerator](https://github.com/facebook/regenerator) project provides a working [polyfill](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/runtime.js#L136) for the `AsyncIterator` interface and transforms `async` generator functions into plain ECMAScript 5 functions that return `AsyncIterator` objects: [examples](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/test/async.es6.js#L259).
+
+Note that Regenerator does not yet support the `for await`-`of` async iteration statement syntax.
