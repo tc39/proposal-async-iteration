@@ -37,7 +37,7 @@
 
 <emu-clause id="sec-forinofheadevaluation">
   <h1>Runtime Semantics: ForIn/OfHeadEvaluation ( _TDZnames_, _expr_, _iterationKind_ )</h1>
-  <p>The abstract operation ForIn/OfHeadEvaluation is called with arguments _TDZnames_, _expr_, _iterationKind_, and _async_. The value of _iterationKind_ is ~enumerate~, ~iterate~, or ~async-iterate~.</p>
+  <p>The abstract operation ForIn/OfHeadEvaluation is called with arguments _TDZnames_, _expr_, _iterationKind_, and _async_. The value of _iterationKind_ is ~enumerate~, ~iterate~<ins>, or ~async-iterate~</ins>.</p>
   <emu-alg>
     1. Let _oldEnv_ be the running execution context's LexicalEnvironment.
     1. If _TDZnames_ is not an empty List, then
@@ -56,19 +56,18 @@
         1. Return Completion{[[type]]: ~break~, [[value]]: ~empty~, [[target]]: ~empty~}.
       1. Let _obj_ be ToObject(_exprValue_).
       1. Return ? _obj_.[[Enumerate]]().
-    1. Else, if _iterationKind_ is ~async-iterate~, then
-      1. Return ? GetAsyncIterator(_exprValue_).
     1. Else,
-      1. Assert: _iterationKind_ is ~iterate~.
-      1. Return ? GetIterator(_exprValue_).
+      1. <ins>If _iterationKind_ is ~async-iterate~, let _iteratorHint_ be ~async~,</ins>
+      1. <ins>Else, let _iteratorHint_ be ~normal~.</ins>
+      1. Return ? GetIterator(_exprValue_, <ins>_iteratorHint_</ins>).
   </emu-alg>
 </emu-clause>
 
 <emu-clause id="sec-forinofbodyevaluation">
   <h1>Runtime Semantics: ForIn/OfBodyEvaluation ( _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_, _iteratorKind_ )</h1>
-  <p>The abstract operation ForIn/OfBodyEvaluation is called with arguments _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_, and optional argument _iteratorKind_. The value of _lhsKind_ is either ~assignment~, ~varBinding~ or ~lexicalBinding~.  The value of _iteratorKind_ is either ~normal~ or ~async~.</p>
+  <p>The abstract operation ForIn/OfBodyEvaluation is called with arguments _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_, <ins>and optional argument _iteratorKind_</ins>. The value of _lhsKind_ is either ~assignment~, ~varBinding~ or ~lexicalBinding~.  The value of _iteratorKind_ is either ~normal~ or ~async~.</p>
   <emu-alg>
-    1. If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.
+    1. <ins>If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.</ins>
     1. Let _oldEnv_ be the running execution context's LexicalEnvironment.
     1. Let _V_ be *undefined*.
     1. Let _destructuring_ be IsDestructuring of _lhs_.
@@ -77,8 +76,8 @@
       1. Let _assignmentPattern_ be the parse of the source text corresponding to _lhs_ using |AssignmentPattern| as the goal symbol.
     1. Repeat
       1. Let _nextResult_ be ? IteratorNext(_iterator_).
-      1. If _iteratorKind_ is ~async~, then
-        1. Let _nextResult_ be ? AwaitIterResultObject(_nextResult_).
+      1. <ins>If _iteratorKind_ is ~async~, then</ins>
+        1. <ins>Let _nextResult_ be ? AwaitIterResultObject(_nextResult_).</ins>
       1. Let _done_ be ? IteratorComplete(_iterator_).
       1. If _done_ is *true*, return NormalCompletion(_V_).
       1. Let _nextValue_ be ? IteratorValue(_nextResult_).

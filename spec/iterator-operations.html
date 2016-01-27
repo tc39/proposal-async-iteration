@@ -2,35 +2,20 @@
   <p>The following abstract operations are added to or replace the operations found in section 7.4 (Operations on Iterator Objects).</p>
 </emu-note>
 
-<emu-clause id="sec-getasynciterator" aoid="GetAsyncIterator">
-  <h1>GetAsyncIterator ( _obj_ )</h1>
-  <p>The abstract operation GetAsyncIterator with argument _obj_ performs the following steps:</p>
+<emu-clause id="sec-getiterator" aoid="GetIterator">
+  <h1>GetIterator ( _obj_ [ , _hint ] )</h1>
+  <emu-note>
+    <p>This method has been modified to accept an optional parameter _hint_ which indicates whether we should attempt to find an async iterator for the object.  The _method_ parameter has been removed.  Call sites which use the optional _method_ parameter (Array.from and IterableToArrayLike) must be updated to call the function directly instead.</p>
+  </emu-note>
+  <p>The abstract operation GetIterator with argument _obj_ and optional argument _hint_ performs the following steps:</p>
   <emu-alg>
-    1. Let _method_ be ? GetMethod(_obj_, @@asyncIterator).
-    1. If _method_ is *undefined*, let *method* be ? GetMethod(_obj_, @@iterator).
+    1. If _hint_ was not passed, let _hint_ be ~normal~.
+    1. Let _method_ be *undefined*.
+    1. If _hint_ is ~async~, let _method_ be ? GetMethod(_obj_, @@asyncIterator).
+    1. If _method_ is *undefined*, let _method_ be ? GetMethod(_obj_, @@iterator).
     1. Let _iterator_ be ? Call(_method_, _obj_).
     1. If Type(_iterator_) is not Object, throw a *TypeError* exception.
     1. Return _iterator_.
-  </emu-alg>
-</emu-clause>
-
-<emu-clause id="sec-iteratorclose" aoid="IteratorClose">
-  <h1>IteratorClose( _iterator_, _completion_, _iteratorKind_ )</h1>
-  <p>The abstract operation IteratorClose with arguments _iterator_ and _completion_ and optional argument _iteratorKind_ is used to notify an iterator that it should perform any actions it would normally perform when it has reached its completed state.  The value of _iteratorKind_ is either ~normal~ or ~async~.</p>
-  <emu-alg>
-    1. Assert: Type(_iterator_) is Object.
-    1. Assert: _completion_ is a Completion Record.
-    1. If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.
-    1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
-    1. If _return_ is *undefined*, then
-      1. Return Completion(_completion_).
-    1. Let _innerResult_ be Call(_return_, _iterator_, « »).
-    1. If _innerResult_ is not an abrupt completion and _iteratorKind_ is ~async~, then
-      1. Let _innerResult_ be AwaitIterResultObject(_innerResult_).
-    1. If _completion_.[[type]] is ~throw~, return Completion(_completion_).
-    1. If _innerResult_.[[type]] is ~throw~, return Completion(_innerResult_).
-    1. If Type(_innerResult_.[[value]]) is not Object, throw a *TypeError* exception.
-    1. Return Completion(_completion_).
   </emu-alg>
 </emu-clause>
 
