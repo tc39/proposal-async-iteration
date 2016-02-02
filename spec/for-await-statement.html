@@ -77,10 +77,13 @@
     1. Repeat
       1. Let _nextResult_ be ? IteratorNext(_iterator_).
       1. <ins>If _iteratorKind_ is ~async~, then</ins>
-        1. <ins>Let _nextResult_ be ? AwaitIterResultObject(_nextResult_).</ins>
+        1. <ins>Let _nextResult_ be ? AsyncFunctionAwait(_nextResult_).</ins>
       1. Let _done_ be ? IteratorComplete(_iterator_).
       1. If _done_ is *true*, return NormalCompletion(_V_).
       1. Let _nextValue_ be ? IteratorValue(_nextResult_).
+      1. <ins>If _iteratorKind_ is ~async~, then</ins>
+        1. <ins>TODO: Should we perform this unwrapping before done is checked?</ins>
+        1. <ins>Let _nextValue__ be ? AsyncFunctionAwait(_nextResult_).</ins>
       1. If _lhsKind_ is either ~assignment~ or ~varBinding~, then
         1. If _destructuring_ is *false*, then
           1. Let _lhsRef_ be the result of evaluating _lhs_ (it may be evaluated repeatedly).

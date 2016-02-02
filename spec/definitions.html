@@ -129,7 +129,6 @@
   <emu-alg>
     1. Let _resultObject_ be CreateIterResultObject(*undefined*, *false*).
     1. <ins>If ! GetGeneratorContextKind() is ~async~, then</ins>
-      1. <ins>TODO: For consistency, should we await here?  Kinda silly, but...</ins>
       1. <ins>Return AsyncGeneratorYield(_resultObject_).</ins>
     1. Return GeneratorYield(_resultObject_).
   </emu-alg>
@@ -140,10 +139,10 @@
   <emu-alg>
     1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
     1. Let _value_ be ? GetValue(_exprRef_).
+    1. Let _iterResult_ be CreateIterResultObject(_value_, *false*).
     1. <ins>If ! GetGeneratorContextKind() is ~async~, then</ins>
-      1. <ins>Let _value_ be ? AsyncFunctionAwait(_value_).</ins>
-      1. <ins>Return AsyncGeneratorYield(CreateIterResultObject(_value_, *false*)).</ins>
-    1. Return GeneratorYield(CreateIterResultObject(_value_, *false*)).
+      1. <ins>Return AsyncGeneratorYield(_iterResult_).</ins>
+    1. Return GeneratorYield(_iterResult_).
   </emu-alg>
 
   <emu-grammar>
@@ -159,7 +158,7 @@
       1. If _received_.[[type]] is ~normal~, then
         1. Let _innerResult_ be ? IteratorNext(_iterator_, _received_.[[value]]).
         1. <ins>If _iteratorKind_ is ~async~, then</ins>
-          1. <ins>Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).</ins>
+          1. <ins>Let _innerResult_ be ? AsyncFunctionAwait(_innerResult_).</ins>
         1. Let _done_ be ? IteratorComplete(_innerResult_).
         1. If _done_ is *true*, then
           1. Return ? IteratorValue(_innerResult_).
@@ -170,7 +169,7 @@
         1. If _throw_ is not *undefined*, then
           1. Let _innerResult_ be ? Call(_throw_, _iterator_, « _received_.[[value]] »).
           1. <ins>If _iteratorKind_ is ~async~, then</ins>
-            1. <ins>Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).</ins>
+            1. <ins>Let _innerResult_ be ? AsyncFunctionAwait(_innerResult_).</ins>
           1. NOTE: Exceptions from the inner iterator `throw` method are propagated. Normal completions from an inner `throw` method are processed similarly to an inner `next`.
           1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
           1. Let _done_ be ? IteratorComplete(_innerResult_).
@@ -189,7 +188,7 @@
         1. If _return_ is *undefined*, return Completion(_received_).
         1. Let _innerReturnResult_ be ? Call(_return_, _iterator_, « _received_.[[value]] »).
         1. <ins>If _iteratorKind_ is ~async~, then</ins>
-          1. <ins>Let _innerResult_ be ? AwaitIterResultObject(_innerResult_).</ins>
+          1. <ins>Let _innerResult_ be ? AsyncFunctionAwait(_innerResult_).</ins>
         1. If Type(_innerReturnResult_) is not Object, throw a *TypeError* exception.
         1. Let _done_ be ? IteratorComplete(_innerReturnResult_).
         1. If _done_ is *true*, then
