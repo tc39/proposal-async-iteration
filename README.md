@@ -112,7 +112,6 @@ differences:
 - When called, async generator functions return an object implementing the
   *AsyncIterator* interface.
 - Await expressions and for-await statements are allowed.
-- Yielded promises are implicitly unwrapped before they are packed into an *IteratorResult* object.
 - The behavior of `yield*` is modified to support delegation to async iterators.
 
 For example:
@@ -212,11 +211,9 @@ function asyncGeneratorStart(generator) {
 
     function resume(type, value) {
 
-        let result;
-
         try {
 
-            result = generator[type](value);
+            let result = generator[type](value);
 
             if (IsIterAwaitResultObject(result)) {
 
@@ -226,9 +223,7 @@ function asyncGeneratorStart(generator) {
 
             } else {
 
-                Promise.resolve(result.value).then(
-                    x => settle(result.done ? "return" : "normal", x),
-                    x => settle("throw", x));
+                settle(result.done ? "return" : "normal", x);
             }
 
         } catch (x) {

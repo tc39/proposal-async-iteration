@@ -67,11 +67,9 @@ function asyncGeneratorStart(generator) {
 
     function resume(type, value) {
 
-        let result;
-
         try {
 
-            result = generator[type](value);
+            let result = generator[type](value);
 
             if (IsIterAwaitResultObject(result)) {
 
@@ -81,9 +79,7 @@ function asyncGeneratorStart(generator) {
 
             } else {
 
-                Promise.resolve(result.value).then(
-                    x => settle(result.done ? "return" : "normal", x),
-                    x => settle("throw", x));
+                settle(result.done ? "return" : "normal", x);
             }
 
         } catch (x) {
