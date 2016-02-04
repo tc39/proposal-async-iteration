@@ -30,7 +30,7 @@
     1. If _return_ is *undefined*, return Completion(_completion_).
     1. Let _innerResult_ be Call(_return_, _iterator_, « »).
     1. <ins>If _innerResult_ is not an abrupt completion and _iteratorKind_ is ~async~,</ins>
-      1. <ins>Let _innerResult_ be AsyncFunctionAwait(_innerResult_).</ins>
+      1. <ins>Let _innerResult_ be AsyncFunctionAwait(_innerResult_.[[value]]).</ins>
     1. If _completion_.[[type]] is ~throw~, return Completion(_completion_).
     1. If _innerResult_.[[type]] is ~throw~, return Completion(_innerResult_).
     1. If Type(_innerResult_.[[value]]) is not Object, throw a *TypeError* exception.
