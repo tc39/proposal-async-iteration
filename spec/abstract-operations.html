@@ -49,7 +49,6 @@
       1. Let _result_ be the result of evaluating _generatorBody_.
       1. Assert: If we return here, the async generator either threw an exception or performed either an implicit or explicit return.
       1. Remove _genContext_ from the execution context stack and restore the execution context that is at the top of the execution context stack as the running execution context.
-      1. TODO: The stuff below here can execute code.  Does it need to execute code *before* it changes the current execution context?  In particular, I'm thinking about realm issues.
       1. Set _generator_'s [[AsyncGeneratorState]] internal slot to `"completed"`.
       1. If _result_ is a normal completion, let _resultValue_ be *undefined*.
       1. Else,
