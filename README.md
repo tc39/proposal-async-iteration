@@ -53,7 +53,7 @@ interface AsyncIterator {
 For example:
 
 ```js
-asyncIterator.next().then(value => console.log(value));
+asyncIterator.next().then(result => console.log(result.value));
 ```
 
 Furthermore, we introduce a new symbol used for obtaining an async iterator from a given
