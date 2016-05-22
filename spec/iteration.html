@@ -40,7 +40,7 @@
         <tr>
           <td>`next`</td>
           <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
-          <td>The returned Promise, when fulfilled, must wrap an object which conforms to the <i>IteratorResult</i> interface. If a previous call to the `next` method of an <i>AsyncIterator</i> has returned a Promise for an <i>IteratorResult</i> object whose `done` property is *true*, then all subsequent calls to the `next` method of that object should also return a Promise for an <i>IteratorResult</i> object whose `done` property is *true*. However, this requirement is not enforced.
+          <td>The returned Promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. If a previous call to the `next` method of an <i>AsyncIterator</i> has returned a Promise for an <i>IteratorResult</i> object whose `done` property is *true*, then all subsequent calls to the `next` method of that object should also return a Promise for an <i>IteratorResult</i> object whose `done` property is *true*. However, this requirement is not enforced.
           </td>
         </tr>
         </tbody>
@@ -60,13 +60,13 @@
         <tr>
           <td>`return`</td>
           <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
-          <td>The returned Promise, when fulfilled, must wrap an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller does not intend to make any more `next` method calls to the <i>AsyncIterator</i>. The returned Promise will wrap an <i>IteratorResult</i> object which will typically have a `done` property whose value is *true*, and a `value` property with the value passed as the argument of the `return` method. However, this requirement is not enforced.
+          <td>The returned Promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller does not intend to make any more `next` method calls to the <i>AsyncIterator</i>. The returned Promise will fulfill with an <i>IteratorResult</i> object which will typically have a `done` property whose value is *true*, and a `value` property with the value passed as the argument of the `return` method. However, this requirement is not enforced.
           </td>
         </tr>
         <tr>
           <td>`throw`</td>
           <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
-          <td>The returned Promise, when fulfilled, must wrap an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller has detected an error condition. The argument may be used to identify the error condition and typically will be an exception object. A typical response is to return a rejected Promise which wraps the value passed as the argument. If the returned Promise is fulfilled, the wrapped <i>IteratorResult</i> object will typically have a `done` property whose value is *true*.
+          <td>The returned Promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller has detected an error condition. The argument may be used to identify the error condition and typically will be an exception object. A typical response is to return a rejected Promise which rejects with the value passed as the argument. If the returned Promise is fulfilled, the <i>IteratorResult</i> fulfillment value will typically have a `done` property whose value is *true*.
           </td>
         </tr>
         </tbody>
