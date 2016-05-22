@@ -55,7 +55,7 @@
         1. Let _resultValue_ be _result_.[[value]].
         1. If _result_.[[type]] is not ~return~, then
           1. Return ! AsyncGeneratorReject(_generator_, _resultValue_).
-      1. Return ! AsyncGeneratorFulfill(_generator_, CreateIterResultObject(_resultValue_, *true*)).
+      1. Return ! AsyncGeneratorResolve(_generator_, CreateIterResultObject(_resultValue_, *true*)).
     1. Set _generator_'s [[AsyncGeneratorContext]] internal slot to _genContext_.
     1. Set _generator_'s [[AsyncGeneratorState]] internal slot to `"suspendedStart"`.
     1. Set _generator_'s [[AsyncGeneratorQueue]] internal slot to a new empty List.
@@ -63,8 +63,8 @@
   </emu-alg>
 </emu-clause>
 
-<emu-clause id="sec-asyncgeneratorfulfill" aoid="AsyncGeneratorFulfill">
-  <h1>AsyncGeneratorFulfill ( _generator_, _iteratorResult_ )</h1>
+<emu-clause id="sec-asyncgeneratorresolve" aoid="AsyncGeneratorResolve">
+  <h1>AsyncGeneratorResolve ( _generator_, _iteratorResult_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
     1. Assert: _iteratorResult_ is an Object that implements the IteratorResult interface.
@@ -108,11 +108,11 @@
       1. If _state_ is `"completed"`, then
         1. If _completion_.[[type]] is ~return~, then
           1. Let _result_ be CreateIterResultObject(_completion_.[[value]], *true*).
-          1. Return AsyncGeneratorFulfill(_generator_, _result_).
+          1. Return AsyncGeneratorResolve(_generator_, _result_).
         1. Return AsyncGeneratorReject(_generator_, _completion_.[[value]]).
     1. Else,
       1. If _state_ is `"completed"`, then
-        1. Return AsyncGeneratorFulfill(_generator_, CreateIterResultObject(*undefined*, *true*)).
+        1. Return AsyncGeneratorResolve(_generator_, CreateIterResultObject(*undefined*, *true*)).
     1. Assert: _state_ is either `"suspendedStart"` or `"suspendedYield"`.
     1. Let _genContext_ be the value of _generator_'s [[AsyncGeneratorContext]] internal slot.
     1. Let _callerContext_ be the running execution context.
@@ -171,7 +171,7 @@
     1. Set the code evaluation state of _genContext_ such that when evaluation is resumed with a Completion _resumptionValue_ the following steps will be performed:
       1. Return _resumptionValue_.
       1. NOTE: This returns to the evaluation of the |YieldExpression| production that originally called this abstract operation.
-    1. <ins>If _generatorKind_ is ~async~, return ! AsyncGeneratorFulfill(_generator_, _iterNextObj_)</ins>.
+    1. <ins>If _generatorKind_ is ~async~, return ! AsyncGeneratorResolve(_generator_, _iterNextObj_)</ins>.
     1. <ins>Else, return NormalCompletion(_iterNextObj_)</ins>.
     1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.
   </emu-alg>
