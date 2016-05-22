@@ -69,6 +69,7 @@
     1. Assert: _generator_ is an AsyncGenerator instance.
     1. Assert: _iteratorResult_ is an Object that implements the IteratorResult interface.
     1. Let _queue_ be the value of the [[AsyncGeneratorQueue]] internal slot of _generator_.
+    1. Assert: _queue_ is not an empty List.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
     1. Let _capability_ be _next_.[[Capability]].
     1. Perform ! Call(_capability_.[[Resolve]], *undefined*, « _iteratorResult_ »).
@@ -82,6 +83,7 @@
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
     1. Let _queue_ be the value of the [[AsyncGeneratorQueue]] internal slot of _generator_.
+    1. Assert: _queue_ is not an empty List.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
     1. Let _capability_ be _next_.[[Capability]].
     1. Perform ! Call(_capability_.[[Reject]], *undefined*, « _exception_ »).
