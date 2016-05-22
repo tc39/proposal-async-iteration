@@ -57,7 +57,7 @@
       1. Let _obj_ be ToObject(_exprValue_).
       1. Return ? _obj_.[[Enumerate]]().
     1. Else,
-      1. <ins>If _iterationKind_ is ~async-iterate~, let _iteratorHint_ be ~async~,</ins>
+      1. <ins>If _iterationKind_ is ~async-iterate~, let _iteratorHint_ be ~async~.</ins>
       1. <ins>Else, let _iteratorHint_ be ~normal~.</ins>
       1. Return ? GetIterator(_exprValue_, <ins>_iteratorHint_</ins>).
   </emu-alg>
