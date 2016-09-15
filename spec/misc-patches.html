@@ -1,0 +1,23 @@
+<p>The specification contains many locations which mention generators that also should be updated to mention async generators. The ones with significant normative impact have been patched above. Here we attempt to enumerate all other places that will need minor updates.</p>
+
+<ul>
+  <li><emu-xref href="#sec-global-environment-records" title></emu-xref> must mention |AsyncGenerationDeclaration| wherever it mentions |GeneratorDeclaration|.
+  <li><emu-xref href="#sec-types-of-source-code" title></emu-xref> must mention |AsyncGeneratorDeclaration| and |AsyncGeneratorExpression|, as well as "Async Generator Definitions (<emu-xref href="#sec-async-generator-function-definitions"></emu-xref>)" in the NOTE.
+  <li><emu-xref href="#sec-strict-mode-code" title></emu-xref> must mention |AsyncGeneratorDeclaration|, |AsyncGeneratorExpression|, and the `AsyncGenerator` constructor.
+  <li>|PrimaryExpression| must contain |AsyncGeneratorExpression|, and all places that reference it and include |GeneratorExpression| should also include |AsyncGeneratorExpression|.
+  <li><emu-xref href="#sec-function-defining-expressions" title></emu-xref> must have the additional sentence "See <emu-xref href="#sec-async-generator-function-definitions"></emu-xref> for <emu-grammar>PrimaryExpression : AsyncGeneratorExpression</emu-grammar>."
+  <li>|HoistableDeclaration| must contain |AsyncGeneratorDeclaration| (appropriately parametrized).
+  <li><emu-xref href="#sec-static-semantics-declarationpart" title></emu-xref> must contain an analogous line for |AsyncGeneratorDeclaration|.
+  <li><emu-xref href="#sec-statement-semantics-runtime-semantics-evaluation" title></emu-xref> must add |AsyncGeneratorDeclaration| to the case that currently contains only |GeneratorDeclaration|.
+  <li><emu-xref href="#sec-blockdeclarationinstantiation" title></emu-xref> must be expanded to include |AsyncGeneratorDeclaration| in addition to |GeneratorDeclaration| and |FunctionDeclaration|.
+  <li>|MethodDefinition| must contain |AsyncGeneratorMethod| (appropriately parametrized).
+  <li><emu-xref href="#sec-method-definitions-runtime-semantics-propertydefinitionevaluation" title></emu-xref> must contain an analogous "See <emu-xref href="#sec-async-generator-function-definitions"></emu-xref>" line for |AsyncGeneratorMethod|.
+  <li><emu-xref href="#sec-isintailposition" title></emu-xref> must be updated to mention |AsyncGeneratorBody| alongside |GeneratorBody|.
+  <li><emu-xref href="#sec-globaldeclarationinstantiation" title></emu-xref> must be updated to mention |AsyncGeneratorDeclaration| alongside |FunctionDeclaration| and |GeneratorDeclaration|.
+  <li><emu-xref href="#sec-moduledeclarationinstantiation" title></emu-xref> must be updated to mention |AsyncGeneratorDeclaration| alongside |FunctionDeclaration| and |GeneratorDeclaration|.
+  <li><emu-xref href="#sec-forbidden-extensions" title></emu-xref> must be updated to mention the various parallel async generator constructs alongside the usual ones in the `"caller"` and `"arguments"` prohibitions.
+  <li><emu-xref href="#sec-evaldeclarationinstantiation" title></emu-xref> must be updated to mention |AsyncGeneratorDeclaration| alongside |FunctionDeclaration| and |GeneratorDeclaration|.
+  <li><emu-xref href="#sec-function-constructor" title></emu-xref> must also reference the `AsyncGeneratorFunction` subclass.
+  <li><emu-xref href="#sec-function.prototype.tostring" title></emu-xref> must reference |AsyncGeneratorDeclaration|, |AsyncGeneratorExpression|, and |AsyncGeneratorMethod| in the appropriately-analogous places.
+  <li><emu-xref href="#sec-function-instances-prototype" title></emu-xref> must also exclude |MethodDefinition|s that are |AsyncGeneratorMethod|s.
+</ul>
