@@ -1,16 +1,3 @@
-<emu-clause id="sec-asyncgeneratorfunctioncreate" aoid="AsyncGeneratorFunctionCreate">
-  <h1>AsyncGeneratorFunctionCreate (_kind_, _ParameterList_, _Body_, _Scope_, _Strict_)</h1>
-  <p>The abstract operation AsyncGeneratorFunctionCreate requires the arguments: _kind_ which is one of (~Normal~, ~Method~), a parameter list production specified by _ParameterList_, a body production specified by _Body_, a Lexical Environment specified by _Scope_, and a Boolean flag _Strict_. AsyncGeneratorFunctionCreate performs the following steps:</p>
-  <emu-alg>
-    1. Let _functionPrototype_ be the intrinsic object %AsyncGenerator%.
-    1. Let _F_ be ! FunctionAllocate(_functionPrototype_, _Strict_, `"generator"`).
-    1. Return ! FunctionInitialize(_F_, _kind_, _ParameterList_, _Body_, _Scope_).
-  </emu-alg>
-  <emu-note>
-    <p>This abstract operation belongs under section 9.2 (ECMAScript Function Objects).</p>
-  </emu-note>
-</emu-clause>
-
 <emu-clause id="sec-asyncgeneratorrequest-records">
   <h1>AsyncGeneratorRequest Records</h1>
   <p>The AsyncGeneratorRequest is a Record value used to store information about how an async generator should be resumed and contains capabilities for fulfilling or rejecting the corresponding promise.</p>
