@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "proposal-async-iteration",
+  "description": "Async iteration proposal for JavaScript (build setup only)",
+  "license": "MIT",
+  "repository": "tc39/proposal-async-iteration",
+  "scripts": {
+    "spec": "ecmarkup spec/index.html out/index.html",
+    "watch": "ecmarkup --watch spec/index.html out/index.html"
+  },
+  "devDependencies": {
+    "ecmarkup": "^3.5.1"
+  }
+}

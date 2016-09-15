@@ -1,3 +1,5 @@
-.DS_Store
-_*
-node_modules
+/node_modules/
+/out/
+/npm-debug.log
+
+deploy_key

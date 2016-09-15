@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - stable
+script:
+  - bash ./deploy.sh
+env:
+  global:
+    - ENCRYPTION_LABEL: "a99c6f361492"
+    - COMMIT_AUTHOR_EMAIL: "d@domenic.me"
