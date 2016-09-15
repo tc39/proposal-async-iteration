@@ -1,241 +1,77 @@
-## Asynchronous Iterators for ECMAScript
+# Asynchronous Iterators for JavaScript
 
+## Overview and motivation
 
-### Overview and Motivation
+The iterator interface (introduced in ECMAScript 2015) is a sequential data access protocol which enables the development of generic and composable data consumers and transformers. Their primary interface is a `next()` method which returns a `{ value, done }` tuple, where `done` is a boolean indicating whether the end of the iterator has been reached, and `value` is the yielded value in the sequence.
 
-The iterator interface (introduced in ECMAScript version 6) is a sequential data access
-protocol which enables the development of generic and composable data consumers and
-transformers.  Generator functions (also introduced in ECMAScript 6) provide a
-convenient way to write iterator-based data sources using resumable functions.
+Since both the next value in the sequence and the "done" state of the data source must be known at the time that the iterator method returns, iterators are only suitable for representing *synchronous* data sources. While many data sources encountered by the JavaScript programmer are synchronous (such as in-memory lists and other data structures), many others are not. For instance, any data source which requires I/O access will be typically represented using a event-based or streaming *asynchronous* API. Unfortunately, iterators cannot be used to represent such data sources.
+
+(Even an iterator of promises is not sufficient, since that only allows asynchronous determination of the value, but requires synchronous determination of the "done" state.)
+
+In order to provide a generic data access protocol for asynchronous data sources, we introduce the **AsyncIterator** interface, an asynchronous iteration statement (`for`-`await`-`of`), and async generator functions.
+
+## Async iterators and async iterables
+
+An async iterator is much like an iterator, except that its `next()` method returns a promise for a `{ next, done }` pair. As noted above, we must return a promise for the iterator result pair because both the next value and the "done" state of the iterator are potentially unknown at the time the iterator method returns.
 
 ```js
-interface Iterator {
-    next(value) : IteratorResult;
-    [optional] throw(value) : IteratorResult;
-    [optional] return(value) : IteratorResult;
-}
+const { value, done } = syncIterator.next();
 
-interface IteratorResult {
-    value : any;
-    done : bool;
+asyncIterator.next().then(({ value, done }) => /* ... */);
+```
+
+Furthermore, we introduce a new symbol used for obtaining an async iterator from a given object, `Symbol.asyncIterator`. This allows arbitrary objects to advertise that they are _async iterables_, similar to how `Symbol.iterator` allows you to advertise being a normal, synchronous iterable. An example of a class that might use this is a [readable stream](https://streams.spec.whatwg.org/#rs-class).
+
+Implicit in the concept of the async iterator is the concept of a **request queue**. Since iterator methods may be called many times before the result of a prior request is resolved, each method call must be queued internally until all previous request operations have completed.
+
+## The async iteration statement: `for`-`await`-`of`
+
+We introduce a variation of the `for-of` iteration statement which iterates over async iterable objects. An example usage would be:
+
+```js
+for await (const line of readLines(filePath)) {
+  console.log(line);
 }
 ```
 
-Since both the next value in the sequence and the "done" state of the data source must be
-known at the time that the iterator method returns, iterators are only suitable for
-representing *synchronous* data sources.  While many data sources encountered by the
-Javascript programmer are synchronous (such as in-memory lists and other data structures),
-many are not.  For instance, any data source which requires IO access will be typically
-represented using a callback or event-based *asynchronous* API. Unfortunately, iterators
-cannot be used to represent such data sources.
+Async for-of statements are only allowed within async functions and async generator functions (see below for the latter).
 
-In order to provide a generic data access protocol for asynchronous data sources, we
-introduce the **AsyncIterator** interface, an asynchronous iteration statement, and
-async generator functions.
+During execution, an async iterator is created from the data source using the `[Symbol.asyncIterator]()` method.
 
-### The AsyncIterator Interface
+Each time we access the next value in the sequence, we implicitly `await` the promise returned from the iterator method.
 
-The **AsyncIterator** interface is identical to the **Iterator** interface, except that
-each of the iterator methods returns a promise for an iterator result pair.
+### Async generator functions
 
-*NOTE: We must return a promise for the `{next, done}` pair because both the next value
-and the "done" state of the iterator are potentially unknown at the time the iterator
-method returns.*
+Async generator functions are similar to generator functions, with the following differences:
 
-```js
-interface AsyncIterator {
-    next(value) : Promise<IteratorResult>;
-    [optional] throw(value) : Promise<IteratorResult>;
-    [optional] return(value) : Promise<IteratorResult>;
-}
-```
+- When called, async generator functions return an object, an _async generator_ whose methods (`next`, `throw`, and `return`) return promises for `{ next, done }`, instead of directly returning `{ next, done }`. This automatically makes the returned async generator objects _async iterators_.
+- `await` expressions and `for`-`await`-`of` statements are allowed.
+- The behavior of `yield*` is modified to support delegation to async iterables.
 
 For example:
 
 ```js
-asyncIterator.next().then(result => console.log(result.value));
-```
+async function* readLines(path) {
+  let file = await fileOpen(path);
 
-Furthermore, we introduce a new symbol used for obtaining an async iterator from a given
-object.
-
-```js
-interface AsyncIterable {
-    [Symbol.asyncIterator]() : AsyncIterator
+  try {
+    while (!file.EOF) {
+      yield await file.readLine();
+    }
+  } finally {
+    await file.close();
+  }
 }
 ```
 
-Implicit in the concept of the async iterator is the concept of a **request queue**.
-Since iterator methods may be called many times before the result of a prior request is
-resolved, each method call must be queued internally until all previous request operations
-have completed.
+This function then returns an async generator object, whcih can be consumed with `for`-`await`-`of` as shown in the previous example.
 
+## Implementation Status
 
-### The Async Iteration Statement
+As a stage 2 proposal, implementation has not yet begun in any JavaScript engines. Transpilers, however...
 
-We introduce a variation of the `for-of` iteration statement which iterates over
-**AsyncIterator** objects.
+The [Regenerator](https://github.com/facebook/regenerator) project provides a working [polyfill](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/runtime.js#L136) for the `AsyncIterator` interface and transforms `async` generator functions into plain ECMAScript 5 functions that return `AsyncIterator` objects: [examples](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/test/async.es6.js#L259). Regenerator does not yet support the `for await`-`of` async iteration statement syntax.
 
-```
-IterationStatement :
-    for await ( LeftHandSideExpression of AssignmentExpression ) Statement
+The [Babylon parser](https://github.com/babel/babylon) project supports parsing async generator functions and `for`-`await`-`of` statements. However, the [corresponding pull request to implement the semantics in Babel](https://github.com/babel/babel/pull/3473) seems stalled.
 
-IterationStatement :
-    for await ( var ForBinding of AssignmentExpression ) Statement
-
-IterationStatement :
-    for await ( ForDeclaration of AssignmentExpression ) Statement
-```
-
-For example:
-
-```js
-for await (let line of readLines(filePath)) {
-    print(line);
-}
-```
-
-Async for-of statements are only allowed within async functions and async generator
-functions.
-
-During execution, an async iterator is created from the data source using the
-**Symbol.asyncIterator** method.
-
-Each time we access the next value in the sequence, we implicitly **await** the promise
-returned from the iterator method.
-
-### Async Generator Functions
-
-Async generator functions are similar to generator functions, with the following
-differences:
-
-- When called, async generator functions return an object implementing the
-  *AsyncIterator* interface.
-- Await expressions and for-await statements are allowed.
-- The behavior of `yield*` is modified to support delegation to async iterators.
-
-For example:
-
-```js
-async function *readLines(path) {
-
-    let file = await fileOpen(path);
-
-    try {
-
-        while (!file.EOF)
-            yield file.readLine();
-
-    } finally {
-
-        await file.close();
-    }
-}
-```
-
-### Async Generator Function Rewrite
-
-```
-async function * <Name>? <ArgumentList> <Body>
-
-=>
-
-function <Name>? <ArgumentList> {
-
-    return asyncGeneratorStart(function*() <Body>.apply(this, arguments));
-}
-```
-
-To desugar `await` within async generator functions, we introduce the **IterAwaitResult**
-object. An **IterAwaitResult** is an iterator result object which is branded to indicate
-that it is the result of an await expression and not a yield expression.  The async
-generator "runner" uses this brand to tell whether it should resolve the result value and
-continue or return the result value to the generator client.
-
-Such an object would not be necessary in the actual specification.
-
-```js
-function asyncGeneratorStart(generator) {
-
-    let current = null,
-        queue = [];
-
-    return {
-
-        next(value)   { return enqueue("next", value) },
-        throw(value)  { return enqueue("throw", value) },
-        return(value) { return enqueue("return", value) },
-        [Symbol.asyncIterator]() { return this },
-    };
-
-    function enqueue(type, value) {
-
-        return new Promise((resolve, reject) => {
-
-            queue.push({ type, value, resolve, reject });
-            next();
-        });
-    }
-
-    function next() {
-
-        if (current || queue.length === 0)
-            return;
-
-        current = queue.shift();
-        resume(current.type, current.value);
-    }
-
-    function settle(type, value) {
-
-        let capability = current;
-        current = null;
-
-        switch (type) {
-
-             case "throw":
-                capability.reject(value);
-                break;
-
-            case "return":
-                capability.resolve({ value, done: true });
-                break;
-
-            default:
-                capability.resolve({ value, done: false });
-                break;
-        }
-
-        next();
-    }
-
-    function resume(type, value) {
-
-        try {
-
-            let result = generator[type](value);
-
-            if (IsIterAwaitResultObject(result)) {
-
-                Promise.resolve(result.value).then(
-                    x => resume("next", x),
-                    x => resume("throw", x));
-
-            } else {
-
-                settle(result.done ? "return" : "normal", x);
-            }
-
-        } catch (x) {
-
-            settle("throw", x);
-        }
-    }
-}
-```
-
-### Implementation Status
-
-The [Regenerator](https://github.com/facebook/regenerator) project provides a working [polyfill](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/runtime.js#L136) for the `AsyncIterator` interface and transforms `async` generator functions into plain ECMAScript 5 functions that return `AsyncIterator` objects: [examples](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/test/async.es6.js#L259).
-
-Note that Regenerator does not yet support the `for await`-`of` async iteration statement syntax.
+The ["Async Generator Rewrite"](Async Generator Rewrite.md) document outlines the basic code changes for rewriting an async generator function into a normal generator function, which could be informative for implementers.
