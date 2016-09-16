@@ -1,0 +1,432 @@
+<h2>Syntax</h2>
+<emu-grammar>
+  IterationStatement[Yield, Await, Return] :
+    `do` Statement[?Yield, ?Await, ?Return] `while` `(` Expression[+In, ?Yield, ?Await] `)` `;`
+    `while` `(` Expression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` [lookahead &lt;! {`let [`}] Expression[~In, ?Yield, ?Await]? `;` Expression[+In, ?Yield, ?Await]? `;` Expression[+In, ?Yield, ?Await]? `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` `var` VariableDeclarationList[~In, ?Yield, ?Await] `;` Expression[+In, ?Yield, ?Await]? `;` Expression[+In, ?Yield, ?Await]? `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` LexicalDeclaration[~In, ?Yield, ?Await] Expression[+In, ?Yield, ?Await]? `;` Expression[+In, ?Yield, ?Await]? `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` [lookahead &lt;! {`let [`}] LeftHandSideExpression[?Yield, ?Await] `in` Expression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` `var` ForBinding[?Yield, ?Await] `in` Expression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` ForDeclaration[?Yield, ?Await] `in` Expression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` [lookahead != `let` ] LeftHandSideExpression[?Yield, ?Await] `of` AssignmentExpression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` `var` ForBinding[?Yield, ?Await] `of` AssignmentExpression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    `for` `(` ForDeclaration[?Yield, ?Await] `of` AssignmentExpression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]
+    <ins>`for` `await` `(` [lookahead != `let` ] LeftHandSideExpression[?Yield, ?Await] `of` AssignmentExpression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]</ins>
+    <ins>`for` `await` `(` `var` ForBinding[?Yield, ?Await] `of` AssignmentExpression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]</ins>
+    <ins>`for` `await` `(` ForDeclaration[?Yield, ?Await] `of` AssignmentExpression[+In, ?Yield, ?Await] `)` Statement[?Yield, ?Await, ?Return]</ins>
+
+  ForDeclaration[Yield, Await] :
+    LetOrConst ForBinding[?Yield, ?Await]
+
+  ForBinding[Yield, Await] :
+    BindingIdentifier[?Yield, ?Await]
+    BindingPattern[?Yield, ?Await]
+</emu-grammar>
+<emu-note>
+  <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+</emu-note>
+
+<emu-clause id="sec-iteration-statements-semantics">
+  <h1>Semantics</h1>
+
+  <!-- es6num="13.7.1.1" -->
+  <emu-clause id="sec-semantics-static-semantics-early-errors">
+    <h1>Static Semantics: Early Errors</h1>
+    <emu-grammar>
+      IterationStatement :
+        `do` Statement `while` `(` Expression `)` `;`
+        `while` `(` Expression `)` Statement
+        `for` `(` Expression? `;` Expression? `;` Expression? `)` Statement
+        `for` `(` `var` VariableDeclarationList `;` Expression? `;` Expression? `)` Statement
+        `for` `(` LexicalDeclaration Expression? `;` Expression? `)` Statement
+        `for` `(` LeftHandSideExpression `in` Expression `)` Statement
+        `for` `(` `var` ForBinding `in` Expression `)` Statement
+        `for` `(` ForDeclaration `in` Expression `)` Statement
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <ul>
+      <li>
+        It is a Syntax Error if IsLabelledFunction(|Statement|) is *true*.
+      </li>
+    </ul>
+    <emu-note>
+      <p>It is only necessary to apply this rule if the extension specified in <emu-xref href="#sec-labelled-function-declarations"></emu-xref> is implemented.</p>
+    </emu-note>
+  </emu-clause>
+</emu-clause>
+
+<emu-clause id="sec-for-in-and-for-of-statements">
+  <h1>The `for`-`in`<del> and</del><ins>,</ins> `for`-`of`<ins>, and `for`-`await`-`of`</ins> Statements</h1>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-static-semantics-early-errors">
+    <h1>Static Semantics: Early Errors</h1>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` LeftHandSideExpression `in` Expression `)` Statement
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <ul>
+      <li>
+        It is a Syntax Error if |LeftHandSideExpression| is either an |ObjectLiteral| or an |ArrayLiteral| and if the lexical token sequence matched by |LeftHandSideExpression| cannot be parsed with no tokens left over using |AssignmentPattern| as the goal symbol.
+      </li>
+    </ul>
+    <p>If |LeftHandSideExpression| is either an |ObjectLiteral| or an |ArrayLiteral| and if the lexical token sequence matched by |LeftHandSideExpression| can be parsed with no tokens left over using |AssignmentPattern| as the goal symbol then the following rules are not applied. Instead, the Early Error rules for |AssignmentPattern| are used.</p>
+    <ul>
+      <li>
+        It is a Syntax Error if IsValidSimpleAssignmentTarget of |LeftHandSideExpression| is *false*.
+      </li>
+      <li>
+        It is a Syntax Error if the |LeftHandSideExpression| is <emu-grammar>CoverParenthesizedExpressionAndArrowParameterList : `(` Expression `)`</emu-grammar> and |Expression| derives a production that would produce a Syntax Error according to these rules if that production is substituted for |LeftHandSideExpression|. This rule is recursively applied.
+      </li>
+    </ul>
+    <emu-note>
+      <p>The last rule means that the other rules are applied even if parentheses surround |Expression|.</p>
+    </emu-note>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` ForDeclaration `in` Expression `)` Statement
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <ul>
+      <li>
+        It is a Syntax Error if the BoundNames of |ForDeclaration| contains `"let"`.
+      </li>
+      <li>
+        It is a Syntax Error if any element of the BoundNames of |ForDeclaration| also occurs in the VarDeclaredNames of |Statement|.
+      </li>
+      <li>
+        It is a Syntax Error if the BoundNames of |ForDeclaration| contains any duplicate entries.
+      </li>
+    </ul>
+  </emu-clause>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-static-semantics-containsduplicatelabels">
+    <h1>Static Semantics: ContainsDuplicateLabels</h1>
+    <p>With argument _labelSet_.</p>
+    <emu-see-also-para op="ContainsDuplicateLabels"></emu-see-also-para>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` LeftHandSideExpression `in` Expression `)` Statement
+        `for` `(` `var` ForBinding `in` Expression `)` Statement
+        `for` `(` ForDeclaration `in` Expression `)` Statement
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return ContainsDuplicateLabels of |Statement| with argument _labelSet_.
+    </emu-alg>
+    <emu-note>
+      <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-static-semantics-containsundefinedbreaktarget">
+    <h1>Static Semantics: ContainsUndefinedBreakTarget</h1>
+    <p>With argument _labelSet_.</p>
+    <emu-see-also-para op="ContainsUndefinedBreakTarget"></emu-see-also-para>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` LeftHandSideExpression `in` Expression `)` Statement
+        `for` `(` `var` ForBinding `in` Expression `)` Statement
+        `for` `(` ForDeclaration `in` Expression `)` Statement
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return ContainsUndefinedBreakTarget of |Statement| with argument _labelSet_.
+    </emu-alg>
+    <emu-note>
+      <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-static-semantics-containsundefinedcontinuetarget">
+    <h1>Static Semantics: ContainsUndefinedContinueTarget</h1>
+    <p>With arguments _iterationSet_ and _labelSet_.</p>
+    <emu-see-also-para op="ContainsUndefinedContinueTarget"></emu-see-also-para>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` LeftHandSideExpression `in` Expression `)` Statement
+        `for` `(` `var` ForBinding `in` Expression `)` Statement
+        `for` `(` ForDeclaration `in` Expression `)` Statement
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return ContainsUndefinedContinueTarget of |Statement| with arguments _iterationSet_ and &laquo; &raquo;.
+    </emu-alg>
+    <emu-note>
+      <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-static-semantics-vardeclarednames">
+    <h1>Static Semantics: VarDeclaredNames</h1>
+    <emu-see-also-para op="VarDeclaredNames"></emu-see-also-para>
+    <emu-grammar>IterationStatement : `for` `(` LeftHandSideExpression `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Return the VarDeclaredNames of |Statement|.
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` `var` ForBinding `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _names_ be the BoundNames of |ForBinding|.
+      1. Append to _names_ the elements of the VarDeclaredNames of |Statement|.
+      1. Return _names_.
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` ForDeclaration `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Return the VarDeclaredNames of |Statement|.
+    </emu-alg>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return the VarDeclaredNames of |Statement|.
+    </emu-alg>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Let _names_ be the BoundNames of |ForBinding|.
+      1. Append to _names_ the elements of the VarDeclaredNames of |Statement|.
+      1. Return _names_.
+    </emu-alg>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return the VarDeclaredNames of |Statement|.
+    </emu-alg>
+    <emu-note>
+      <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-static-semantics-varscopeddeclarations">
+    <h1>Static Semantics: VarScopedDeclarations</h1>
+    <emu-see-also-para op="VarScopedDeclarations"></emu-see-also-para>
+    <emu-grammar>IterationStatement : `for` `(` LeftHandSideExpression `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Return the VarScopedDeclarations of |Statement|.
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` `var` ForBinding `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _declarations_ be a List containing |ForBinding|.
+      1. Append to _declarations_ the elements of the VarScopedDeclarations of |Statement|.
+      1. Return _declarations_.
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` ForDeclaration `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Return the VarScopedDeclarations of |Statement|.
+    </emu-alg>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return the VarScopedDeclarations of |Statement|.
+    </emu-alg>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Let _declarations_ be a List containing |ForBinding|.
+      1. Append to _declarations_ the elements of the VarScopedDeclarations of |Statement|.
+      1. Return _declarations_.
+    </emu-alg>
+    <emu-grammar>
+      IterationStatement :
+        `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement
+        <ins>`for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. Return the VarScopedDeclarations of |Statement|.
+    </emu-alg>
+    <emu-note>
+      <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-for-in-and-for-of-statements-runtime-semantics-labelledevaluation">
+    <h1>Runtime Semantics: LabelledEvaluation</h1>
+    <p>With argument _labelSet_.</p>
+    <emu-see-also-para op="LabelledEvaluation"></emu-see-also-para>
+
+    <emu-grammar>IterationStatement : `for` `(` LeftHandSideExpression `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _keyResult_ be ? ForIn/OfHeadEvaluation(&laquo; &raquo;, |Expression|, ~enumerate~).
+      1. Return ? ForIn/OfBodyEvaluation(|LeftHandSideExpression|, |Statement|, _keyResult_, ~assignment~, _labelSet_).
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` `var` ForBinding `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _keyResult_ be ? ForIn/OfHeadEvaluation(&laquo; &raquo;, |Expression|, ~enumerate~).
+      1. Return ? ForIn/OfBodyEvaluation(|ForBinding|, |Statement|, _keyResult_, ~varBinding~, _labelSet_).
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` ForDeclaration `in` Expression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(BoundNames of |ForDeclaration|, |Expression|, ~enumerate~).
+      1. Return ? ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_).
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(&laquo; &raquo;, |AssignmentExpression|, ~iterate~).
+      1. Return ? ForIn/OfBodyEvaluation(|LeftHandSideExpression|, |Statement|, _keyResult_, ~assignment~, _labelSet_).
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(&laquo; &raquo;, |AssignmentExpression|, ~iterate~).
+      1. Return ? ForIn/OfBodyEvaluation(|ForBinding|, |Statement|, _keyResult_, ~varBinding~, _labelSet_).
+    </emu-alg>
+    <emu-grammar>IterationStatement : `for` `(` ForDeclaration `of` AssignmentExpression `)` Statement</emu-grammar>
+    <emu-alg>
+      1. Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(BoundNames of |ForDeclaration|, |AssignmentExpression|, ~iterate~).
+      1. Return ? ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_).
+    </emu-alg>
+
+    <emu-grammar>
+      <ins>IterationStatement : `for` `await` `(` LeftHandSideExpression `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. <ins>Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(« », |AssignmentExpression|, ~async-iterate~).</ins>
+      1. <ins>Return ? ForIn/OfBodyEvaluation(|LeftHandSideExpression|, |Statement|, _keyResult_, ~assignment~, _labelSet_, ~async~).</ins>
+    </emu-alg>
+    <emu-grammar>
+      <ins>IterationStatement : `for` `await` `(` `var` ForBinding `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. <ins>Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(« », |AssignmentExpression|, ~async-iterate~).</ins>
+      1. <ins>Return ? ForIn/OfBodyEvaluation(|ForBinding|, |Statement|, _keyResult_, ~varBinding~, _labelSet_, ~async~).</ins>
+    </emu-alg>
+    <emu-grammar>
+      <ins>IterationStatement : `for` `await` `(` ForDeclaration `of` AssignmentExpression `)` Statement</ins>
+    </emu-grammar>
+    <emu-alg>
+      1. <ins>Let _keyResult_ be the result of performing ? ForIn/OfHeadEvaluation(BoundNames of |ForDeclaration|, |AssignmentExpression|, ~async-iterate~).</ins>
+      1. <ins>Return ? ForIn/OfBodyEvaluation(|ForDeclaration|, |Statement|, _keyResult_, ~lexicalBinding~, _labelSet_, ~async~).</ins>
+    </emu-alg>
+
+    <emu-note>
+      <p>This section is extended by Annex <emu-xref href="#sec-initializers-in-forin-statement-heads"></emu-xref>.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-runtime-semantics-forin-div-ofheadevaluation-tdznames-expr-iterationkind" aoid="ForIn/OfHeadEvaluation">
+    <h1>Runtime Semantics: ForIn/OfHeadEvaluation ( _TDZnames_, _expr_, _iterationKind_ )</h1>
+    <p>The abstract operation ForIn/OfHeadEvaluation is called with arguments _TDZnames_, _expr_, _iterationKind_, and _async_. The value of _iterationKind_ is either ~enumerate~<del> or</del><ins>,</ins> ~iterate~<ins>, or ~async-iterate~</ins>.</p>
+    <emu-alg>
+      1. Let _oldEnv_ be the running execution context's LexicalEnvironment.
+      1. If _TDZnames_ is not an empty List, then
+        1. Assert: _TDZnames_ has no duplicate entries.
+        1. Let _TDZ_ be ! NewDeclarativeEnvironment(_oldEnv_).
+        1. Let _TDZEnvRec_ be _TDZ_'s EnvironmentRecord.
+        1. For each string _name_ in _TDZnames_, do
+          1. Perform ! _TDZEnvRec_.CreateMutableBinding(_name_, *false*).
+        1. Set the running execution context's LexicalEnvironment to _TDZ_.
+      1. Let _exprRef_ be the result of evaluating the production that is _expr_.
+      1. Set the running execution context's LexicalEnvironment to _oldEnv_.
+      1. Let _exprValue_ be ? GetValue(_exprRef_).
+      1. If _iterationKind_ is ~enumerate~, then
+        1. If _exprValue_.[[Value]] is *null* or *undefined*, then
+          1. Return Completion{[[Type]]: ~break~, [[Value]]: ~empty~, [[Target]]: ~empty~}.
+        1. Let _obj_ be ? ToObject(_exprValue_).
+        1. Return ? _obj_.[[Enumerate]]().
+      1. Else,
+        1. <ins>If _iterationKind_ is ~async-iterate~, let _iteratorHint_ be ~async~.</ins>
+        1. <ins>Else, let _iteratorHint_ be ~normal~.</ins>
+        1. Return ? GetIterator(_exprValue_<ins>, _iteratorHint_</ins>).
+    </emu-alg>
+  </emu-clause>
+
+  <emu-clause id="sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset" aoid="ForIn/OfBodyEvaluation">
+    <h1>Runtime Semantics: ForIn/OfBodyEvaluation ( _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_<ins> [ , _iteratorKind_</ins> )</h1>
+    <p>The abstract operation ForIn/OfBodyEvaluation is called with arguments _lhs_, _stmt_, _iterator_, _lhsKind_, <del>and </del>_labelSet_<ins>, and optional argument _iteratorKind_</ins>. The value of _lhsKind_ is either ~assignment~, ~varBinding~ or ~lexicalBinding~. <ins>The value of _iteratorKind_ is either ~normal~ or ~async~.</ins></p>
+    <emu-alg>
+      1. <ins>If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.</ins>
+      1. Let _oldEnv_ be the running execution context's LexicalEnvironment.
+      1. Let _V_ be *undefined*.
+      1. Let _destructuring_ be IsDestructuring of _lhs_.
+      1. If _destructuring_ is *true* and if _lhsKind_ is ~assignment~, then
+        1. Assert: _lhs_ is a |LeftHandSideExpression|.
+        1. Let _assignmentPattern_ be the parse of the source text corresponding to _lhs_ using |AssignmentPattern| as the goal symbol.
+      1. Repeat
+        1. Let _nextResult_ be ? IteratorNext(_iterator_).
+        1. <ins>If _iteratorKind_ is ~async~, then set _nextResult_ to ? Await(_nextResult_).</ins>
+        1. Let _done_ be ? IteratorComplete(_iterator_).
+        1. If _done_ is *true*, return NormalCompletion(_V_).
+        1. Let _nextValue_ be ? IteratorValue(_nextResult_).
+        1. <ins>If _iteratorKind_ is ~async~, then set _nextValue_ to ? Await(_nextResult_).</ins>
+        1. If _lhsKind_ is either ~assignment~ or ~varBinding~, then
+          1. If _destructuring_ is *false*, then
+            1. Let _lhsRef_ be the result of evaluating _lhs_ (it may be evaluated repeatedly).
+        1. Else,
+          1. Assert: _lhsKind_ is ~lexicalBinding~.
+          1. Assert: _lhs_ is a |ForDeclaration|.
+          1. Let _iterationEnv_ be NewDeclarativeEnvironment(_oldEnv_).
+          1. Perform BindingInstantiation for _lhs_ passing _iterationEnv_ as the argument.
+          1. Set the running execution context's LexicalEnvironment to _iterationEnv_.
+          1. If _destructuring_ is *false*, then
+            1. Assert: _lhs_ binds a single name.
+            1. Let _lhsName_ be the sole element of BoundNames of _lhs_.
+            1. Let _lhsRef_ be ResolveBinding(_lhsName_).
+            1. Assert: _lhsRef_ is not an abrupt completion.
+        1. If _destructuring_ is *false*, then
+          1. If _lhsRef_ is an abrupt completion, then
+            1. Let _status_ be _lhsRef_.
+          1. Else if _lhsKind_ is ~lexicalBinding~, then
+            1. Let _status_ be InitializeReferencedBinding(_lhsRef_, _nextValue_).
+          1. Else,
+            1. Let _status_ be PutValue(_lhsRef_, _nextValue_).
+        1. Else,
+          1. If _lhsKind_ is ~assignment~, then
+            1. Let _status_ be the result of performing DestructuringAssignmentEvaluation of _assignmentPattern_ using _nextValue_ as the argument.
+          1. Else if _lhsKind_ is ~varBinding~, then
+            1. Assert: _lhs_ is a |ForBinding|.
+            1. Let _status_ be the result of performing BindingInitialization for _lhs_ passing _nextValue_ and *undefined* as the arguments.
+          1. Else,
+            1. Assert: _lhsKind_ is ~lexicalBinding~.
+            1. Assert: _lhs_ is a |ForDeclaration|.
+            1. Let _status_ be the result of performing BindingInitialization for _lhs_ passing _nextValue_ and _iterationEnv_ as arguments.
+        1. If _status_ is an abrupt completion, then
+          1. Set the running execution context's LexicalEnvironment to _oldEnv_.
+          1. <ins>Let _closeResult_ be</ins><del>Return</del> ? IteratorClose(_iterator_, _status_).
+          1. <ins>If _iteratorKind_ is ~async~, set _closeResult_ to Await(_closeResult_).</ins>
+          1. <ins>Return _closeResult_.</ins>
+        1. Let _result_ be the result of evaluating _stmt_.
+        1. Set the running execution context's LexicalEnvironment to _oldEnv_.
+        1. If ! LoopContinues(_result_, _labelSet_) is *false*, <del>return ? IteratorClose(_iterator_, UpdateEmpty(_result_, _V_))</del><ins>then</ins>
+          1. <ins>Let _closeResult_ be ? IteratorClose(_iterator_, UpdateEmpty(_result_, _V_)).</ins>
+          1. <ins>If _iteratorKind_ is ~async~, set _closeResult_ to Await(_closeResult_).</ins>
+          1. <ins>Return _closeResult_.</ins>
+        1. If _result_.[[Value]] is not ~empty~, let _V_ be _result_.[[Value]].
+    </emu-alg>
+  </emu-clause>
+</emu-clause>
