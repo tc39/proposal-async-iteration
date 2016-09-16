@@ -1,17 +1,17 @@
 <h2>Syntax</h2>
 <emu-grammar>
   AsyncGeneratorMethod[Yield, Await] :
-    `async` [no LineTerminator here] `*` PropertyName[?Yield, ?Await] `(` UniqueFormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+    `async` [no LineTerminator here] `*` PropertyName[?Yield, ?Await] `(` UniqueFormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorDeclaration[Yield, Await, Default] :
-    `async` [no LineTerminator here] `function` `*` BindingIdentifier[?Yield, ?Await] `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
-    [+Default] `async` [no LineTerminator here] `function` `*` `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+    `async` [no LineTerminator here] `function` `*` BindingIdentifier[?Yield, ?Await] `(` FormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
+    [+Default] `async` [no LineTerminator here] `function` `*` `(` FormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorExpression :
-    `async` [no LineTerminator here] `function` `*` BindingIdentifier[Yield, Await]? `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+    `async` [no LineTerminator here] `function` `*` BindingIdentifier[+Yield, +Await] `(` FormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorBody :
-    FunctionBody[Yield, Await]
+    FunctionBody[+Yield, +Await]
 </emu-grammar>
 <emu-note>
   <p>|YieldExpression| and |AwaitExpression| cannot be used within the |FormalParameters| of an async generator function because any expressions that are part of |FormalParameters| are evaluated before the resulting async generator object is in a resumable state.</p>
