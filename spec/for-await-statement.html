@@ -51,8 +51,8 @@
     1. Set the running execution context's LexicalEnvironment to _oldEnv_.
     1. Let _exprValue_ be ? GetValue(_exprRef_).
     1. If _iterationKind_ is ~enumerate~, then
-      1. If _exprValue_.[[value]] is *null* or *undefined*, then
-        1. Return Completion{[[type]]: ~break~, [[value]]: ~empty~, [[target]]: ~empty~}.
+      1. If _exprValue_.[[Value]] is *null* or *undefined*, then
+        1. Return Completion{[[Type]]: ~break~, [[Value]]: ~empty~, [[Target]]: ~empty~}.
       1. Let _obj_ be ? ToObject(_exprValue_).
       1. Return ? _obj_.[[Enumerate]]().
     1. Else,
@@ -122,6 +122,6 @@
         1. <ins>Let _closeResult_ be ? IteratorClose(_iterator_, UpdateEmpty(_result_, _V_)).</ins>
         1. <ins>If _iteratorKind_ is ~async~, set _closeResult_ to Await(_closeResult_).</ins>
         1. <ins>Return _closeResult_.</ins>
-      1. If _result_.[[value]] is not ~empty~, let _V_ be _result_.[[value]].
+      1. If _result_.[[Value]] is not ~empty~, let _V_ be _result_.[[Value]].
   </emu-alg>
 </emu-clause>
