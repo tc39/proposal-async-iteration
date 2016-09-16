@@ -115,10 +115,15 @@
           1. Let _status_ be the result of performing BindingInitialization for _lhs_ passing _nextValue_ and _iterationEnv_ as arguments.
       1. If _status_ is an abrupt completion, then
         1. Set the running execution context's LexicalEnvironment to _oldEnv_.
-        1. Return ? IteratorClose(_iterator_, _status_, <ins>_iteratorKind_</ins>).
+        1. Let _closeResult_ be ? IteratorClose(_iterator_, _status_).
+        1. If _iteratorKind_ is ~async~, let _closeResult_ be ? AsyncFunctionAwait(_closeResult_).
+        1. Return _closeResult_.
       1. Let _result_ be the result of evaluating _stmt_.
       1. Set the running execution context's LexicalEnvironment to _oldEnv_.
-      1. If ! LoopContinues(_result_, _labelSet_) is *false*, return ? IteratorClose(_iterator_, UpdateEmpty(_result_, _V_), <ins>_iteratorKind_</ins>).
+      1. If ! LoopContinues(_result_, _labelSet_) is *false*, then
+        1. Let _closeResult_ be ? IteratorClose(_iterator_, UpdateEmpty(_result_, _V_)).
+        1. If _iteratorKind_ is ~async~, let _closeResult_ be ? AsyncFunctionAwait(_closeResult_).
+        1. Return _closeResult_.
       1. If _result_.[[value]] is not ~empty~, let _V_ be _result_.[[value]].
   </emu-alg>
 </emu-clause>

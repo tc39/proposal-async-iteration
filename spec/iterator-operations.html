@@ -20,23 +20,3 @@
     1. Return _iterator_.
   </emu-alg>
 </emu-clause>
-
-<emu-clause id="sec-iteratorclose" aoid="IteratorClose">
-  <h1>IteratorClose ( _iterator_, _completion_<ins> [ , _iteratorKind_ ]</ins> )</h1>
-  <p>The abstract operation IteratorClose with arguments _iterator_ <del>and </del>_completion_<ins>, and _iteratorKind_</ins> is used to notify an iterator that it should perform any actions it would normally perform when it has reached its completed state:</p>
-
-  <emu-alg>
-    1. Assert: Type(_iterator_) is Object.
-    1. Assert: _completion_ is a Completion Record.
-    1. <ins>If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.</ins>
-    1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
-    1. If _return_ is *undefined*, return Completion(_completion_).
-    1. Let _innerResult_ be Call(_return_, _iterator_, « »).
-    1. <ins>If _innerResult_ is not an abrupt completion and _iteratorKind_ is ~async~, then</ins>
-      1. <ins>Let _innerResult_ be AsyncFunctionAwait(_innerResult_.[[value]]).</ins>
-    1. If _completion_.[[type]] is ~throw~, return Completion(_completion_).
-    1. If _innerResult_.[[type]] is ~throw~, return Completion(_innerResult_).
-    1. If Type(_innerResult_.[[value]]) is not Object, throw a *TypeError* exception.
-    1. Return Completion(_completion_).
-  </emu-alg>
-</emu-clause>
