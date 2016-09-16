@@ -20,6 +20,136 @@
   <p>Abstract operations relating to async generator objects are defined in <emu-xref href="#sec-asyncgenerator-abstract-operations"></emu-xref>.</p>
 </emu-note>
 
+<emu-clause id="sec-async-generator-function-definitions-static-semantics-early-errors">
+  <h1>Static Semantics: Early Errors</h1>
+  <emu-grammar>AsyncGeneratorMethod : `*` PropertyName `(` UniqueFormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <ul>
+    <li>It is a Syntax Error if HasDirectSuper of |AsyncGeneratorMethod| is *true*.</li>
+    <li>It is a Syntax Error if |UniqueFormalParameters| Contains |YieldExpression| is *true*.</li>
+    <li>It is a Syntax Error if |UniqueFormalParameters| Contains |AwaitExpression| is *true*.</li>
+    <li>It is a Syntax Error if ContainsUseStrict of |AsyncGeneratorBody| is *true* and IsSimpleParameterList of |UniqueFormalParameters| is *false*.</li>
+    <li>It is a Syntax Error if any element of the BoundNames of |UniqueFormalParameters| also occurs in the LexicallyDeclaredNames of |AsyncGeneratorBody|.</li>
+  </ul>
+  <emu-grammar>
+    AsyncGeneratorDeclaration : `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+
+    AsyncGeneratorDeclaration : `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+
+    AsyncGeneratorDeclaration : `function` `*` BindingIdentifier? `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <ul>
+    <li>If the source code matching this production is strict mode code, the Early Error rules for <emu-grammar>UniqueFormalParameters : FormalParameters</emu-grammar> are applied.</li>
+    <li>If the source code matching this production is strict mode code, it is a Syntax Error if |BindingIdentifier| is the |IdentifierName| `eval` or the |IdentifierName| `arguments`.</li>
+    <li>It is a Syntax Error if ContainsUseStrict of |AsyncGeneratorBody| is *true* and IsSimpleParameterList of |FormalParameters| is *false*.</li>
+    <li>It is a Syntax Error if any element of the BoundNames of |FormalParameters| also occurs in the LexicallyDeclaredNames of |AsyncGeneratorBody|.</li>
+    <li>It is a Syntax Error if |FormalParameters| Contains |YieldExpression| is *true*.</li>
+    <li>It is a Syntax Error if |FormalParameters| Contains |AwaitExpression| is *true*.</li>
+    <li>It is a Syntax Error if |FormalParameters| Contains |SuperProperty| is *true*.</li>
+    <li>It is a Syntax Error if |AsyncGeneratorBody| Contains |SuperProperty| is *true*.</li>
+    <li>It is a Syntax Error if |FormalParameters| Contains |SuperCall| is *true*.</li>
+    <li>It is a Syntax Error if |AsyncGeneratorBody| Contains |SuperCall| is *true*.</li>
+  </ul>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-boundnames">
+  <h1>Static Semantics: BoundNames</h1>
+  <emu-see-also-para op="BoundNames"></emu-see-also-para>
+  <emu-grammar>AsyncGeneratorDeclaration : `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return the BoundNames of |BindingIdentifier|.
+  </emu-alg>
+  <emu-grammar>AsyncGeneratorDeclaration : `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return &laquo; `"*default*"` &raquo;.
+  </emu-alg>
+  <emu-note>
+    <p>`"*default*"` is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.</p>
+  </emu-note>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-computedpropertycontains">
+  <h1>Static Semantics: ComputedPropertyContains</h1>
+  <p>With parameter _symbol_.</p>
+  <emu-see-also-para op="ComputedPropertyContains"></emu-see-also-para>
+  <emu-grammar>AsyncGeneratorMethod : `*` PropertyName `(` UniqueFormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return the result of ComputedPropertyContains for |PropertyName| with argument _symbol_.
+  </emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-contains">
+  <h1>Static Semantics: Contains</h1>
+  <p>With parameter _symbol_.</p>
+  <emu-see-also-para op="Contains"></emu-see-also-para>
+  <emu-grammar>
+    AsyncGeneratorDeclaration : `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+
+    AsyncGeneratorDeclaration : `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+
+    AsyncGeneratorExpression : `function` `*` BindingIdentifier? `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. Return *false*.
+  </emu-alg>
+  <emu-note>
+    <p>Static semantic rules that depend upon substructure generally do not look into function definitions.</p>
+  </emu-note>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-hasdirectsuper">
+  <h1>Static Semantics: HasDirectSuper</h1>
+  <emu-see-also-para op="HasDirectSuper"></emu-see-also-para>
+  <emu-grammar>AsyncGeneratorMethod : `*` PropertyName `(` UniqueFormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. If |UniqueFormalParameters| Contains |SuperCall| is *true*, return *true*.
+    1. Return |AsyncGeneratorBody| Contains |SuperCall|.
+  </emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-hasname">
+  <h1>Static Semantics: HasName</h1>
+  <emu-see-also-para op="HasName"></emu-see-also-para>
+  <emu-grammar>AsyncGeneratorExpression : `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return *false*.
+  </emu-alg>
+  <emu-grammar>AsyncGeneratorExpression : `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return *true*.
+  </emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-isconstantdeclaration">
+  <h1>Static Semantics: IsConstantDeclaration</h1>
+  <emu-see-also-para op="IsConstantDeclaration"></emu-see-also-para>
+  <emu-grammar>
+    AsyncGeneratorDeclaration : `function` `*` BindingIdentifier `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+
+    AsyncGeneratorDeclaration : `function` `*` `(` FormalParameters `)` `{` AsyncGeneratorBody `}`
+  </emu-grammar>
+  <emu-alg>
+    1. Return *false*.
+  </emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-isfunctiondefinition">
+  <h1>Static Semantics: IsFunctionDefinition</h1>
+  <emu-see-also-para op="IsFunctionDefinition"></emu-see-also-para>
+  <emu-grammar>AsyncGeneratorExpression : `function` `*` BindingIdentifier? `(` FormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return *true*.
+  </emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-generator-function-definitions-static-semantics-propname">
+  <h1>Static Semantics: PropName</h1>
+  <emu-see-also-para op="PropName"></emu-see-also-para>
+  <emu-grammar>AsyncGeneratorMethod : `*` PropertyName `(` UniqueFormalParameters `)` `{` AsyncGeneratorBody `}`</emu-grammar>
+  <emu-alg>
+    1. Return PropName of |PropertyName|.
+  </emu-alg>
+</emu-clause>
+
 <emu-clause id="sec-asyncgenerator-definitions-evaluatebody">
   <h1>Runtime Semantics: EvaluateBody</h1>
   <p>With parameters _functionObject_ and List _argumentsList_.</p>
