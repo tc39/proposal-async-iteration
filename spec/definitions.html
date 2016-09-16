@@ -1,7 +1,7 @@
 <h2>Syntax</h2>
 <emu-grammar>
   AsyncGeneratorMethod[Yield, Await] :
-    `async` [no LineTerminator here] `*` PropertyName[?Yield, ?Await] `(` StrictFormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
+    `async` [no LineTerminator here] `*` PropertyName[?Yield, ?Await] `(` UniqueFormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorDeclaration[Yield, Await, Default] :
     `async` [no LineTerminator here] `function` `*` BindingIdentifier[?Yield, ?Await] `(` FormalParameters[Yield, Await] `)` `{` AsyncGeneratorBody `}`
@@ -70,14 +70,14 @@
   <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
   <p>With parameter _object_ and _enumerable_.</p>
   <emu-grammar>
-    AsyncGeneratorMethod : `async` [no LineTerminator here] `*` PropertyName `(` StrictFormalParameters `)` `{` AsyncGeneratorBody `}`
+    AsyncGeneratorMethod : `async` [no LineTerminator here] `*` PropertyName `(` UniqueFormalParameters `)` `{` AsyncGeneratorBody `}`
   </emu-grammar>
   <emu-alg>
     1. Let _propKey_ be the result of evaluating |PropertyName|.
     1. ReturnIfAbrupt(_propKey_).
     1. If the function code for this |AsyncGeneratorMethod| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
     1. Let _scope_ be the running execution context's LexicalEnvironment.
-    1. Let _closure_ be ! AsyncGeneratorFunctionCreate(~Method~, |StrictFormalParameters|, |AsyncGeneratorBody|, _scope_, _strict_).
+    1. Let _closure_ be ! AsyncGeneratorFunctionCreate(~Method~, |UniqueFormalParameters|, |AsyncGeneratorBody|, _scope_, _strict_).
     1. Perform ! MakeMethod(_closure_, _object_).
     1. Let _prototype_ be ! ObjectCreate(%AsyncGeneratorPrototype%).
     1. Perform ! DefinePropertyOrThrow(_closure_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
