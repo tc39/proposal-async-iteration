@@ -40,7 +40,7 @@ During execution, an async iterator is created from the data source using the `[
 
 Each time we access the next value in the sequence, we implicitly `await` the promise returned from the iterator method.
 
-### Async generator functions
+## Async generator functions
 
 Async generator functions are similar to generator functions, with the following differences:
 
