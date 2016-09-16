@@ -1,6 +1,10 @@
 <emu-clause id="await" aoid="Await">
   <h1><ins>Await</ins></h1>
 
+  <emu-note>
+    <p>(META) The AsyncFunctionAwait abstract operation could probably be refactored in terms of this primitive.</p>
+  </emu-note>
+
   <p>Algorithm steps that say</p>
 
   <emu-alg>
@@ -23,8 +27,21 @@
     1. Set the code evaluation state of _asyncContext_ such that when evaluation is resumed with a Completion _completion_, the following steps of the algorithm that invoked Await will be performed, with _completion_ available.
   </emu-alg>
 
+  <p>where all variables in the above steps, with the exception of _completion_, are ephemeral and visible only in the steps pertaining to Await.</p>
+
   <emu-note>
-    <p>(META) The AsyncFunctionAwait abstract operation could probably be refactored in terms of this primitive.</p>
+    <p>Note that Await can be combined with the `?` and `!` prefixes, so that for example</p>
+
+    <emu-alg>
+      1. Let _value_ be ? Await(_promise_).
+    </emu-alg>
+
+    <p>means the same thing as:</p>
+
+    <emu-alg>
+      1. Let _value_ be Await(_promise_).
+      1. ReturnIfAbrupt(_value_).
+    </emu-alg>
   </emu-note>
 
   <emu-clause id="await-fulfilled">
