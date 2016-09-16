@@ -29,23 +29,23 @@
   <h1>AsyncGeneratorStart ( _generator_, _generatorBody_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
-    1. Assert: The value of the [[AsyncGeneratorState]] internal slot of _generator_ is *undefined*.
+    1. Assert: _generator_.[[AsyncGeneratorState]] is *undefined*.
     1. Let _genContext_ be the running execution context.
     1. Set the Generator component of _genContext_ to _generator_.
     1. Set the code evaluation state of _genContext_ such that when evaluation is resumed for that execution context the following steps will be performed:
       1. Let _result_ be the result of evaluating _generatorBody_.
       1. Assert: If we return here, the async generator either threw an exception or performed either an implicit or explicit return.
       1. Remove _genContext_ from the execution context stack and restore the execution context that is at the top of the execution context stack as the running execution context.
-      1. Set _generator_'s [[AsyncGeneratorState]] internal slot to `"completed"`.
+      1. Set _generator_.[[AsyncGeneratorState]] to `"completed"`.
       1. If _result_ is a normal completion, let _resultValue_ be *undefined*.
       1. Else,
         1. Let _resultValue_ be _result_.[[value]].
         1. If _result_.[[type]] is not ~return~, then
           1. Return ! AsyncGeneratorReject(_generator_, _resultValue_).
       1. Return ! AsyncGeneratorResolve(_generator_, ! CreateIterResultObject(_resultValue_, *true*)).
-    1. Set _generator_'s [[AsyncGeneratorContext]] internal slot to _genContext_.
-    1. Set _generator_'s [[AsyncGeneratorState]] internal slot to `"suspendedStart"`.
-    1. Set _generator_'s [[AsyncGeneratorQueue]] internal slot to a new empty List.
+    1. Set _generator_.[[AsyncGeneratorContext]] to _genContext_.
+    1. Set _generator_.[[AsyncGeneratorState]] to `"suspendedStart"`.
+    1. Set _generator_.[[AsyncGeneratorQueue]] to a new empty List.
     1. Return *undefined*.
   </emu-alg>
 </emu-clause>
@@ -55,7 +55,7 @@
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
     1. Assert: _iteratorResult_ is an Object that implements the IteratorResult interface.
-    1. Let _queue_ be the value of the [[AsyncGeneratorQueue]] internal slot of _generator_.
+    1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. Assert: _queue_ is not an empty List.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
     1. Let _capability_ be _next_.[[Capability]].
@@ -69,7 +69,7 @@
   <h1>AsyncGeneratorReject ( _generator_, _exception_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
-    1. Let _queue_ be the value of the [[AsyncGeneratorQueue]] internal slot of _generator_.
+    1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. Assert: _queue_ is not an empty List.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
     1. Let _capability_ be _next_.[[Capability]].
@@ -83,16 +83,16 @@
   <h1>AsyncGeneratorResumeNext ( _generator_ )</h1>
   <emu-alg>
     1. Assert: _generator_ is an AsyncGenerator instance.
-    1. Let _state_ be the value of _generator_'s [[AsyncGeneratorState]] internal slot.
+    1. Let _state_ be _generator_.[[AsyncGeneratorState]].
     1. Assert: _state_ is not `"executing"`.
-    1. Let _queue_ be the value of _generator_'s [[AsyncGeneratorQueue]] internal slot.
+    1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. If _queue_ is an empty List, return *undefined*.
     1. Let _next_ be the value of the first element of _queue_.
     1. Assert: _next_ is an AsyncGeneratorRequest record.
     1. Let _completion_ be _next_.[[Completion]].
     1. If _completion_ is an abrupt completion, then
       1. If _state_ is `"suspendedStart"`, then
-        1. Set _generator_'s [[GeneratorState]] internal slot to `"completed"`.
+        1. Set _generator_.[[GeneratorState]] to `"completed"`.
         1. Let _state_ be `"completed"`.
       1. If _state_ is `"completed"`, then
         1. If _completion_.[[type]] is ~return~, then
@@ -103,10 +103,10 @@
       1. If _state_ is `"completed"`, then
         1. Return ! AsyncGeneratorResolve(_generator_, ! CreateIterResultObject(*undefined*, *true*)).
     1. Assert: _state_ is either `"suspendedStart"` or `"suspendedYield"`.
-    1. Let _genContext_ be the value of _generator_'s [[AsyncGeneratorContext]] internal slot.
+    1. Let _genContext_ be _generator_.[[AsyncGeneratorContext]].
     1. Let _callerContext_ be the running execution context.
     1. Suspend _callerContext_.
-    1. Set _generator_'s [[AsyncGeneratorState]] internal slot to `"executing"`.
+    1. Set _generator_.[[AsyncGeneratorState]] to `"executing"`.
     1. Push _genContext_ onto the execution context stack; _genContext_ is now the running execution context.
     1. Resume the suspended evaluation of _genContext_ using _completion_ as the result of the operation that suspended it. Let _result_ be the completion record returned by the resumed computation.
     1. Assert: _result_ is never an abrupt completion.
@@ -121,11 +121,11 @@
     1. Assert: _completion_ is a Completion Record.
     1. If Type(_generator_) is not Object, throw a *TypeError* exception.
     1. If _generator_ does not have an [[AsyncGeneratorState]] internal slot, throw a *TypeError* exception.
-    1. Let _queue_ be the value of _generator_'s [[AsyncGeneratorQueue]] internal slot.
+    1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. Let _capability_ be ! NewPromiseCapability(%Promise%).
     1. Let _request_ be AsyncGeneratorRequest{[[Completion]]: _completion_, [[Capability]]: _capability_}.
     1. Append _request_ to the end of _queue_.
-    1. Let _state_ be the value of _generator_'s [[AsyncGeneratorState]] internal slot.
+    1. Let _state_ be _generator_.[[AsyncGeneratorState]].
     1. If _state_ is not `"executing"`, then
       1. Perform ! AsyncGeneratorResumeNext(_generator_).
     1. Return NormalCompletion(_capability_.[[Promise]]).
@@ -153,9 +153,9 @@
     1. Let _generator_ be the value of the Generator component of _genContext_.
     1. Let _generatorKind_ be GetGeneratorKind().
     1. <ins>If _generatorKind_ is ~async~, then</ins>
-      1. <ins>Set the value of _generator_'s [[AsyncGeneratorState]] internal slot to `"suspendedYield"`.</ins>
+      1. <ins>Set _generator_.[[AsyncGeneratorState]] to `"suspendedYield"`.</ins>
     1. <ins>Else</ins>,
-      1. <ins>Set the value of _generator_'s [[GeneratorState]] internal slot to `"suspendedYield"`.</ins>
+      1. <ins>Set _generator_.[[GeneratorState]] to `"suspendedYield"`.</ins>
     1. Remove _genContext_ from the execution context stack and restore the execution context that is at the top of the execution context stack as the running execution context.
     1. Set the code evaluation state of _genContext_ such that when evaluation is resumed with a Completion _resumptionValue_ the following steps will be performed:
       1. Return _resumptionValue_.
