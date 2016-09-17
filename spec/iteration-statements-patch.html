@@ -383,7 +383,6 @@
         1. Let _done_ be ? IteratorComplete(_iterator_).
         1. If _done_ is *true*, return NormalCompletion(_V_).
         1. Let _nextValue_ be ? IteratorValue(_nextResult_).
-        1. <ins>If _iteratorKind_ is ~async~, then set _nextValue_ to ? Await(_nextResult_).</ins>
         1. If _lhsKind_ is either ~assignment~ or ~varBinding~, then
           1. If _destructuring_ is *false*, then
             1. Let _lhsRef_ be the result of evaluating _lhs_ (it may be evaluated repeatedly).
