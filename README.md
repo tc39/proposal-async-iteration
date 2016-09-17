@@ -64,7 +64,7 @@ async function* readLines(path) {
 }
 ```
 
-This function then returns an async generator object, whcih can be consumed with `for`-`await`-`of` as shown in the previous example.
+This function then returns an async generator object, which can be consumed with `for`-`await`-`of` as shown in the previous example.
 
 ## Implementation Status
 
