@@ -49,7 +49,7 @@
 
     <p>An Await fulfilled function is an anonymous built-in function that is used as part of the Await specification device to deliver the promise fulfillment value to the caller as a normal completion. Each Await fulfilled function has an [[AsyncContext]] internal slot.</p>
 
-    <p>When an Await fulfilled function _F_ is called with argument _x_, the following steps are taken:</p>
+    <p>When an Await fulfilled function _F_ is called with argument _value_, the following steps are taken:</p>
 
     <emu-alg>
       1. Let _asyncContext_ be _F_.[[AsyncContext]].
@@ -68,7 +68,7 @@
 
     <p>An Await rejected function is an anonymous built-in function that is used as part of the Await specification device to deliver the promise rejection reason to the caller as an abrupt throw completion. Each Await rejected function has an [[AsyncContext]] internal slot.</p>
 
-    <p>When an Await rejected function _F_ is called with argument _r_, the following steps are taken:</p>
+    <p>When an Await rejected function _F_ is called with argument _reason_, the following steps are taken:</p>
 
     <emu-alg>
       1. Let _asyncContext_ be _F_.[[AsyncContext]].
