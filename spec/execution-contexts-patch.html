@@ -58,6 +58,7 @@
       1. Push _asyncContext_ onto the execution context stack; _asyncContext_ is now the running execution context.
       1. Resume the suspended evaluation of _asyncContext_ using NormalCompletion(_value_) as the result of the operation that suspended it.
       1. Assert: When we reach this step, _asyncContext_ has already been removed from the execution context stack and _prevContext_ is the currently running execution context.
+      1. Return *undefined*.
     </emu-alg>
 
     <p>The `length` property of an Await fulfilled function is 1.</p>
@@ -77,6 +78,7 @@
       1. Push _asyncContext_ onto the execution context stack; _asyncContext_ is now the running execution context.
       1. Resume the suspended evaluation of _asyncContext_ using Completion{[[Type]]: ~throw~, [[Value]]: _reason_, [[Target]]: ~empty~} as the result of the operation that suspended it.
       1. Assert: When we reach this step, _asyncContext_ has already been removed from the execution context stack and _prevContext_ is the currently running execution context.
+      1. Return *undefined*.
     </emu-alg>
 
     <p>The `length` property of an Await rejected function is 1.</p>
