@@ -367,7 +367,7 @@
   </emu-clause>
 
   <emu-clause id="sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset" aoid="ForIn/OfBodyEvaluation">
-    <h1>Runtime Semantics: ForIn/OfBodyEvaluation ( _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_<ins> [ , _iteratorKind_</ins> )</h1>
+    <h1>Runtime Semantics: ForIn/OfBodyEvaluation ( _lhs_, _stmt_, _iterator_, _lhsKind_, _labelSet_<ins> [ , _iteratorKind_ ]</ins> )</h1>
     <p>The abstract operation ForIn/OfBodyEvaluation is called with arguments _lhs_, _stmt_, _iterator_, _lhsKind_, <del>and </del>_labelSet_<ins>, and optional argument _iteratorKind_</ins>. The value of _lhsKind_ is either ~assignment~, ~varBinding~ or ~lexicalBinding~. <ins>The value of _iteratorKind_ is either ~normal~ or ~async~.</ins></p>
     <emu-alg>
       1. <ins>If _iteratorKind_ was not passed, let _iteratorKind_ be ~normal~.</ins>
