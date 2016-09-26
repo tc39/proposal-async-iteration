@@ -49,8 +49,11 @@
         </tr>
         <tr>
           <td>`next`</td>
-          <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
-          <td>The returned Promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. If a previous call to the `next` method of an <i>AsyncIterator</i> has returned a Promise for an <i>IteratorResult</i> object whose `done` property is *true*, then all subsequent calls to the `next` method of that object should also return a Promise for an <i>IteratorResult</i> object whose `done` property is *true*. However, this requirement is not enforced.
+          <td>A function that returns a promise for an <i>IteratorResult</i> object.</td>
+          <td>
+            <p>The returned promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. If a previous call to the `next` method of an <i>AsyncIterator</i> has returned a promise for an <i>IteratorResult</i> object whose `done` property is *true*, then all subsequent calls to the `next` method of that object should also return a promise for an <i>IteratorResult</i> object whose `done` property is *true*. However, this requirement is not enforced.</p>
+
+            <p>Additionally, the <i>IteratorResult</i> object that serves as a fulfillment value should have a `value` property whose value is not a promise (or "thenable"). However, this requirement is also not enforced.</p>
           </td>
         </tr>
         </tbody>
@@ -69,14 +72,20 @@
         </tr>
         <tr>
           <td>`return`</td>
-          <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
-          <td>The returned Promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller does not intend to make any more `next` method calls to the <i>AsyncIterator</i>. The returned Promise will fulfill with an <i>IteratorResult</i> object which will typically have a `done` property whose value is *true*, and a `value` property with the value passed as the argument of the `return` method. However, this requirement is not enforced.
+          <td>A function that returns a promise for an <i>IteratorResult</i> object.</td>
+          <td>
+            <p>The returned promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller does not intend to make any more `next` method calls to the <i>AsyncIterator</i>. The returned promise will fulfill with an <i>IteratorResult</i> object which will typically have a `done` property whose value is *true*, and a `value` property with the value passed as the argument of the `return` method. However, this requirement is not enforced.</p>
+
+            <p>Additionally, the <i>IteratorResult</i> object that serves as a fulfillment value should have a `value` property whose value is not a promise (or "thenable"). If the argument value is used in the typical manner, then if it is a rejected promise, a promise rejected with the same reason should be returned; if it is a fulfilled promise, then its fulfillment value should be used as the `value` property of the returned promise's <i>IteratorResult</i> object fulfillment value. However, these requirements are also not enforced.</p>
           </td>
         </tr>
         <tr>
           <td>`throw`</td>
-          <td>A function that returns a Promise for an <i>IteratorResult</i> object.</td>
-          <td>The returned Promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller has detected an error condition. The argument may be used to identify the error condition and typically will be an exception object. A typical response is to return a rejected Promise which rejects with the value passed as the argument. If the returned Promise is fulfilled, the <i>IteratorResult</i> fulfillment value will typically have a `done` property whose value is *true*.
+          <td>A function that returns a promise for an <i>IteratorResult</i> object.</td>
+          <td>
+            <p>The returned promise, when fulfilled, must fulfill with an object which conforms to the <i>IteratorResult</i> interface. Invoking this method notifies the <i>AsyncIterator</i> object that the caller has detected an error condition. The argument may be used to identify the error condition and typically will be an exception object. A typical response is to return a rejected promise which rejects with the value passed as the argument.</p>
+
+            <p>If the returned promise is fulfilled, the <i>IteratorResult</i> fulfillment value will typically have a `done` property whose value is *true*. Additionally, it should have a `value` property whose value is not a promise (or "thenable"), but this requirement is not enforced.</p>
           </td>
         </tr>
         </tbody>
