@@ -118,15 +118,17 @@
   <h1>AsyncGeneratorEnqueue ( _generator_, _completion_ )</h1>
   <emu-alg>
     1. Assert: _completion_ is a Completion Record.
-    1. If Type(_generator_) is not Object, throw a *TypeError* exception.
-    1. If _generator_ does not have an [[AsyncGeneratorState]] internal slot, throw a *TypeError* exception.
-    1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. Let _capability_ be ! NewPromiseCapability(%Promise%).
+    1. If Type(_generator_) is not Object, or if _generator_ does not have an [[AsyncGeneratorState]] internal slot, then
+      1. Let _badGeneratorError_ be a new *TypeError* exception.
+      1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badGeneratorError_ &raquo;).
+      1. Return _promiseCapability_.[[Promise]].
+    1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. Let _request_ be AsyncGeneratorRequest{[[Completion]]: _completion_, [[Capability]]: _capability_}.
     1. Append _request_ to the end of _queue_.
     1. Let _state_ be _generator_.[[AsyncGeneratorState]].
     1. If _state_ is not `"executing"`, then
       1. Perform ! AsyncGeneratorResumeNext(_generator_).
-    1. Return NormalCompletion(_capability_.[[Promise]]).
+    1. Return _capability_.[[Promise]].
   </emu-alg>
 </emu-clause>

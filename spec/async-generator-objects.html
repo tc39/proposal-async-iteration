@@ -20,7 +20,7 @@
     <emu-alg>
       1. Let _generator_ be the `this` value.
       1. Let _completion_ be NormalCompletion(_value_).
-      1. Return ? AsyncGeneratorEnqueue(_generator_, _completion_).
+      1. Return ! AsyncGeneratorEnqueue(_generator_, _completion_).
     </emu-alg>
   </emu-clause>
 
@@ -29,7 +29,7 @@
     <emu-alg>
       1. Let _generator_ be the `this` value.
       1. Let _completion_ be Completion{[[Type]]: ~return~, [[Value]]: _value_, [[Target]]: ~empty~}.
-      1. Return ? AsyncGeneratorEnqueue(_generator_, _completion_).
+      1. Return ! AsyncGeneratorEnqueue(_generator_, _completion_).
     </emu-alg>
   </emu-clause>
 
@@ -38,7 +38,7 @@
     <emu-alg>
       1. Let _generator_ be the `this` value.
       1. Let _completion_ be Completion{[[Type]]: ~throw~, [[Value]]: _exception_, [[Target]]: ~empty~}.
-      1. Return ? AsyncGeneratorEnqueue(_generator_, _completion_).
+      1. Return ! AsyncGeneratorEnqueue(_generator_, _completion_).
     </emu-alg>
   </emu-clause>
 
