@@ -1,3 +1,17 @@
+<emu-clause id="sec-%iteratorprototype%-object">
+  <h1>The %IteratorPrototype% Object</h1>
+
+  <emu-clause id="sec-%iteratorprototype%-@@asyncIterator">
+    <h1><ins>%IteratorPrototype% [ @@asyncIterator ] ( )</ins></h1>
+    <p>The following steps are taken:</p>
+    <emu-alg>
+      1. Return ? CreateAsyncFromSyncIterator(*this* value).
+    </emu-alg>
+    <p>The value of the `name` property of this function is `"[Symbol.asyncIterator]"`.</p>
+  </emu-clause>
+</emu-clause>
+
+
 <emu-clause id="sec-common-iteration-interfaces">
   <h1>Common Iteration Interfaces</h1>
 
@@ -89,5 +103,110 @@
       1. Return the *this* value.
     </emu-alg>
     <p>The value of the `name` property of this function is `"[Symbol.asyncIterator]"`.</p>
+  </emu-clause>
+</emu-clause>
+
+<emu-clause id="sec-async-from-sync-iterator-objects">
+  <h1><ins>Async-from-Sync Iterator Objects</ins></h1>
+  <p>An Async-from-Sync Iterator object is an async iterator that adapts a specific synchronous iterator. There is not a named constructor for Async-from-Sync Iterator objects. Instead, Async-from-Sync iterator objects are created by the @@asyncIterator method of synchronous iterator objects.</p>
+
+  <emu-clause id="sec-createasyncfromsynciterator" aoid="CreateAsyncFromSyncIterator">
+    <h1>CreateAsyncFromSyncIterator(_syncIterator_) Abstract Operation</h1>
+    <p>The abstract operation CreateAsyncFromSyncIterator is used to create an async iterator from a synchronous iterator. It performs the following steps:</p>
+    <emu-alg>
+      1. If Type(_syncIterator_) is not Object, throw a *TypeError* exception.
+      1. Let _asyncIterator_ be ! ObjectCreate(%AsyncFromSyncIteratorPrototype%, &laquo; [[SyncIterator]] &raquo;).
+      1. Set _asyncIterator_.[[SyncIterator]] to _syncIterator_.
+      1. Return _asyncIterator_.
+    </emu-alg>
+  </emu-clause>
+
+  <emu-clause id="sec-%asyncfromsynciterator%-object">
+    <h1>The %AsyncFromSyncIterator% Object</h1>
+    <p>All Async-from-Sync Iterator Objects inherit properties from the <dfn>%AsyncFromSyncIteratorPrototype%</dfn> intrinsic object. The %AsyncFromSyncIteratorPrototype% object is an ordinary object and its [[Prototype]] internal slot is the %AsyncIteratorPrototype% intrinsic object. In addition, %AsyncFromSyncIteratorPrototype% has the following properties:</p>
+
+    <emu-clause id="sec-%asyncfromsynciterator%.next">
+      <h1>%AsyncFromSyncIteratorPrototype%.next ( _value_ )</h1>
+      <emu-alg>
+        1. Let _O_ be the *this* value.
+        1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
+        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIterator]] internal slot, then
+          1. Let _badIteratorError_ be a new *TypeError* exception.
+          1. Perform ? Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badIteratorError_ &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
+        1. Let _syncIterator_ be _O_.[[SyncIterator]].
+        1. Let _nextResult_ be IteratorNext(_syncIterator_, _value_).
+        1. IfAbruptRejectPromise(_nextResult_, _promiseCapability_).
+        1. Let _value_ be IteratorValue(_nextResult_).
+        1. IfAbruptRejectPromise(_value_, _promiseCapability_).
+        1. Let _done_ be IteratorComplete(_nextResult_).
+        1. IfAbruptRejectPromise(_value_, _promiseCapability_).
+        1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
+        1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _value_ &raquo;).
+        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#asyncfromsynciterator-unwrap" title></emu-xref>.
+        1. Set _onFulfilled_.[[Done]] to _done_.
+        1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
+        1. Return _promiseCapability_.
+      </emu-alg>
+
+      <emu-clause id="asyncfromsynciterator-unwrap">
+        <h1>Async-from-Sync Iterator Unwrap Functions</h1>
+
+        <p>An async-from-sync iterator unwrap function is an anonymous built-in function that is used when processing the `value` field of a synchronous IteratorResult, in order to wait for its value if it is a promise and re-package the result in a new "unwrapped" IteratorResult. Each async-from-sync iterator unwrap function has a [[Done]] internal slot.</p>
+
+        <p>When an async-from-sync iterator unwrap function _F_ is called with argument _value_, the following steps are taken:</p>
+
+        <emu-alg>
+          1. Return ! CreateIterResultObject(_value_, _F_.[[Done]]).
+        </emu-alg>
+      </emu-clause>
+    </emu-clause>
+
+    <emu-clause id="sec-%asyncfromsynciterator%.throw">
+      <h1>%AsyncFromSyncIteratorPrototype%.throw ( _value_ )</h1>
+
+      `%AsyncFromSyncIteratorPrototype%.throw` is a distinct function that implements the same algorithm as `%AsyncFromSyncIteratorPrototype%.next` as defined in <emu-xref href="#sec-%asyncfromsynciterator%.next"></emu-xref>.
+    </emu-clause>
+
+    <emu-clause id="sec-%asyncfromsynciterator%.return">
+      <h1>%AsyncFromSyncIteratorPrototype%.return ( _value_ )</h1>
+
+      `%AsyncFromSyncIteratorPrototype%.return` is a distinct function that implements the same algorithm as `%AsyncFromSyncIteratorPrototype%.next` as defined in <emu-xref href="#sec-%asyncfromsynciterator%.next"></emu-xref>.
+    </emu-clause>
+
+    <emu-clause id="sec-%asyncfromsynciterator%-@@tostringtag">
+      <h1>%AsyncFromSyncIteratorPrototype% [ @@toStringTag ]</h1>
+      <p>The initial value of the @@toStringTag property is the String value `"Async-from-Sync Iterator"`.</p>
+      <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
+    </emu-clause>
+  </emu-clause>
+
+  <emu-clause id="sec-properties-of-async-from-sync-iterator-instances">
+    <h1>Properties of Async-from-Sync Iterator Instances</h1>
+    <p>Async-from-Sync Iterator instances are ordinary objects that inherit properties from the %AsyncFromSyncIteratorPrototype% intrinsic object. Async-from-Sync Iterator instances are initially created with the internal slots listed in <emu-xref href="#table-async-from-sync-iterator-internal-slots"></emu-xref>.</p>
+    <emu-table id="table-async-from-sync-iterator-internal-slots" caption="Internal Slots of Async-from-Sync Iterator Instances">
+      <table>
+        <thead>
+        <tr>
+          <th>
+            Internal Slot
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>
+            [[SyncIterator]]
+          </td>
+          <td>
+            The original synchronous iterator which is being adapted.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </emu-table>
   </emu-clause>
 </emu-clause>
