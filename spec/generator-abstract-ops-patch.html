@@ -19,13 +19,16 @@
     1. Let _generator_ be the value of the Generator component of _genContext_.
     1. Let _generatorKind_ be GetGeneratorKind().
     1. <ins>If _generatorKind_ is ~async~, then set _generator_.[[AsyncGeneratorState]] to `"suspendedYield"`.</ins>
-    1. <ins>Else, set _generator_.[[GeneratorState]] to `"suspendedYield"`.</ins>
+    1. <del>S</del><ins>Else, s</ins>et _generator_.[[GeneratorState]] to `"suspendedYield"`.</ins>
     1. Remove _genContext_ from the execution context stack and restore the execution context that is at the top of the execution context stack as the running execution context.
     1. Set the code evaluation state of _genContext_ such that when evaluation is resumed with a Completion _resumptionValue_ the following steps will be performed:
       1. Return _resumptionValue_.
       1. NOTE: This returns to the evaluation of the |YieldExpression| production that originally called this abstract operation.
-    1. <ins>If _generatorKind_ is ~async~, return ! AsyncGeneratorResolve(_generator_, _iterNextObj_)</ins>.
-    1. <ins>Else, return NormalCompletion(_iterNextObj_)</ins>.
+    1. <ins>If _generatorKind_ is ~async~,</ins>
+      1. <ins>Let _value_ be IteratorValue(_iterNextObj_).</ins>
+      1. <ins>Let _done_ be IteratorComplete(_iterNextObj_).</ins>
+      1. <ins>Return ! AsyncGeneratorResolve(_generator_, _value_, _done_).</ins>
+    1. <del>R</del><ins>Else, r</ins>eturn NormalCompletion(_iterNextObj_)</ins>.
     1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.
   </emu-alg>
 </emu-clause>
