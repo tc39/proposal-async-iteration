@@ -68,10 +68,10 @@ This function then returns an async generator object, which can be consumed with
 
 ## Implementation Status
 
-As a stage 2 proposal, implementation has not yet begun in any JavaScript engines. Transpilers, however...
+As a stage 3 proposal, implementation should begin in JavaScript engines soon. In the meantime...
 
 The [Regenerator](https://github.com/facebook/regenerator) project provides a working [polyfill](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/runtime.js#L136) for the `AsyncIterator` interface and transforms `async` generator functions into plain ECMAScript 5 functions that return `AsyncIterator` objects: [examples](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/test/async.es6.js#L259). Regenerator does not yet support the `for await`-`of` async iteration statement syntax.
 
-The [Babylon parser](https://github.com/babel/babylon) project supports parsing async generator functions and `for`-`await`-`of` statements. However, the [corresponding pull request to implement the semantics in Babel](https://github.com/babel/babel/pull/3473) seems stalled.
+The [Babylon parser](https://github.com/babel/babylon) project supports parsing async generator functions and `for`-`await`-`of` statements. Additionally, as of 6.16.0, async iteration is included in [Babel](https://babeljs.io/) under the the name `"babel-plugin-transform-async-generator-functions"`. Note that the semantics implemented there are slightly out of date compared to the current spec text in various edge cases.
 
-The ["Async Generator Rewrite"](Async Generator Rewrite.md) document outlines the basic code changes for rewriting an async generator function into a normal generator function, which could be informative for implementers.
+The ["Async Generator Rewrite"](Async Generator Rewrite.md) document outlines the basic code changes for rewriting an async generator function into a normal generator function, which could be informative for implementers. It is also slightly out of date compared to the current spec text, however, so use caution.
