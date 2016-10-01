@@ -72,6 +72,25 @@ As a stage 3 proposal, implementation should begin in JavaScript engines soon. I
 
 The [Regenerator](https://github.com/facebook/regenerator) project provides a working [polyfill](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/runtime.js#L136) for the `AsyncIterator` interface and transforms `async` generator functions into plain ECMAScript 5 functions that return `AsyncIterator` objects: [examples](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/test/async.es6.js#L259). Regenerator does not yet support the `for await`-`of` async iteration statement syntax.
 
-The [Babylon parser](https://github.com/babel/babylon) project supports parsing async generator functions and `for`-`await`-`of` statements. Additionally, as of 6.16.0, async iteration is included in [Babel](https://babeljs.io/) under the the name `"babel-plugin-transform-async-generator-functions"`. Note that the semantics implemented there are slightly out of date compared to the current spec text in various edge cases.
+The [Babylon parser](https://github.com/babel/babylon) project supports parsing async generator functions and `for`-`await`-`of` statements (since v6.8.0). You can use it with the [`asyncGenerators` plugin](https://github.com/babel/babylon#plugins).
+
+```js
+require("babylon").parse("code", {
+  sourceType: "module",
+  plugins: [
+    "asyncGenerators"
+  ]
+});
+```
+
+Additionally, as of 6.16.0, async iteration is included in [Babel](https://babeljs.io/) under the the name [`"babel-plugin-transform-async-generator-functions"`](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-generator-functions) as well as with [`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/). Note that the semantics implemented there are slightly out of date compared to the current spec text in various edge cases.
+
+```js
+require("babel-core").transform("code", {
+  plugins: [
+    "transform-async-generator-functions"
+  ]
+});
+```
 
 The ["Async Generator Rewrite"](Async Generator Rewrite.md) document outlines the basic code changes for rewriting an async generator function into a normal generator function, which could be informative for implementers. It is also slightly out of date compared to the current spec text, however, so use caution.
