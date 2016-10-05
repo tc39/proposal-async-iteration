@@ -75,8 +75,8 @@
     1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. Assert: _queue_ is not an empty List.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
-    1. Let _capability_ be _next_.[[Capability]].
-    1. Perform ! Call(_capability_.[[Reject]], *undefined*, « _exception_ »).
+    1. Let _promiseCapability_ be _next_.[[Capability]].
+    1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, « _exception_ »).
     1. Perform ! AsyncGeneratorResumeNext(_generator_).
     1. Return *undefined*.
   </emu-alg>
@@ -118,17 +118,17 @@
   <h1>AsyncGeneratorEnqueue ( _generator_, _completion_ )</h1>
   <emu-alg>
     1. Assert: _completion_ is a Completion Record.
-    1. Let _capability_ be ! NewPromiseCapability(%Promise%).
+    1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
     1. If Type(_generator_) is not Object, or if _generator_ does not have an [[AsyncGeneratorState]] internal slot, then
       1. Let _badGeneratorError_ be a new *TypeError* exception.
       1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badGeneratorError_ &raquo;).
       1. Return _promiseCapability_.[[Promise]].
     1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
-    1. Let _request_ be AsyncGeneratorRequest{[[Completion]]: _completion_, [[Capability]]: _capability_}.
+    1. Let _request_ be AsyncGeneratorRequest{[[Completion]]: _completion_, [[Capability]]: _promiseCapability_}.
     1. Append _request_ to the end of _queue_.
     1. Let _state_ be _generator_.[[AsyncGeneratorState]].
     1. If _state_ is not `"executing"`, then
       1. Perform ! AsyncGeneratorResumeNext(_generator_).
-    1. Return _capability_.[[Promise]].
+    1. Return _promiseCapability_.[[Promise]].
   </emu-alg>
 </emu-clause>
