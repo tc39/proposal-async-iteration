@@ -16,7 +16,7 @@
   <emu-alg>
     1. Let _asyncContext_ be the running execution context.
     1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
-    1. Let _resolveResult_ be ! Call(_promiseCapability_.[[Resolve]], *undefined*, « _value_ »).
+    1. Perform ! Call(_promiseCapability_.[[Resolve]], *undefined*, « _promise_ »).
     1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#await-fulfilled" title></emu-xref>.
     1. Let _onRejected_ be a new built-in function object as defined in <emu-xref href="#await-rejected" title></emu-xref>.
     1. Set _onFulfilled_ and _onRejected_'s [[AsyncContext]] internal slots to _asyncContext_.
