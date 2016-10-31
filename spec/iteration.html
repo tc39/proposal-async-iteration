@@ -143,14 +143,14 @@
         1. Let _syncIterator_ be _O_.[[SyncIterator]].
         1. Let _nextResult_ be IteratorNext(_syncIterator_, _value_).
         1. IfAbruptRejectPromise(_nextResult_, _promiseCapability_).
-        1. Let _value_ be IteratorValue(_nextResult_).
-        1. IfAbruptRejectPromise(_value_, _promiseCapability_).
-        1. Let _done_ be IteratorComplete(_nextResult_).
-        1. IfAbruptRejectPromise(_value_, _promiseCapability_).
+        1. Let _nextValue_ be IteratorValue(_nextResult_).
+        1. IfAbruptRejectPromise(_nextValue_, _promiseCapability_).
+        1. Let _nextDone_ be IteratorComplete(_nextResult_).
+        1. IfAbruptRejectPromise(_nextDone_, _promiseCapability_).
         1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
-        1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _value_ &raquo;).
+        1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _nextValue_ &raquo;).
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
-        1. Set _onFulfilled_.[[Done]] to _done_.
+        1. Set _onFulfilled_.[[Done]] to _nextDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.
       </emu-alg>
