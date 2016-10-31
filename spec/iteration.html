@@ -156,16 +156,67 @@
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-%asyncfromsynciteratorprototype%.throw">
-      <h1>%AsyncFromSyncIteratorPrototype%.throw ( _value_ )</h1>
-
-      `%AsyncFromSyncIteratorPrototype%.throw` is a distinct function that implements the same algorithm as `%AsyncFromSyncIteratorPrototype%.next` as defined in <emu-xref href="#sec-%asyncfromsynciteratorprototype%.next"></emu-xref>.
-    </emu-clause>
-
     <emu-clause id="sec-%asyncfromsynciteratorprototype%.return">
       <h1>%AsyncFromSyncIteratorPrototype%.return ( _value_ )</h1>
 
-      `%AsyncFromSyncIteratorPrototype%.return` is a distinct function that implements the same algorithm as `%AsyncFromSyncIteratorPrototype%.next` as defined in <emu-xref href="#sec-%asyncfromsynciteratorprototype%.next"></emu-xref>.
+      <emu-alg>
+        1. Let _O_ be the *this* value.
+        1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
+        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIterator]] internal slot, then
+          1. Let _badIteratorError_ be a new *TypeError* exception.
+          1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badIteratorError_ &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
+        1. Let _syncIterator_ be _O_.[[SyncIterator]].
+        1. Let _return_ be GetMethod(_syncIterator_, `"return"`).
+        1. IfAbruptRejectPromise(_return_, _promiseCapability_).
+        1. If _return_ is *undefined*, then
+          1. Let _iterResult_ be ! CreateIterResultObject(_value_, *true*).
+          1. Perform ! Call(_promiseCapability_.[[Resolve]], *undefined*, &laquo; _iterResult_ &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
+        1. Let _returnResult_ be Call(_return_, _syncIterator_, &laquo; _value_ &raquo;).
+        1. IfAbruptRejectPromise(_returnResult_, _promiseCapability_).
+        1. Let _returnValue_ be IteratorValue(_returnResult_).
+        1. IfAbruptRejectPromise(_returnValue_, _promiseCapability_).
+        1. Let _returnDone_ be IteratorComplete(_returnResult_).
+        1. IfAbruptRejectPromise(_returnDone_, _promiseCapability_).
+        1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
+        1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _returnValue_ &raquo;).
+        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
+        1. Set _onFulfilled_.[[Done]] to _returnDone_.
+        1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
+        1. Return _promiseCapability_.
+      </emu-alg>
+    </emu-clause>
+
+    <emu-clause id="sec-%asyncfromsynciteratorprototype%.throw">
+      <h1>%AsyncFromSyncIteratorPrototype%.throw ( _value_ )</h1>
+
+      <emu-alg>
+        1. Let _O_ be the *this* value.
+        1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
+        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIterator]] internal slot, then
+          1. Let _badIteratorError_ be a new *TypeError* exception.
+          1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badIteratorError_ &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
+        1. Let _syncIterator_ be _O_.[[SyncIterator]].
+        1. Let _throw_ be GetMethod(_syncIterator_, `"throw"`).
+        1. IfAbruptRejectPromise(_throw_, _promiseCapability_).
+        1. If _throw_ is *undefined*, then
+          1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _value_ &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
+        1. Let _throwResult_ be Call(_throw_, _syncIterator_, &laquo; _value_ &raquo;).
+        1. IfAbruptRejectPromise(_throwResult_, _promiseCapability_).
+        1. Let _throwValue_ be IteratorValue(_throwResult_).
+        1. IfAbruptRejectPromise(_throwValue_, _promiseCapability_).
+        1. Let _throwDone_ be IteratorComplete(_throwResult_).
+        1. IfAbruptRejectPromise(_throwDone_, _promiseCapability_).
+        1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
+        1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _throwValue_ &raquo;).
+        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
+        1. Set _onFulfilled_.[[Done]] to _throwDone_.
+        1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
+        1. Return _promiseCapability_.
+      </emu-alg>
     </emu-clause>
 
     <emu-clause id="sec-%asyncfromsynciteratorprototype%-@@tostringtag">
