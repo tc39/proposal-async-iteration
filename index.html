@@ -817,7 +817,7 @@
 
 <emu-clause id="sec-async-from-sync-iterator-objects">
   <h1><span class="secnum">6.1.3</span><ins>Async-from-Sync Iterator Objects</ins><span class="utils"><span class="anchor"><a href="#sec-async-from-sync-iterator-objects">#</a></span></span></h1>
-  <p>An Async-from-Sync Iterator object is an async iterator that adapts a specific synchronous iterator. There is not a named constructor for Async-from-Sync Iterator objects. Instead, Async-from-Sync iterator objects are created by the @@asyncIterator method of synchronous iterator objects.</p>
+  <p>An Async-from-Sync Iterator object is an async iterator that adapts a specific synchronous iterator. There is not a named constructor for Async-from-Sync Iterator objects. Instead, Async-from-Sync iterator objects are created by the <emu-xref aoid="CreateAsyncFromSyncIterator"><a href="#sec-createasyncfromsynciterator">CreateAsyncFromSyncIterator</a></emu-xref> abstract operation as needed.</p>
 
   <emu-clause id="sec-createasyncfromsynciterator" aoid="CreateAsyncFromSyncIterator">
     <h1><span class="secnum">6.1.3.1</span>CreateAsyncFromSyncIterator(<var>syncIterator</var>) Abstract Operation<span class="utils"><span class="anchor"><a href="#sec-createasyncfromsynciterator">#</a></span></span></h1>
