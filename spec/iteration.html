@@ -152,7 +152,7 @@
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _nextDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
-        1. Return _promiseCapability_.
+        1. Return _promiseCapability_.[[Promise]].
       </emu-alg>
     </emu-clause>
 
@@ -184,7 +184,7 @@
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _returnDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
-        1. Return _promiseCapability_.
+        1. Return _promiseCapability_.[[Promise]].
       </emu-alg>
     </emu-clause>
 
@@ -215,7 +215,7 @@
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _throwDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
-        1. Return _promiseCapability_.
+        1. Return _promiseCapability_.[[Promise]].
       </emu-alg>
     </emu-clause>
 
