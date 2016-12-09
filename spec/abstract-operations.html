@@ -95,8 +95,8 @@
     1. Let _completion_ be _next_.[[Completion]].
     1. If _completion_ is an abrupt completion, then
       1. If _state_ is `"suspendedStart"`, then
-        1. Set _generator_.[[GeneratorState]] to `"completed"`.
-        1. Let _state_ be `"completed"`.
+        1. Set _generator_.[[AsyncGeneratorState]] to `"completed"`.
+        1. Set _state_ to `"completed"`.
       1. If _state_ is `"completed"`, then
         1. If _completion_.[[Type]] is ~return~, then return ! AsyncGeneratorResolve(_generator_, _completion_.[[Value]], *true*).
         1. Else, return ! AsyncGeneratorReject(_generator_, _completion_.[[Value]]).
