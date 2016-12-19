@@ -641,8 +641,8 @@
   <emu-import href="./execution-contexts-patch.html"><emu-clause id="await" aoid="Await">
   <h1><span class="secnum">5.1</span><ins>Await</ins><span class="utils"><span class="anchor"><a href="#await">link</a></span><span class="anchor"><a href="#" class="utils-pin">pin</a></span></span></h1>
 
-  <emu-note><span class="note">Note 1</span><div class="note-contents">
-    <p>(META) The <emu-xref aoid="AsyncFunctionAwait"><a href="https://tc39.github.io/ecma262/#sec-async-functions-abstract-operations-async-function-await">AsyncFunctionAwait</a></emu-xref> abstract operation could probably be refactored in terms of this primitive.</p>
+  <emu-note type="editor"><span class="note">Editor's Note</span><div class="note-contents">
+    <p>The <emu-xref aoid="AsyncFunctionAwait"><a href="https://tc39.github.io/ecma262/#sec-async-functions-abstract-operations-async-function-await">AsyncFunctionAwait</a></emu-xref> abstract operation could probably be refactored in terms of this primitive.</p>
   </div></emu-note>
 
   <p>Algorithm steps that say</p>
@@ -657,7 +657,7 @@
 
   <p>where all variables in the above steps, with the exception of <var>completion</var>, are ephemeral and visible only in the steps pertaining to Await.</p>
 
-  <emu-note><span class="note">Note 2</span><div class="note-contents">
+  <emu-note><span class="note">Note</span><div class="note-contents">
     <p>Note that Await can be combined with the <code>?</code> and <code>!</code> prefixes, so that for example</p>
 
     <emu-alg><ol><li>Let <var>value</var> be ?&nbsp;<emu-xref aoid="Await"><a href="#await">Await</a></emu-xref>(<var>promise</var>).
@@ -1167,8 +1167,8 @@
 
 <emu-clause id="sec-well-known-intrinsic-objects">
   <h1><span class="secnum">9</span>Well-Known Intrinsic Objects<span class="utils"><span class="anchor"><a href="#sec-well-known-intrinsic-objects">link</a></span><span class="anchor"><a href="#" class="utils-pin">pin</a></span></span></h1>
-  <emu-import href="./well-known-intrinsics-patch.html"><emu-note><span class="note">Note</span><div class="note-contents">
-  <p>(META) The spec's existing  <emu-xref href="#table-7"><a href="https://tc39.github.io/ecma262/#table-7">Table 7</a></emu-xref> should be expanded with the following rows:</p>
+  <emu-import href="./well-known-intrinsics-patch.html"><emu-note type="editor"><span class="note">Editor's Note</span><div class="note-contents">
+  <p>The spec's existing  <emu-xref href="#table-7"><a href="https://tc39.github.io/ecma262/#table-7">Table 7</a></emu-xref> should be expanded with the following rows:</p>
 </div></emu-note>
 
 <emu-table id="table-7-patch" caption="Well-known Intrinsic Objects"><figure><figcaption>Table 7: Well-known Intrinsic Objects</figcaption>
@@ -1248,8 +1248,8 @@
 
 <emu-clause id="sec-well-known-symbols">
   <h1><span class="secnum">10</span>Well-Known Symbols<span class="utils"><span class="anchor"><a href="#sec-well-known-symbols">link</a></span><span class="anchor"><a href="#" class="utils-pin">pin</a></span></span></h1>
-  <emu-import href="./well-known-symbols-patch.html"><emu-note><span class="note">Note</span><div class="note-contents">
-  <p>(META) The spec's existing  <emu-xref href="#table-1"><a href="https://tc39.github.io/ecma262/#table-1">Table 1</a></emu-xref> should be expanded with the following rows:</p>
+  <emu-import href="./well-known-symbols-patch.html"><emu-note type="editor"><span class="note">Editor's Note</span><div class="note-contents">
+  <p>The spec's existing  <emu-xref href="#table-1"><a href="https://tc39.github.io/ecma262/#table-1">Table 1</a></emu-xref> should be expanded with the following rows:</p>
 </div></emu-note>
 
 <emu-table id="table-1-patch" caption="Well-known Symbols"><figure><figcaption>Table 8: Well-known Symbols</figcaption>
