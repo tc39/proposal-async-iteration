@@ -427,13 +427,22 @@ Menu.prototype.removePinEntry = function (id) {
 }
 
 Menu.prototype.persistPinEntries = function () {
-  if (!window.localStorage) return;
+  try {
+    if (!window.localStorage) return;
+  } catch (e) {
+    return;
+  }
 
   localStorage.pinEntries = JSON.stringify(Object.keys(this._pinnedIds));
 }
 
 Menu.prototype.loadPinEntries = function () {
-  if (!window.localStorage) return;
+  try {
+    if (!window.localStorage) return;
+  } catch (e) {
+    return;
+  }
+  
   var pinsString = window.localStorage.pinEntries;
   if (!pinsString) return;
   var pins = JSON.parse(pinsString);
