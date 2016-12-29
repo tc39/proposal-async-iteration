@@ -63,11 +63,11 @@
   1. <ins>Else if _kind_ is `"async generator"`, then</ins>
     1. <ins>Let _prototype_ be ObjectCreate(%AsyncGeneratorPrototype%).</ins>
     1. <ins>Perform DefinePropertyOrThrow(_F_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).</ins>
-  1. Else, perform MakeConstructor(_F_).
-  1. Note: Async functions are not constructable and do not have a prototype property.
+  1. Else if _kind_ is `"normal"`, perform MakeConstructor(_F_).
+  1. NOTE: Async functions are not constructable and do not have a [[Construct]] slot or a `"prototype"` property.
   1. Perform SetFunctionName(_F_, `"anonymous"`).
   1. Return _F_.
 </emu-alg>
 <emu-note>
-  <p>A `prototype` property is automatically created for every function created using CreateDynamicFunction, to provide for the possibility that the function will be used as a constructor.</p>
+  <p>A `prototype` property is created for every non-async function created using CreateDynamicFunction to provide for the possibility that the function will be used as a constructor.</p>
 </emu-note>
