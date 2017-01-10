@@ -84,12 +84,13 @@
     <emu-clause id="sec-async-iterator-value-unwrap-functions">
       <h1>Async Iterator Value Unwrap Functions</h1>
 
-      <p>An async iterator value unwrap function is an anonymous built-in function that is used when processing the `value` field of an <i>IteratorResult</i> object, in order to wait for its value if it is a promise and re-package the result in a new "unwrapped" <i>IteratorResult</i> object. Each async iterator value unwrap function has a [[Done]] internal slot.</p>
+      <p>An async iterator value unwrap function is an anonymous built-in function that is used when processing the `value` field of an <i>IteratorResult</i> object, in order to wait for its value if it is a promise and re-package the result in a new "unwrapped" <i>IteratorResult</i> object that is then used to resolve the relevant promise. Each async iterator value unwrap function has [[Done]] and [[PromiseCapability]] internal slots.</p>
 
       <p>When an async iterator unwrap function _F_ is called with argument _value_, the following steps are taken:</p>
 
       <emu-alg>
-        1. Return ! CreateIterResultObject(_value_, _F_.[[Done]]).
+        1. Let _result_ be ! CreateIterResultObject(_value_, _F_.[[Done]]).
+        1. Perform ! Call(_F_.[[PromiseCapability]].[[Resolve]], *undefined*, &laquo; _result_ &raquo;).
       </emu-alg>
     </emu-clause>
   </emu-clause>
@@ -151,6 +152,7 @@
         1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _nextValue_ &raquo;).
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _nextDone_.
+        1. Set _onFulfilled_.[[PromiseCapability]] to _promiseCapability_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.[[Promise]].
       </emu-alg>
@@ -183,6 +185,7 @@
         1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _returnValue_ &raquo;).
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _returnDone_.
+        1. Set _onFulfilled_.[[PromiseCapability]] to _promiseCapability_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.[[Promise]].
       </emu-alg>
@@ -214,6 +217,7 @@
         1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _throwValue_ &raquo;).
         1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _throwDone_.
+        1. Set _onFulfilled_.[[PromiseCapability]] to _promiseCapability_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.[[Promise]].
       </emu-alg>
