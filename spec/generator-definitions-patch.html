@@ -31,9 +31,9 @@
           1. Let _received_ be GeneratorYield(_innerResult_).
         1. Else,
           1. NOTE: If _iterator_ does not have a `throw` method, this throw is going to terminate the `yield*` loop. But first we need to give _iterator_ a chance to clean up.
-          1. <ins>Let _closeResult_ be</ins><del>Perform</del> ? IteratorClose(_iterator_, Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}).
-          1. <ins>If _generatorKind_ is ~async~, set _closeResult_ to Await(_closeResult_).</ins>
-          1. <ins>ReturnIfAbrupt(_closeResult_).</ins>
+          1. <ins>Let _closeCompletion_ be Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}.</ins>
+          1. <ins>If _generatorKind_ is ~async~, perform ? AsyncIteratorClose(_iterator_, _closeCompletion_).</ins>
+          1. Perform ? IteratorClose(_iterator_, <del>Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}</del><ins>_closeCompletion_</ins>).
           1. NOTE: The next step throws a *TypeError* to indicate that there was a `yield*` protocol violation: _iterator_ does not have a `throw` method.
           1. Throw a *TypeError* exception.
       1. Else,
