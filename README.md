@@ -12,7 +12,7 @@ In order to provide a generic data access protocol for asynchronous data sources
 
 ## Async iterators and async iterables
 
-An async iterator is much like an iterator, except that its `next()` method returns a promise for a `{ next, done }` pair. As noted above, we must return a promise for the iterator result pair because both the next value and the "done" state of the iterator are potentially unknown at the time the iterator method returns.
+An async iterator is much like an iterator, except that its `next()` method returns a promise for a `{ value, done }` pair. As noted above, we must return a promise for the iterator result pair because both the next value and the "done" state of the iterator are potentially unknown at the time the iterator method returns.
 
 ```js
 const { value, done } = syncIterator.next();
@@ -44,7 +44,7 @@ Each time we access the next value in the sequence, we implicitly `await` the pr
 
 Async generator functions are similar to generator functions, with the following differences:
 
-- When called, async generator functions return an object, an _async generator_ whose methods (`next`, `throw`, and `return`) return promises for `{ next, done }`, instead of directly returning `{ next, done }`. This automatically makes the returned async generator objects _async iterators_.
+- When called, async generator functions return an object, an _async generator_ whose methods (`next`, `throw`, and `return`) return promises for `{ value, done }`, instead of directly returning `{ value, done }`. This automatically makes the returned async generator objects _async iterators_.
 - `await` expressions and `for`-`await`-`of` statements are allowed.
 - The behavior of `yield*` is modified to support delegation to async iterables.
 
