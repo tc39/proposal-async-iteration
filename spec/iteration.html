@@ -175,6 +175,9 @@
           1. Return _promiseCapability_.[[Promise]].
         1. Let _returnResult_ be Call(_return_, _syncIterator_, &laquo; _value_ &raquo;).
         1. IfAbruptRejectPromise(_returnResult_, _promiseCapability_).
+        1. If Type(_returnResult_) is not *Object*,
+          1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; a *TypeError* exception &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
         1. Let _returnValue_ be IteratorValue(_returnResult_).
         1. IfAbruptRejectPromise(_returnValue_, _promiseCapability_).
         1. Let _returnDone_ be IteratorComplete(_returnResult_).
@@ -206,6 +209,9 @@
           1. Return _promiseCapability_.[[Promise]].
         1. Let _throwResult_ be Call(_throw_, _syncIterator_, &laquo; _value_ &raquo;).
         1. IfAbruptRejectPromise(_throwResult_, _promiseCapability_).
+        1. If Type(_throwResult_) is not *Object*,
+          1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; a *TypeError* exception &raquo;).
+          1. Return _promiseCapability_.[[Promise]].
         1. Let _throwValue_ be IteratorValue(_throwResult_).
         1. IfAbruptRejectPromise(_throwValue_, _promiseCapability_).
         1. Let _throwDone_ be IteratorComplete(_throwResult_).
