@@ -378,8 +378,10 @@
         1. Assert: _lhs_ is a |LeftHandSideExpression|.
         1. Let _assignmentPattern_ be the parse of the source text corresponding to _lhs_ using |AssignmentPattern| as the goal symbol.
       1. Repeat
-        1. Let _nextResult_ be ? IteratorNext(_iterator_).
-        1. <ins>If _iteratorKind_ is ~async~, then set _nextResult_ to ? Await(_nextResult_).</ins>
+        1. <del>Let _nextResult_ be ? IteratorNext(_iterator_).</del>
+        1. <ins>Let _nextResult_ be ? Invoke(_iterator_, `"next"`, &laquo; &raquo;).</ins>
+        1. <ins>If _generatorKind_ is ~async~, then set _nextResult_ to ? Await(_nextResult_).</ins>
+        1. <ins>If Type(_nextResult_) is not Object, throw a *TypeError* exception.</ins>
         1. Let _done_ be ? IteratorComplete(_nextResult_).
         1. If _done_ is *true*, return NormalCompletion(_V_).
         1. Let _nextValue_ be ? IteratorValue(_nextResult_).
