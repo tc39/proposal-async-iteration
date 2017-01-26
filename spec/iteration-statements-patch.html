@@ -380,7 +380,7 @@
       1. Repeat
         1. Let _nextResult_ be ? IteratorNext(_iterator_).
         1. <ins>If _iteratorKind_ is ~async~, then set _nextResult_ to ? Await(_nextResult_).</ins>
-        1. Let _done_ be ? IteratorComplete(_iterator_).
+        1. Let _done_ be ? IteratorComplete(_nextResult_).
         1. If _done_ is *true*, return NormalCompletion(_V_).
         1. Let _nextValue_ be ? IteratorValue(_nextResult_).
         1. If _lhsKind_ is either ~assignment~ or ~varBinding~, then
