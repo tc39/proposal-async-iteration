@@ -10,8 +10,8 @@
 </emu-clause>
 
 <emu-clause id="sec-generatoryield" aoid="GeneratorYield">
-  <h1>GeneratorYield ( _iterNextObj_ )</h1>
-  <p>The abstract operation GeneratorYield with argument _iterNextObj_ performs the following steps:</p>
+  <h1>GeneratorYield ( _iterNextObj_<ins> [ , _done_ ]</ins> )</h1>
+  <p>The abstract operation GeneratorYield with argument _iterNextObj_<ins> and optional argument _done_</ins> performs the following steps:</p>
   <emu-alg>
     1. Assert: _iterNextObj_ is an Object that implements the <i>IteratorResult</i> interface.
     1. Let _genContext_ be the running execution context.
@@ -25,8 +25,8 @@
       1. Return _resumptionValue_.
       1. NOTE: This returns to the evaluation of the |YieldExpression| production that originally called this abstract operation.
     1. <ins>If _generatorKind_ is ~async~,</ins>
-      1. <ins>Let _value_ be IteratorValue(_iterNextObj_).</ins>
-      1. <ins>Let _done_ be IteratorComplete(_iterNextObj_).</ins>
+      1. <ins>If _done_ is not provided, let _done_ be ? IteratorComplete(_iterNextObj_).</ins>
+      1. <ins>Let _value_ be ? IteratorValue(_iterNextObj_).</ins>
       1. <ins>Return ! AsyncGeneratorResolve(_generator_, _value_, _done_).</ins>
     1. <del>R</del><ins>Else, r</ins>eturn NormalCompletion(_iterNextObj_)</ins>.
     1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.
