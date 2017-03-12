@@ -4,7 +4,7 @@
 
 The iterator interface (introduced in ECMAScript 2015) is a sequential data access protocol which enables the development of generic and composable data consumers and transformers. Their primary interface is a `next()` method which returns a `{ value, done }` tuple, where `done` is a boolean indicating whether the end of the iterator has been reached, and `value` is the yielded value in the sequence.
 
-Since both the next value in the sequence and the "done" state of the data source must be known at the time that the iterator method returns, iterators are only suitable for representing *synchronous* data sources. While many data sources encountered by the JavaScript programmer are synchronous (such as in-memory lists and other data structures), many others are not. For instance, any data source which requires I/O access will be typically represented using a event-based or streaming *asynchronous* API. Unfortunately, iterators cannot be used to represent such data sources.
+Since both the next value in the sequence and the "done" state of the data source must be known at the time that the iterator method returns, iterators are only suitable for representing *synchronous* data sources. While many data sources encountered by the JavaScript programmer are synchronous (such as in-memory lists and other data structures), many others are not. For instance, any data source which requires I/O access will be typically represented using an event-based or streaming *asynchronous* API. Unfortunately, iterators cannot be used to represent such data sources.
 
 (Even an iterator of promises is not sufficient, since that only allows asynchronous determination of the value, but requires synchronous determination of the "done" state.)
 
