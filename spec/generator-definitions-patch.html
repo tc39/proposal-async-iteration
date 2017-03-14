@@ -1,13 +1,29 @@
 <emu-clause id="sec-asyncgenerator-definitions-evaluation">
   <h1>Runtime Semantics: Evaluation</h1>
 
+  <emu-grammar>YieldExpression : `yield`</emu-grammar>
+  <emu-alg>
+    1. <ins>Let _generatorKind_ be ! GetGeneratorKind().</ins>
+    1. <ins>If _generatorKind_ is ~async~, then return ? AsyncGeneratorYield(*undefined*).</ins>
+    1. <ins>Otherwise, r</ins><del>R</del>eturn ? GeneratorYield(CreateIterResultObject(*undefined*, *false*)).
+  </emu-alg>
+
+  <emu-grammar>YieldExpression : `yield` AssignmentExpression</emu-grammar>
+  <emu-alg>
+    1. <ins>Let _generatorKind_ be ! GetGeneratorKind().</ins>
+    1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
+    1. Let _value_ be ? GetValue(_exprRef_).
+    1. <ins>If _generatorKind_ is ~async~, then return ? AsyncGeneratorYield(_value_).</ins>
+    1. <ins>Otherwise, r</ins><del>R</del>eturn ? GeneratorYield(CreateIterResultObject(_value_, *false*)).
+  </emu-alg>
+
   <emu-grammar>
     YieldExpression : `yield` `*` AssignmentExpression
   </emu-grammar>
   <emu-alg>
+    1. <ins>Let _generatorKind_ be ! GetGeneratorKind().</ins>
     1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
     1. Let _value_ be ? GetValue(_exprRef_).
-    1. <ins>Let _generatorKind_ be ! GetGeneratorKind().</ins>
     1. Let _iterator_ be ? GetIterator(_value_<ins>, _generatorKind_</ins>).
     1. Let _received_ be NormalCompletion(*undefined*).
     1. Repeat
@@ -18,8 +34,11 @@
         1. <ins>If Type(_innerResult_) is not Object, throw a *TypeError* exception.</ins>
         1. Let _done_ be ? IteratorComplete(_innerResult_).
         1. If _done_ is *true*, then
-          1. Return ? IteratorValue(_innerResult_).
-        1. Let _received_ be GeneratorYield(_innerResult_<ins>, _done_</ins>).
+          1. <ins>Let _resultValue_ be </ins><del>Return </del>? IteratorValue(_innerResult_).
+          1. <ins>If _generatorKind_ is ~async~, then set _resultValue_ to ? Await(_resultValue_).</ins>
+          1. <ins>Return _resultValue_.</ins>
+        1. <ins>If _generatorKind_ is ~async~, then let _received_ be AsyncGeneratorYield(? IteratorValue(_innerResult_)).</ins>
+        1. <ins>Else, l</ins><del>L</del>et _received_ be GeneratorYield(_innerResult_).
       1. Else if _received_.[[Type]] is ~throw~, then
         1. Let _throw_ be ? GetMethod(_iterator_, `"throw"`).
         1. If _throw_ is not *undefined*, then
@@ -29,8 +48,11 @@
           1. If Type(_innerResult_) is not Object, throw a *TypeError* exception.
           1. Let _done_ be ? IteratorComplete(_innerResult_).
           1. If _done_ is *true*, then
-            1. Return ? IteratorValue(_innerResult_).
-          1. Let _received_ be GeneratorYield(_innerResult_<ins>, _done_</ins>).
+            1. <ins>Let _resultValue_ be </ins><del>Return </del>? IteratorValue(_innerResult_).
+            1. <ins>If _generatorKind_ is ~async~, then set _resultValue_ to ? Await(_resultValue_).</ins>
+            1. <ins>Return _resultValue_.</ins>
+          1. <ins>If _generatorKind_ is ~async~, then let _received_ be AsyncGeneratorYield(? IteratorValue(_innerResult_)).</ins>
+          1. <ins>Else, l</ins><del>L</del>et _received_ be GeneratorYield(_innerResult_).
         1. Else,
           1. NOTE: If _iterator_ does not have a `throw` method, this throw is going to terminate the `yield*` loop. But first we need to give _iterator_ a chance to clean up.
           1. <ins>Let _closeCompletion_ be Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}.</ins>
@@ -48,7 +70,9 @@
         1. Let _done_ be ? IteratorComplete(_innerReturnResult_).
         1. If _done_ is *true*, then
           1. Let _value_ be ? IteratorValue(_innerReturnResult_).
+          1. <ins>If _generatorKind_ is ~async~, then set _value_ to ? Await(_value_).</ins>
           1. Return Completion{[[Type]]: ~return~, [[Value]]: _value_, [[Target]]: ~empty~}.
-        1. Let _received_ be GeneratorYield(_innerResult_<ins>, _done_</ins>).
+        1. <ins>If _generatorKind_ is ~async~, then let _received_ be AsyncGeneratorYield(? IteratorValue(_innerResult_)).</ins>
+        1. <ins>Else, l</ins><del>L</del>et _received_ be GeneratorYield(_innerResult_).
   </emu-alg>
 </emu-clause>
