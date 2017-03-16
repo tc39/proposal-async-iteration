@@ -8,7 +8,7 @@
     [+Default] `async` [no LineTerminator here] `function` `*` `(` FormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorExpression :
-    `async` [no LineTerminator here] `function` `*` BindingIdentifier[+Yield, +Await] `(` FormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
+    `async` [no LineTerminator here] `function` `*` BindingIdentifier[+Yield, +Await]? `(` FormalParameters[+Yield, +Await] `)` `{` AsyncGeneratorBody `}`
 
   AsyncGeneratorBody :
     FunctionBody[+Yield, +Await]
