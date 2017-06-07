@@ -58,11 +58,8 @@
     1. Assert: _queue_ is not an empty List.
     1. Remove the first element from _queue_ and let _next_ be the value of that element.
     1. Let _promiseCapability_ be _next_.[[Capability]].
-    1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
-    1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _value_ &raquo;).
-    1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
-    1. Set _onFulfilled_.[[Done]] to _done_.
-    1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
+    1. Let _iteratorResult_ be ! CreateIterResultObject(_value_, _done_).
+    1. Perform ! Call(_promiseCapability_.[[Resolve]], *undefined*, &laquo; _iteratorResult_ &raquo;).
     1. Perform ! AsyncGeneratorResumeNext(_generator_).
     1. Return *undefined*.
   </emu-clause>
@@ -97,6 +94,7 @@
       1. If _state_ is `"suspendedStart"`, then
         1. Set _generator_.[[AsyncGeneratorState]] to `"completed"`.
         1. Set _state_ to `"completed"`.
+        1. Set _completion_ to AwaitIfReturn(_completion_).
       1. If _state_ is `"completed"`, then
         1. If _completion_.[[Type]] is ~return~, then return ! AsyncGeneratorResolve(_generator_, _completion_.[[Value]], *true*).
         1. Else, return ! AsyncGeneratorReject(_generator_, _completion_.[[Value]]).
@@ -141,10 +139,11 @@
     1. Assert: _genContext_ is the execution context of a generator.
     1. Let _generator_ be the value of the Generator component of _genContext_.
     1. Assert: GetGeneratorKind() is ~async~.
+    1. Set _value_ to ? Await(_value_).
     1. Set _generator_.[[AsyncGeneratorState]] to `"suspendedYield"`.
     1. Remove _genContext_ from the execution context stack and restore the execution context that is at the top of the execution context stack as the running execution context.
     1. Set the code evaluation state of _genContext_ such that when evaluation is resumed with a Completion _resumptionValue_ the following steps will be performed:
-      1. Return _resumptionValue_.
+      1. Return AwaitIfReturn(_resumptionValue_).
       1. NOTE: This returns to the evaluation of the |YieldExpression| production that originally called this abstract operation.
     1. Return ! AsyncGeneratorResolve(_generator_, _value_, *false*).
     1. NOTE: This returns to the evaluation of the operation that had most previously resumed evaluation of _genContext_.

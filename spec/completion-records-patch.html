@@ -84,3 +84,15 @@
     <p>The `length` property of an Await rejected function is 1.</p>
   </emu-clause>
 </emu-clause>
+
+<emu-clause id="sec-awaitifreturn" aoid="AwaitIfReturn">
+  <h1>AwaitIfReturn ( _completionRecord_ )</h1>
+  <p>The abstract operation AwaitIfReturn with argument _completionRecord_ performs the following steps:</p>
+  <emu-alg>
+    1. If _completionRecord_.[[Type]] is not ~return~, return Completion(_completionRecord_).
+    1. Let _awaited_ be Await(_completionRecord_.[[Value]]).
+    1. If _awaited_.[[Type]] is ~throw~, return Completion(_awaited_).
+    1. Assert: _awaited_.[[Type]] is ~normal~.
+    1. Return Completion{[[Type]]: ~return~, [[Value]]: _awaited_.[[Value]], [[Target]]: ~empty~}.
+  </emu-alg>
+</emu-clause>

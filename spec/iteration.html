@@ -80,18 +80,6 @@
     <emu-note>
       <p>Typically callers of these methods should check for their existence before invoking them. Certain ECMAScript language features including `for`-`await`-`of` and `yield*` call these methods after performing an existence check.</p>
     </emu-note>
-
-    <emu-clause id="sec-async-iterator-value-unwrap-functions">
-      <h1>Async Iterator Value Unwrap Functions</h1>
-
-      <p>An async iterator value unwrap function is an anonymous built-in function that is used when processing the `value` field of an <i>IteratorResult</i> object, in order to wait for its value if it is a promise and re-package the result in a new "unwrapped" <i>IteratorResult</i> object. Each async iterator value unwrap function has a [[Done]] internal slot.</p>
-
-      <p>When an async iterator unwrap function _F_ is called with argument _value_, the following steps are taken:</p>
-
-      <emu-alg>
-        1. Return ! CreateIterResultObject(_value_, _F_.[[Done]]).
-      </emu-alg>
-    </emu-clause>
   </emu-clause>
 </emu-clause>
 
@@ -149,7 +137,7 @@
         1. IfAbruptRejectPromise(_nextValue_, _promiseCapability_).
         1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
         1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _nextValue_ &raquo;).
-        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
+        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-from-sync-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _nextDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.[[Promise]].
@@ -184,7 +172,7 @@
         1. IfAbruptRejectPromise(_returnValue_, _promiseCapability_).
         1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
         1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _returnValue_ &raquo;).
-        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
+        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-from-sync-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _returnDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.[[Promise]].
@@ -218,7 +206,7 @@
         1. IfAbruptRejectPromise(_throwValue_, _promiseCapability_).
         1. Let _valueWrapperCapability_ be ! NewPromiseCapability(%Promise%).
         1. Perform ! Call(_valueWrapperCapability_.[[Resolve]], *undefined*, &laquo; _throwValue_ &raquo;).
-        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-iterator-value-unwrap-functions" title></emu-xref>.
+        1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#sec-async-from-sync-iterator-value-unwrap-functions" title></emu-xref>.
         1. Set _onFulfilled_.[[Done]] to _throwDone_.
         1. Perform ! PerformPromiseThen(_valueWrapperCapability_.[[Promise]], _onFulfilled_, *undefined*, _promiseCapability_).
         1. Return _promiseCapability_.[[Promise]].
@@ -229,6 +217,18 @@
       <h1>%AsyncFromSyncIteratorPrototype% [ @@toStringTag ]</h1>
       <p>The initial value of the @@toStringTag property is the String value `"Async-from-Sync Iterator"`.</p>
       <p>This property has the attributes { [[Writable]]: *false*, [[Enumerable]]: *false*, [[Configurable]]: *true* }.</p>
+    </emu-clause>
+
+    <emu-clause id="sec-async-from-sync-iterator-value-unwrap-functions">
+      <h1>Async-from-Sync Iterator Value Unwrap Functions</h1>
+
+      <p>An async-from-sync iterator value unwrap function is an anonymous built-in function that is used by methods of %AsyncFromSyncIteratorPrototype% when processing the `value` field of an <i>IteratorResult</i> object, in order to wait for its value if it is a promise and re-package the result in a new "unwrapped" <i>IteratorResult</i> object. Each async iterator value unwrap function has a [[Done]] internal slot.</p>
+
+      <p>When an async-from-sync iterator value unwrap function _F_ is called with argument _value_, the following steps are taken:</p>
+
+      <emu-alg>
+        1. Return ! CreateIterResultObject(_value_, _F_.[[Done]]).
+      </emu-alg>
     </emu-clause>
   </emu-clause>
 

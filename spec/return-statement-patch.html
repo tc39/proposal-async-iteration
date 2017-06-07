@@ -1,0 +1,25 @@
+<h2>Syntax</h2>
+<emu-grammar>
+  ReturnStatement[Yield, Await] :
+    `return` `;`
+    `return` [no LineTerminator here] Expression[+In, ?Yield, ?Await] `;`
+</emu-grammar>
+<emu-note>
+  <p>A `return` statement causes a function to cease execution and return a value to the caller. If |Expression| is omitted, the return value is *undefined*. Otherwise, the return value is the value of |Expression|.</p>
+</emu-note>
+
+<!-- es6num="13.10.1" -->
+<emu-clause id="sec-return-statement-runtime-semantics-evaluation">
+  <h1>Runtime Semantics: Evaluation</h1>
+  <emu-grammar>ReturnStatement : `return` `;`</emu-grammar>
+  <emu-alg>
+    1. Return Completion{[[Type]]: ~return~, [[Value]]: *undefined*, [[Target]]: ~empty~}.
+  </emu-alg>
+  <emu-grammar>ReturnStatement : `return` Expression `;`</emu-grammar>
+  <emu-alg>
+    1. Let _exprRef_ be the result of evaluating |Expression|.
+    1. Let _exprValue_ be ? GetValue(_exprRef_).
+    1. <ins>If ! GetGeneratorKind() is ~async~, set _exprValue_ to ? Await(_exprValue_).</ins>
+    1. Return Completion{[[Type]]: ~return~, [[Value]]: _exprValue_, [[Target]]: ~empty~}.
+  </emu-alg>
+</emu-clause>
