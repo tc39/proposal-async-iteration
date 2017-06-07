@@ -17,8 +17,65 @@ contributors: Kevin Smith, Domenic Denicola
   <emu-import href="./introduction.html"></emu-import>
 </emu-clause>
 
-<emu-clause id="sec-ecmascript-language-functions-and-classes">
+<emu-clause id="sec-well-known-symbols-patch">
+  <h1>Well-Known Symbols</h1>
+  <emu-note type=editor>
+    <p>The spec's existing <emu-xref href="#table-1"></emu-xref> in <emu-xref href="#sec-well-known-symbols"></emu-xref> should be expanded with the following rows:</p>
+  </emu-note>
+
+  <emu-import href="./well-known-symbols-patch.html"></emu-import>
+</emu-clause>
+
+<emu-clause id="sec-well-known-intrinsic-objects-patch">
+  <h1>Well-Known Intrinsic Objects</h1>
+  <emu-note type=editor>
+    <p>The spec's existing <emu-xref href="#table-7"></emu-xref> in <emu-xref href="#sec-well-known-intrinsic-objects"></emu-xref> should be expanded with the following rows:</p>
+  </emu-note>
+
+  <emu-import href="./well-known-intrinsics-patch.html"></emu-import>
+</emu-clause>
+
+<emu-clause id="sec-completion-record-specification-type-patch">
+  <h1>The Completion Record Specification Type</h1>
+  <emu-note type="editor">
+    This patch adds clauses to <emu-xref href="#sec-completion-record-specification-type"></emu-xref>.
+  </emu-note>
+
+  <emu-import href="./completion-records-patch.html"></emu-import>
+</emu-clause>
+
+<emu-clause id="sec-operations-on-iterator-objects-patch">
+  <h1>Operations on Iterator Objects</h1>
+  <emu-note type="editor">
+    These patches modify clauses of and add clauses to <emu-xref href="#sec-operations-on-iterator-objects"></emu-xref>.
+  </emu-note>
+
+  <emu-import href="./iterator-operations.html"></emu-import>
+</emu-clause>
+
+<emu-clause id="sec-ecmascript-function-objects-patch">
+  <h1>ECMAScript Function Objects</h1>
+  <emu-note type="editor">
+    This patch adds a clause to <emu-xref href="#sec-ecmascript-function-objects"></emu-xref>.
+  </emu-note>
+
+  <emu-import href="./es-function-objects-patch.html"></emu-import>
+</emu-clause>
+
+<emu-clause id="sec-iteration-statements-patch">
+  <h1>Iteration Statements</h1>
+  <emu-note type="editor">
+    These patches modify clauses of and add clauses to <emu-xref href="#sec-iteration-statements"></emu-xref>.
+  </emu-note>
+
+  <emu-import href="./iteration-statements-patch.html"></emu-import>
+</emu-clause>
+
+<emu-clause id="sec-ecmascript-language-functions-and-classes-patch">
   <h1>ECMAScript Language: Functions and Classes</h1>
+  <emu-note type="editor">
+    These patches modify clauses of and add clauses to <emu-xref href="#sec-ecmascript-language-functions-and-classes"></emu-xref>.
+  </emu-note>
 
   <emu-clause id="sec-method-definitions">
     <h1>Method Definitions</h1>
@@ -36,23 +93,29 @@ contributors: Kevin Smith, Domenic Denicola
   </emu-clause>
 </emu-clause>
 
-<emu-clause id="sec-iteration-statements">
-  <h1>Iteration Statements</h1>
-  <emu-import href="./iteration-statements-patch.html"></emu-import>
+<emu-clause id="sec-createdynamicfunction-patch" aoid="CreateDynamicFunction">
+  <h1>Runtime Semantics: CreateDynamicFunction(_constructor_, _newTarget_, _kind_, _args_)</h1>
+  <emu-note type="editor">
+    This patch modifies <emu-xref href="#sec-createdynamicfunction"></emu-xref>.
+  </emu-note>
+
+  <emu-import href="./create-dynamic-function-patch.html"></emu-import>
 </emu-clause>
 
-<emu-clause id="sec-operations-on-iterator-objects">
-  <h1>Operations on Iterator Objects</h1>
-  <emu-import href="./iterator-operations.html"></emu-import>
+<emu-clause id="sec-properties-of-the-symbol-constructor-patch">
+  <h1>Properties of the Symbol Constructor</h1>
+  <emu-note type="editor">
+    This patch add a clause to <emu-xref href="#sec-properties-of-the-symbol-constructor"></emu-xref>.
+  </emu-note>
+
+  <emu-import href="./properties-of-symbol-patch.html"></emu-import>
 </emu-clause>
 
-<emu-clause id="sec-execution-contexts">
-  <h1>Execution Contexts</h1>
-  <emu-import href="./execution-contexts-patch.html"></emu-import>
-</emu-clause>
-
-<emu-clause id="sec-control-abstraction-objects">
+<emu-clause id="sec-control-abstraction-objects-patch">
   <h1>Control Abstraction Objects</h1>
+  <emu-note type="editor">
+    These patches modify clauses of and add clauses to <emu-xref href="#sec-control-abstraction-objects"></emu-xref>.
+  </emu-note>
 
   <emu-clause id="sec-iteration">
     <h1>Iteration</h1>
@@ -76,31 +139,6 @@ contributors: Kevin Smith, Domenic Denicola
     <h1><ins>AsyncGenerator Objects</ins></h1>
     <emu-import href="./async-generator-objects.html"></emu-import>
   </emu-clause>
-</emu-clause>
-
-<emu-clause id="sec-ecmascript-function-objects">
-  <h1>ECMAScript Function Objects</h1>
-  <emu-import href="./es-function-objects-patch.html"></emu-import>
-</emu-clause>
-
-<emu-clause id="sec-createdynamicfunction" aoid="CreateDynamicFunction">
-  <h1>Runtime Semantics: CreateDynamicFunction(_constructor_, _newTarget_, _kind_, _args_)</h1>
-  <emu-import href="./create-dynamic-function-patch.html"></emu-import>
-</emu-clause>
-
-<emu-clause id="sec-well-known-intrinsic-objects">
-  <h1>Well-Known Intrinsic Objects</h1>
-  <emu-import href="./well-known-intrinsics-patch.html"></emu-import>
-</emu-clause>
-
-<emu-clause id="sec-well-known-symbols">
-  <h1>Well-Known Symbols</h1>
-  <emu-import href="./well-known-symbols-patch.html"></emu-import>
-</emu-clause>
-
-<emu-clause id="sec-properties-of-the-symbol-constructor">
-  <h1>Properties of the Symbol Constructor</h1>
-  <emu-import href="./properties-of-symbol-patch.html"></emu-import>
 </emu-clause>
 
 <emu-clause id="misc-patches">

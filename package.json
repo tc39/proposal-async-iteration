@@ -9,6 +9,6 @@
     "watch": "ecmarkup --watch spec/index.html out/index.html --js out/ecmarkup.js --css out/ecmarkup.css"
   },
   "devDependencies": {
-    "ecmarkup": "^3.5.1"
+    "ecmarkup": "^3.11.2"
   }
 }
