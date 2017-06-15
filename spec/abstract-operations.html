@@ -94,6 +94,7 @@
       1. If _state_ is `"suspendedStart"`, then
         1. Set _generator_.[[AsyncGeneratorState]] to `"completed"`.
         1. Set _state_ to `"completed"`.
+      1. If _state_ is `"completed"`, then
         1. If _completion_.[[Type]] is ~return~:
           1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
           1. Perform ! Call(_promiseCapability_.[[Resolve]], *undefined*, « _completion_.[[Value]] »).
@@ -104,9 +105,10 @@
           1. Set _throwawayCapability_.[[Promise]].[[PromiseIsHandled]] to *true*.
           1. Perform ! PerformPromiseThen(_promiseCapability_.[[Promise]], _onFulfilled_, _onRejected_, _throwawayCapability_).
           1. Return *undefined*.
-      1. If _state_ is `"completed"`, then
-        1. If _completion_.[[Type]] is ~return~, then return ! AsyncGeneratorResolve(_generator_, _completion_.[[Value]], *true*).
-        1. Else, return ! AsyncGeneratorReject(_generator_, _completion_.[[Value]]).
+        1. Else,
+          1. Assert: _completion_.[[Type]] is ~throw~.
+          1. Perform ! AsyncGeneratorReject(_generator_, _completion_.[[Value]]).
+          1. Return *undefined*.
     1. Else if _state_ is `"completed"`, then return ! AsyncGeneratorResolve(_generator_, *undefined*, *true*).
     1. Assert: _state_ is either `"suspendedStart"` or `"suspendedYield"`.
     1. Let _genContext_ be _generator_.[[AsyncGeneratorContext]].
