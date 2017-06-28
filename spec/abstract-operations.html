@@ -85,6 +85,7 @@
     1. Assert: _generator_ is an AsyncGenerator instance.
     1. Let _state_ be _generator_.[[AsyncGeneratorState]].
     1. Assert: _state_ is not `"executing"`.
+    1. If _state_ is `"awaiting-return"`, return *undefined*.
     1. Let _queue_ be _generator_.[[AsyncGeneratorQueue]].
     1. If _queue_ is an empty List, return *undefined*.
     1. Let _next_ be the value of the first element of _queue_.
@@ -96,6 +97,7 @@
         1. Set _state_ to `"completed"`.
       1. If _state_ is `"completed"`, then
         1. If _completion_.[[Type]] is ~return~:
+          1. Set _generator_.[[AsyncGeneratorState]] to `"awaiting-return"`.
           1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
           1. Perform ! Call(_promiseCapability_.[[Resolve]], *undefined*, « _completion_.[[Value]] »).
           1. Let _onFulfilled_ be a new built-in function object as defined in <emu-xref href="#async-generator-resume-next-return-processor-fulfilled" title></emu-xref>.
@@ -130,6 +132,7 @@
     <p>When an AsyncGeneratorResumeNext return processor fulfilled function _F_ is called with argument _value_, the following steps are taken:</p>
 
     <emu-alg>
+      1. Set _F_.[[Generator]].[[AsyncGeneratorState]] to `"completed"`.
       1. Return ! AsyncGeneratorResolve(_F_.[[Generator]], _value_, *true*).
     </emu-alg>
 
@@ -144,6 +147,7 @@
     <p>When an AsyncGeneratorResumeNext return processor rejected function _F_ is called with argument _reason_, the following steps are taken:</p>
 
     <emu-alg>
+      1. Set _F_.[[Generator]].[[AsyncGeneratorState]] to `"completed"`.
       1. Return ! AsyncGeneratorReject(_F_.[[Generator]], _reason_).
     </emu-alg>
 
