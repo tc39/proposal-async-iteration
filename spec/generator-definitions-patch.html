@@ -59,7 +59,9 @@
       1. Else,
         1. Assert: _received_.[[Type]] is ~return~.
         1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
-        1. If _return_ is *undefined*, return Completion(_received_).
+        1. If _return_ is *undefined*, <del>return Completion(_received_).</del><ins>then:</ins>
+          1. <ins>If _generatorKind_ is ~async~, then set _received_.[[Value]] to ? Await(_received_.[[Value]]).</ins>
+          1. <ins>Return Completion(_received_).</ins>
         1. Let _innerReturnResult_ be ? Call(_return_, _iterator_, « _received_.[[Value]] »).
         1. <ins>If _generatorKind_ is ~async~, then set _innerReturnResult_ to ? Await(_innerReturnResult_).</ins>
         1. If Type(_innerReturnResult_) is not Object, throw a *TypeError* exception.
