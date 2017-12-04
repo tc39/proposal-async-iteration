@@ -68,7 +68,14 @@ This function then returns an async generator object, which can be consumed with
 
 ## Implementation Status
 
-As a stage 3 proposal, implementation should begin in JavaScript engines soon. In the meantime...
+### Native implementations
+
+- Chakra: [outstanding issue](https://github.com/Microsoft/ChakraCore/issues/2720)
+- JavaScriptCore: [shipping in Safari Tech Preview 40](https://github.com/tc39/proposal-async-iteration/issues/63#issuecomment-330929480)
+- SpiderMonkey: [shipping in Firefox 57](https://github.com/tc39/proposal-async-iteration/issues/63#issuecomment-330978069); [launch bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1352312)
+- V8: [shipping in Chrome 63](https://blog.chromium.org/2017/10/chrome-63-beta-dynamic-module-imports_27.html); [launch bug](https://crbug.com/v8/5855)
+
+### Polyfills/transpilers
 
 The [Regenerator](https://github.com/facebook/regenerator) project provides a working [polyfill](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/runtime.js#L136) for the `AsyncIterator` interface and transforms `async` generator functions into plain ECMAScript 5 functions that return `AsyncIterator` objects: [examples](https://github.com/facebook/regenerator/blob/f87d654f85c9925c4db3f74806f7615a71297f40/test/async.es6.js#L259). Regenerator does not yet support the `for await`-`of` async iteration statement syntax.
 
