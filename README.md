@@ -92,5 +92,3 @@ require("babel-core").transform("code", {
   ]
 });
 ```
-
-The ["Async Generator Rewrite"](./Async%20Generator%20Rewrite.md) document outlines the basic code changes for rewriting an async generator function into a normal generator function, which could be informative for implementers. It is also slightly out of date compared to the current spec text, however, so use caution.
