@@ -105,12 +105,11 @@
   <p>An Async-from-Sync Iterator object is an async iterator that adapts a specific synchronous iterator. There is not a named constructor for Async-from-Sync Iterator objects. Instead, Async-from-Sync iterator objects are created by the CreateAsyncFromSyncIterator abstract operation as needed.</p>
 
   <emu-clause id="sec-createasyncfromsynciterator" aoid="CreateAsyncFromSyncIterator">
-    <h1>CreateAsyncFromSyncIterator(_syncIterator_) Abstract Operation</h1>
+    <h1>CreateAsyncFromSyncIterator(_syncIteratorRecord_) Abstract Operation</h1>
     <p>The abstract operation CreateAsyncFromSyncIterator is used to create an async iterator from a synchronous iterator. It performs the following steps:</p>
     <emu-alg>
-      1. If Type(_syncIterator_) is not Object, throw a *TypeError* exception.
-      1. Let _asyncIterator_ be ! ObjectCreate(%AsyncFromSyncIteratorPrototype%, &laquo; [[SyncIterator]] &raquo;).
-      1. Set _asyncIterator_.[[SyncIterator]] to _syncIterator_.
+      1. Let _asyncIterator_ be ! ObjectCreate(%AsyncFromSyncIteratorPrototype%, &laquo; [[SyncIteratorRecord]] &raquo;).
+      1. Set _asyncIterator_.[[SyncIteratorRecord]] to _syncIteratorRecord_.
       1. Return _asyncIterator_.
     </emu-alg>
   </emu-clause>
@@ -124,12 +123,12 @@
       <emu-alg>
         1. Let _O_ be the *this* value.
         1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
-        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIterator]] internal slot, then
+        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIteratorRecord]] internal slot, then
           1. Let _badIteratorError_ be a new *TypeError* exception.
           1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badIteratorError_ &raquo;).
           1. Return _promiseCapability_.[[Promise]].
-        1. Let _syncIterator_ be _O_.[[SyncIterator]].
-        1. Let _nextResult_ be IteratorNext(_syncIterator_, _value_).
+        1. Let _syncIteratorRecord_ be _O_.[[SyncIteratorRecord]].
+        1. Let _nextResult_ be IteratorNext(_syncIteratorRecord_, _value_).
         1. IfAbruptRejectPromise(_nextResult_, _promiseCapability_).
         1. Let _nextDone_ be IteratorComplete(_nextResult_).
         1. IfAbruptRejectPromise(_nextDone_, _promiseCapability_).
@@ -150,11 +149,11 @@
       <emu-alg>
         1. Let _O_ be the *this* value.
         1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
-        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIterator]] internal slot, then
+        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIteratorRecord]] internal slot, then
           1. Let _badIteratorError_ be a new *TypeError* exception.
           1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badIteratorError_ &raquo;).
           1. Return _promiseCapability_.[[Promise]].
-        1. Let _syncIterator_ be _O_.[[SyncIterator]].
+        1. Let _syncIterator_ be _O_.[[SyncIteratorRecord]].[[Iterator]].
         1. Let _return_ be GetMethod(_syncIterator_, `"return"`).
         1. IfAbruptRejectPromise(_return_, _promiseCapability_).
         1. If _return_ is *undefined*, then
@@ -185,11 +184,11 @@
       <emu-alg>
         1. Let _O_ be the *this* value.
         1. Let _promiseCapability_ be ! NewPromiseCapability(%Promise%).
-        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIterator]] internal slot, then
+        1. If Type(_O_) is not Object, or if _O_ does not have a [[SyncIteratorRecord]] internal slot, then
           1. Let _badIteratorError_ be a new *TypeError* exception.
           1. Perform ! Call(_promiseCapability_.[[Reject]], *undefined*, &laquo; _badIteratorError_ &raquo;).
           1. Return _promiseCapability_.[[Promise]].
-        1. Let _syncIterator_ be _O_.[[SyncIterator]].
+        1. Let _syncIterator_ be _O_.[[SyncIteratorRecord]].[[Iterator]].
         1. Let _throw_ be GetMethod(_syncIterator_, `"throw"`).
         1. IfAbruptRejectPromise(_throw_, _promiseCapability_).
         1. If _throw_ is *undefined*, then
@@ -250,10 +249,10 @@
         <tbody>
         <tr>
           <td>
-            [[SyncIterator]]
+            [[SyncIteratorRecord]]
           </td>
           <td>
-            The original synchronous iterator which is being adapted.
+            A Record, of the type returned by GetIterator, representing the original synchronous iterator which is being adapted.
           </td>
         </tr>
         </tbody>

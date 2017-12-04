@@ -1,33 +1,35 @@
 <emu-clause id="sec-getiterator" aoid="GetIterator">
-  <h1>GetIterator ( _obj_ <del>[ , _method_ ]</del><ins>[ , _hint_ ]</ins> )</h1>
-  <emu-note>
-    <p>This method has been modified to accept an optional parameter _hint_ which indicates whether we should attempt to find an async iterator for the object.  The _method_ parameter has been removed.  Call sites which use the optional _method_ parameter (`Array.from` and IterableToArrayLike) must be updated to call the function directly instead.</p>
+  <h1>GetIterator ( _obj_ <ins>[ , _hint_ ]</ins>[ , _method_ ] )</h1>
+  <emu-note type="editor">
+    <p>This abstract operation has been modified to accept an optional parameter _hint_ which indicates whether we should attempt to find an async iterator for the object. Existing call sites which use the optional _method_ parameter (`Array.from` and IterableToArrayLike) must be updated to pass the ~normal~ hint.</p>
   </emu-note>
-  <p>The abstract operation GetIterator with argument _obj_ and optional argument _hint_ performs the following steps:</p>
+  <p>The abstract operation GetIterator with argument _obj_ and optional arguments _hint_ and _method_ performs the following steps:</p>
   <emu-alg>
     1. <ins>If _hint_ was not passed, let _hint_ be ~normal~.</ins>
-    1. <ins>Let _method_ be *undefined*.</ins>
-    1. <ins>If _hint_ is ~async~,</ins>
-      1. <ins>Set _method_ to ? GetMethod(_obj_, @@asyncIterator).</ins>
-      1. <ins>If _method_ is *undefined*,
-        1. <ins>Let _syncMethod_ be ? GetMethod(_obj_, @@iterator).</ins>
-        1. <ins>Let _syncIterator_ be ? Call(_syncMethod_, _obj_).</ins>
-        1. <ins>Return ? CreateAsyncFromSyncIterator(_syncIterator_).</ins>
-    1. <ins>Otherwise, set _method_ to ? GetMethod(_obj_, @@iterator).</ins>
-    1. <del>If _method_ was not passed, then</del>
-      1. <del>Let _method_ be ? GetMethod(_obj_, @@iterator).</del>
+    1. If _method_ is not present, then
+      1. <del>Set _method_ to ? GetMethod(_obj_, @@iterator).</del>
+      1. <ins>If _hint_ is ~async~,</ins>
+        1. <ins>Set _method_ to ? GetMethod(_obj_, @@asyncIterator).</ins>
+        1. <ins>If _method_ is *undefined*,
+          1. <ins>Let _syncMethod_ be ? GetMethod(_obj_, @@iterator).</ins>
+          1. <ins>Let _syncIteratorRecord_ be ? GetIterator(_obj_, ~normal~, _method_).</ins>
+          1. <ins>Return ? CreateAsyncFromSyncIterator(_syncIteratorRecord_).</ins>
+      1. <ins>Otherwise, set _method_ to ? GetMethod(_obj_, @@iterator).</ins>
     1. Let _iterator_ be ? Call(_method_, _obj_).
     1. If Type(_iterator_) is not Object, throw a *TypeError* exception.
-    1. Return _iterator_.
+    1. Let _nextMethod_ be ? GetV(_iterator_, `"next"`).
+    1. Let _iteratorRecord_ be Record {[[Iterator]]: _iterator_, [[NextMethod]]: _nextMethod_, [[Done]]: *false*}.
+    1. Return _iteratorRecord_.
   </emu-alg>
 </emu-clause>
 
 <emu-clause id="sec-asynciteratorclose" aoid="AsyncIteratorClose">
-  <h1><ins>AsyncIteratorClose ( _iterator_, _completion_ )</ins></h1>
-  <p>The abstract operation AsyncIteratorClose with arguments _iterator_ and _completion_ is used to notify an async iterator that it should perform any actions it would normally perform when it has reached its completed state:</p>
+  <h1><ins>AsyncIteratorClose ( _iteratorRecord_, _completion_ )</ins></h1>
+  <p>The abstract operation AsyncIteratorClose with arguments _iteratorRecord_ and _completion_ is used to notify an async iterator that it should perform any actions it would normally perform when it has reached its completed state:</p>
   <emu-alg>
-    1. Assert: Type(_iterator_) is Object.
+    1. Assert: Type(_iteratorRecord_.[[Iterator]]) is Object.
     1. Assert: _completion_ is a Completion Record.
+    1. Let _iterator_ be _iteratorRecord_.[[Iterator]].
     1. Let _return_ be ? GetMethod(_iterator_, `"return"`).
     1. If _return_ is *undefined*, return Completion(_completion_).
     1. Let _innerResult_ be Call(_return_, _iterator_, &laquo; &raquo;).

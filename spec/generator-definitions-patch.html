@@ -24,12 +24,13 @@
     1. <ins>Let _generatorKind_ be ! GetGeneratorKind().</ins>
     1. Let _exprRef_ be the result of evaluating |AssignmentExpression|.
     1. Let _value_ be ? GetValue(_exprRef_).
-    1. Let _iterator_ be ? GetIterator(_value_<ins>, _generatorKind_</ins>).
+    1. Let _iteratorRecord_ be ? GetIterator(_value_<ins>, _generatorKind_</ins>).
+    1. Let _iterator_ be _iteratorRecord_.[[Iterator]].
     1. Let _received_ be NormalCompletion(*undefined*).
     1. Repeat
       1. If _received_.[[Type]] is ~normal~, then
-        1. <del>Let _innerResult_ be ? IteratorNext(_iterator_, _received_.[[Value]]).</del>
-        1. <ins>Let _innerResult_ be ? Invoke(_iterator_, `"next"`, &laquo; _received_.[[Value]] &raquo;).</ins>
+        1. <del>Let _innerResult_ be ? IteratorNext(_iteratorRecord_, _received_.[[Value]]).</del>
+        1. <ins>Let _innerResult_ be ? Call(_iteratorRecord_.[[NextMethod]], _iteratorRecord_.[[Iterator]], &laquo; _received_.[[Value]] &raquo;).</ins>
         1. <ins>If _generatorKind_ is ~async~, then set _innerResult_ to ? Await(_innerResult_).</ins>
         1. <ins>If Type(_innerResult_) is not Object, throw a *TypeError* exception.</ins>
         1. Let _done_ be ? IteratorComplete(_innerResult_).
@@ -52,8 +53,8 @@
         1. Else,
           1. NOTE: If _iterator_ does not have a `throw` method, this throw is going to terminate the `yield*` loop. But first we need to give _iterator_ a chance to clean up.
           1. <ins>Let _closeCompletion_ be Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}.</ins>
-          1. <ins>If _generatorKind_ is ~async~, perform ? AsyncIteratorClose(_iterator_, _closeCompletion_).</ins>
-          1. <ins>Else, p</ins><del>P</del>erform ? IteratorClose(_iterator_, <del>Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}</del><ins>_closeCompletion_</ins>).
+          1. <ins>If _generatorKind_ is ~async~, perform ? AsyncIteratorClose(_iteratorRecord_, _closeCompletion_).</ins>
+          1. <ins>Else, p</ins><del>P</del>erform ? IteratorClose(_iteratorRecord_, <del>Completion{[[Type]]: ~normal~, [[Value]]: ~empty~, [[Target]]: ~empty~}</del><ins>_closeCompletion_</ins>).
           1. NOTE: The next step throws a *TypeError* to indicate that there was a `yield*` protocol violation: _iterator_ does not have a `throw` method.
           1. Throw a *TypeError* exception.
       1. Else,
