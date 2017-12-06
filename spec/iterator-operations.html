@@ -12,7 +12,7 @@
         1. <ins>Set _method_ to ? GetMethod(_obj_, @@asyncIterator).</ins>
         1. <ins>If _method_ is *undefined*,
           1. <ins>Let _syncMethod_ be ? GetMethod(_obj_, @@iterator).</ins>
-          1. <ins>Let _syncIteratorRecord_ be ? GetIterator(_obj_, ~normal~, _method_).</ins>
+          1. <ins>Let _syncIteratorRecord_ be ? GetIterator(_obj_, ~normal~, _syncMethod_).</ins>
           1. <ins>Return ? CreateAsyncFromSyncIterator(_syncIteratorRecord_).</ins>
       1. <ins>Otherwise, set _method_ to ? GetMethod(_obj_, @@iterator).</ins>
     1. Let _iterator_ be ? Call(_method_, _obj_).
