@@ -106,11 +106,11 @@
 
   <emu-clause id="sec-createasyncfromsynciterator" aoid="CreateAsyncFromSyncIterator">
     <h1>CreateAsyncFromSyncIterator(_syncIteratorRecord_) Abstract Operation</h1>
-    <p>The abstract operation CreateAsyncFromSyncIterator is used to create an async iterator from a synchronous iterator. It performs the following steps:</p>
+    <p>The abstract operation CreateAsyncFromSyncIterator is used to create an async iterator Record from a synchronous iterator Record. It performs the following steps:</p>
     <emu-alg>
       1. Let _asyncIterator_ be ! ObjectCreate(%AsyncFromSyncIteratorPrototype%, &laquo; [[SyncIteratorRecord]] &raquo;).
       1. Set _asyncIterator_.[[SyncIteratorRecord]] to _syncIteratorRecord_.
-      1. Return _asyncIterator_.
+      1. Return ? GetIterator(_asyncIterator_, ~async~).
     </emu-alg>
   </emu-clause>
 
