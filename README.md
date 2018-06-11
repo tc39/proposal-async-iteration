@@ -37,9 +37,11 @@ for await (const line of readLines(filePath)) {
 This is equivalent to:
 
 ```js
-for (const _ of readLines(filePath)) {
-  const line = await _;
-  console.log(line);
+const i = readLines(filePath);
+while (true) {
+  const {value, done} = await i.next();
+  if (done) break;
+  console.log(value);
 }
 ```
 
