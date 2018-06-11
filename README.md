@@ -34,6 +34,15 @@ for await (const line of readLines(filePath)) {
 }
 ```
 
+This is equivalent to:
+
+```js
+for (const _ of readLines(filePath)) {
+  const line = await _;
+  console.log(line);
+}
+```
+
 Async for-of statements are only allowed within async functions and async generator functions (see below for the latter).
 
 During execution, an async iterator is created from the data source using the `[Symbol.asyncIterator]()` method.
